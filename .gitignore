@@ -56,10 +56,16 @@ logs/
 var/cache/openagri/*
 var/queue/openagri/*
 var/kpi/*
+var/edge/cache/*
+var/edge/queue/*
+var/cloud_dss/*
 exports/kpi/*
 !var/cache/openagri/.gitkeep
 !var/queue/openagri/.gitkeep
 !var/kpi/.gitkeep
+!var/edge/cache/.gitkeep
+!var/edge/queue/.gitkeep
+!var/cloud_dss/.gitkeep
 !exports/kpi/.gitkeep
 
 # OS/editor files

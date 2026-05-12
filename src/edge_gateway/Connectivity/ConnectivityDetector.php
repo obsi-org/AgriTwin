@@ -1,0 +1,28 @@
+<?php
+namespace AgriTwin\Edge\Connectivity;
+
+final class ConnectivityDetector
+{
+    public function __construct(
+        private bool $forceOffline = false,
+        private mixed $probe = null
+    ) {
+    }
+
+    public function status(): array
+    {
+        if ($this->forceOffline) {
+            return ['online' => false, 'reason' => 'forced_offline'];
+        }
+        if (is_callable($this->probe)) {
+            $result = ($this->probe)();
+            return is_array($result) ? $result : ['online' => (bool) $result, 'reason' => (bool) $result ? 'probe_ok' : 'probe_failed'];
+        }
+        return ['online' => true, 'reason' => 'no_probe_configured'];
+    }
+
+    public function online(): bool
+    {
+        return (bool) ($this->status()['online'] ?? false);
+    }
+}

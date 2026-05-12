@@ -35,6 +35,8 @@ The current prototype expects a local database imported from `mysql.sql` and con
 - `docs/architecture/openagri_integration_architecture.md`: Gatekeeper, OpenAgri services, FarmCalendar, reporting, and fallback behavior.
 - `docs/architecture/data_model.md`: canonical AgriTwin data records and JSON examples.
 - `docs/integration/openagri_connectors.md`: OpenAgri connector configuration, APIs, cache/offline behavior, and tests.
+- `docs/edge/edge_gateway_runbook.md`: mixed edge-cloud gateway installation, storage, sync, and troubleshooting.
+- `docs/edge/sensor_payload_spec.md`: canonical sensor packet schema and examples.
 - `docs/evidence/kpi_methodology.md`: D1 KPI metric definitions, formulas, collection method, and comparison approach.
 - `docs/evidence/standards_interoperability_switchability.md`: standards, portability, switchability, and hardware reuse evidence model.
 - `docs/evidence/generated/`: generated sample KPI evidence for cloud-only vs mixed edge-cloud ADS comparison.
@@ -75,3 +77,13 @@ php scripts/agritwin-kpi.php compare-ads cloud mixed
 ```
 
 Runtime KPI events are stored in `var/kpi/events.jsonl` and are ignored by git. Generated sample evidence committed under `docs/evidence/generated/` contains no raw pilot-farm data.
+
+## Edge Gateway Tests
+
+The mixed edge-cloud gateway path uses local durable JSON queues and cache files:
+
+```bash
+make test-edge
+```
+
+The tests cover normal connectivity, 4G outage, service timeout, duplicate packet idempotency, reconnect/backfill, and stale OpenAgri cache confidence handling.

@@ -1,4 +1,4 @@
-.PHONY: help setup lint test run docs audit test-openagri test-hmi test-kpi collect-kpis export-kpis compare-ads generate-d1-evidence
+.PHONY: help setup lint test run docs audit test-openagri test-hmi test-kpi test-edge collect-kpis export-kpis compare-ads generate-d1-evidence
 
 PHP_FILES := $(shell find . -name '*.php' -not -path './vendor/*')
 
@@ -10,6 +10,7 @@ help:
 	@echo "  make test-openagri - Run OpenAgri connector tests with mock service"
 	@echo "  make test-hmi - Run HMI/PWA smoke tests"
 	@echo "  make test-kpi - Run D1 KPI calculation tests"
+	@echo "  make test-edge - Run edge gateway buffering/sync tests"
 	@echo "  make collect-kpis - Seed synthetic KPI events into the local JSONL store"
 	@echo "  make export-kpis - Export KPI summary to JSON and CSV"
 	@echo "  make compare-ads - Generate cloud-only vs mixed ADS comparison report"
@@ -26,7 +27,7 @@ setup:
 lint:
 	@set -e; for file in $(PHP_FILES); do php -l "$$file"; done
 
-test: lint test-openagri test-hmi test-kpi
+test: lint test-openagri test-hmi test-kpi test-edge
 
 test-openagri:
 	@set -e; \
@@ -41,6 +42,9 @@ test-hmi:
 
 test-kpi:
 	@php tests/kpi/KpiCalculatorTest.php
+
+test-edge:
+	@php tests/edge_gateway/EdgeGatewayTest.php
 
 collect-kpis:
 	@php scripts/agritwin-kpi.php collect-kpis
