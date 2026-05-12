@@ -1,11 +1,10 @@
-# Dockerfile
 FROM php:8.3-apache
 
-# Instala a extensão PDO MySQL
 RUN docker-php-ext-install pdo_mysql
 
-# Copia o ficheiro‑fonte
-COPY index.php /var/www/html/
+WORKDIR /var/www/html
+COPY . /var/www/html/
+RUN mkdir -p var/cache/openagri var/queue/openagri var/kpi var/edge/cache var/edge/queue var/cloud_dss \
+    && chown -R www-data:www-data var
 
-# (Optional) expose port 80 explicitly (it is already the default for this image)
 EXPOSE 80

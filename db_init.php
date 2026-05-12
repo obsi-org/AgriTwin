@@ -40,21 +40,24 @@ function ensureSchemaAndSeed_min(PDO $pdo): void
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
     /* === seed data === */
+    $cesiumToken = getenv('AGRITWIN_CESIUM_TOKEN') ?: 'replace-with-local-cesium-token';
+    $copernicusId = getenv('AGRITWIN_COPERNICUS_ID') ?: 'replace-with-local-copernicus-project-id';
     $pdo->exec("INSERT INTO app_settings (id,name,value) VALUES
-        (1,'cesium_token','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5MjFiYWY1Ni0zMTQ0LTQ3NTgtODdiOS01MzdhYmVhMzAyOGQiLCJpZCI6MjU3OTMxLCJpYXQiOjE3MzI1NjMzNzl9.AEKDkClJUhfzlk9EDsFhb75ipK1Q7h1x3ttvCb0emxk'),
-        (2,'copernicus_id','682d23b8-7012-458e-b85a-f33e13c5e6c8')
+        (1,'cesium_token',{$pdo->quote($cesiumToken)}),
+        (2,'copernicus_id',{$pdo->quote($copernicusId)})
     ON DUPLICATE KEY UPDATE id=id");
 
     $pdo->exec("INSERT INTO farms (id,farm_name,farm_code,location,country) VALUES
-        (1,'Fotovoltaica Macotera SL','FOTOMACO1','Salamanca Region','Spain'),
+        (1,'Synthetic Salamanca Demo Farm','DEMO_SALAMANCA','Salamanca Region','Spain')
     ON DUPLICATE KEY UPDATE id=id");
 
-    // Password hash for 'admin' as in original dump
-    $adminHash = '$2y$10$l5oI7EZQXhX6Ibtxabbdi.Q3gPEvhC.yCs.b/9G.fOfidI/qDPVgq';
+    // Synthetic local-only bootstrap password hash; rotate in any deployment.
+    $adminHash = getenv('AGRITWIN_DEMO_ADMIN_PASSWORD_HASH') ?: password_hash('change-me-local-demo', PASSWORD_DEFAULT);
+    $technicianHash = password_hash('change-me-local-demo', PASSWORD_DEFAULT);
 
     $pdo->exec("INSERT INTO users (id,username,password,role,location) VALUES
         (1,'admin',{$pdo->quote($adminHash)},'System Administrator','Spain'),
-        (2,'Maria Lopes','$2y$10$EncryptedPw','Technician','Greece')
+        (2,'demo-technician',{$pdo->quote($technicianHash)},'Technician','Spain')
     ON DUPLICATE KEY UPDATE id=id");
 
     $pdo->commit();

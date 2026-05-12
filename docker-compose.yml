@@ -1,4 +1,39 @@
 services:
+  app:
+    build: .
+    profiles: ["mock"]
+    depends_on:
+      db:
+        condition: service_started
+      openagri-mock:
+        condition: service_started
+    ports:
+      - "8080:80"
+    environment:
+      AGRITWIN_DB_HOST: db
+      AGRITWIN_DB_NAME: agritwin_db
+      AGRITWIN_DB_USER: agritwin
+      AGRITWIN_DB_PASSWORD: agritwin_demo_password
+      AGRITWIN_OPENAGRI_MODE: mock
+      AGRITWIN_OPENAGRI_WEATHER_URL: http://openagri-mock:18080
+      AGRITWIN_OPENAGRI_IRRIGATION_URL: http://openagri-mock:18080
+      AGRITWIN_OPENAGRI_PEST_DISEASE_URL: http://openagri-mock:18080
+      AGRITWIN_OPENAGRI_FARMCALENDAR_URL: http://openagri-mock:18080
+      AGRITWIN_OPENAGRI_REPORTING_URL: http://openagri-mock:18080
+      AGRITWIN_CESIUM_TOKEN: replace-with-local-cesium-token
+      AGRITWIN_AEMET_API_KEY: replace-with-local-aemet-key
+
+  db:
+    image: mysql:8.0
+    profiles: ["mock"]
+    environment:
+      MYSQL_DATABASE: agritwin_db
+      MYSQL_USER: agritwin
+      MYSQL_PASSWORD: agritwin_demo_password
+      MYSQL_ROOT_PASSWORD: agritwin_demo_root_password
+    volumes:
+      - ./mysql.sql:/docker-entrypoint-initdb.d/001_seed.sql:ro
+
   openagri-mock:
     image: php:8.3-cli
     profiles: ["mock"]

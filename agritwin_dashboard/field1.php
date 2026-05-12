@@ -73,7 +73,7 @@ try {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>FOTOMACO Field Monitoring</title>
+    <title>AgriTwin Synthetic Field Monitoring</title>
 
     <!-- Cesium JS + CSS -->
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.106/Build/Cesium/Cesium.js"></script>
@@ -279,7 +279,7 @@ try {
 </div>
 
 <div class="sensor-data">
-  <h3>AI Insights – FOTOMACO (Nava de Sotrobal) • Almond &amp; Pistachio Orchard</h3>
+  <h3>AI Insights - Synthetic Salamanca Demo Orchard</h3>
 
   <p><strong>Alert:</strong>  
     • Orchard soil-moisture reading sits at 17 % VWC after a mid-afternoon high of 29 °C.<br/>
@@ -297,7 +297,7 @@ try {
 <!-- ---------- Property work queue ---------- -->
 <!-- ---------- Property work queue ---------- -->
 <div class="task-list">
-  <h3>Task Scheduling – FOTOMACO Orchard</h3>
+  <h3>Task Scheduling - Synthetic Demo Orchard</h3>
   <ul>
     <li>✅ Irrigation (A-1 &amp; A-3) – Completed 04 / 08 / 2025 at 14 : 45</li>
     <li>🔄 Drone Mission #27 – Canopy NDVI &amp; pest hot-spot mapping (<strong>In Progress</strong>)</li>
@@ -309,7 +309,7 @@ try {
 
 <!-- ---------- Property-level work queue ---------- -->
 <div class="task-list">
-  <h3>Task Scheduling – FOTOMACO</h3>
+  <h3>Task Scheduling - Synthetic Demo Farm</h3>
   <ul>
     <li>✅ Irrigation (blocks C-4 &amp; D-1) – Completed 14:45 today</li>
     <li>🔄 Drone pass&nbsp;#27 (stand count &amp; NDVI) – <strong>In Progress</strong></li>

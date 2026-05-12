@@ -71,7 +71,7 @@ try {
     $allFarms = [];
 }
 $farmId   = $_SESSION['farm_id']   ?? null;
-$farmName = $_SESSION['farm_name'] ?? 'Agia Sofia Estate';
+$farmName = $_SESSION['farm_name'] ?? 'Synthetic Demo Farm';
 
 $sensors = $actuators = [];
 if ($farmId) {

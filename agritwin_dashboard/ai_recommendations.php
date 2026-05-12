@@ -25,7 +25,7 @@ try {
 
 // Determine currently selected farm from session
 $farmId   = $_SESSION['farm_id']   ?? null;
-$farmName = $_SESSION['farm_name'] ?? "Agia Sofia Estate";
+$farmName = $_SESSION['farm_name'] ?? "Synthetic Demo Farm";
 
 /*
   2. Load AI recommendations for the selected farm.

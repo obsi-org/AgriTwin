@@ -1,0 +1,8 @@
+AgriTwin
+Copyright 2026 OpenAgri AgriTwin contributors.
+
+This repository contains original AgriTwin prototype code and documentation prepared for open-source publication under the Apache License, Version 2.0.
+
+The repository also references OpenAgri services and may include third-party frontend libraries, icons, images, and 3D/sample assets. Those components remain under their own licences and notices. See THIRD_PARTY_LICENSES.md for the current audit status.
+
+No raw pilot-farm data, operational credentials, private parcel boundaries, TLS material, farm network secrets, or site-specific thresholds are intended for publication in this repository.

@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 // Determine the selected farm from session
 $farmId = $_SESSION['farm_id'] ?? null;
 
-// Example: Suppose farm_id=1 is Agia (Greece), farm_id=2 is Fotovoltaica Macotera (Spain).
+// Example: farm identifiers are synthetic demo records for publication.
 // Adjust these IDs according to your actual `farms` table records.
 if ($farmId == 1) {
     // The Greek property => Go to field1.php

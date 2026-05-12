@@ -35,7 +35,7 @@ Current default values in the prototype:
 host: localhost
 database: agritwin_db
 user: ceres_db_user
-password: db_pass
+password: replace-with-local-password
 ```
 
 Import:
@@ -86,4 +86,3 @@ The app expects a working database. Login credentials depend on imported seed da
 4. Run `make lint` and `make test` before every commit.
 5. Update relevant docs in `docs/architecture`, `docs/operations`, `docs/security`, or `docs/backlog` when changing behavior.
 6. Commit small, auditable changes with messages listed in `docs/backlog/implementation_backlog.md` where applicable.
-

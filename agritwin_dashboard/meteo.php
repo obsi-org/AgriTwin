@@ -10,8 +10,16 @@ if (!isset($_SESSION['user_id'])) {
 // The municipality code for Nava de Sotrobal (Salamanca) is 37219.
 $municipio = '37219';
 
-// Your AEMET API key
-$apiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYkBwZWRyb2JyYW5jby5jb20iLCJqdGkiOiJlNDI3M2ZhMS1kMTNlLTQ2N2YtYjk2ZC04ZWFiMmEyZjY2NWMiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTY2MDMzMTk2NCwidXNlcklkIjoiZTQyNzNmYTEtZDEzZS00NjdmLWI5NmQtOGVhYjJhMmY2NjVjIiwicm9sZSI6IiJ9.OaYo6yz_-kTWdCm2TkyL7Lsvy02eE01lMl6etZbIKWk';
+// AEMET API key must be supplied by the local deployment environment.
+$apiKey = getenv('AGRITWIN_AEMET_API_KEY') ?: '';
+if ($apiKey === '') {
+    header('Content-Type: application/json');
+    echo json_encode([
+        'error' => 'AEMET API key is not configured',
+        'hint' => 'Set AGRITWIN_AEMET_API_KEY locally. Do not commit real keys.',
+    ]);
+    exit;
+}
 
 // Daily forecast endpoint for the municipality
 $endpoint = 'https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/diaria/' . $municipio . '/';

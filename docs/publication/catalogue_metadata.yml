@@ -1,0 +1,61 @@
+name: AgriTwin
+short_description: Agricultural Digital Twin for Intelligent Decision-Making with OpenAgri connectors and mixed edge-cloud operation.
+long_description: >
+  AgriTwin is a local prototype for an agricultural digital twin and advisory
+  decision-support system. It includes a farmer-facing dashboard, OpenAgri
+  integration adapters, mixed edge-cloud sensor buffering, offline/reduced
+  confidence fallback recommendations, KPI instrumentation for cloud-only vs
+  mixed ADS comparison, and engineering documentation derived from the AgriTwin
+  Proposal and D1.
+components:
+  - name: DSS core pipelines
+    description: Canonical data records, advisory/recommendation records, KPI evidence generation, and reporting payload structures.
+  - name: Environmental Digital Twin toolkit
+    description: PHP/Cesium-oriented frontend with synthetic parcel overlays and extension points for EO, sensor, and advisory layers.
+  - name: OpenAgri integration adapters
+    description: Gatekeeper, Weather, Irrigation, Pest and Disease, FarmCalendar, and Reporting Service clients with cache/offline fallback.
+  - name: Deployment artefacts
+    description: Dockerfile, Docker Compose mock profile, Makefile tasks, and environment template.
+  - name: Edge-node firmware/specs
+    description: Edge gateway PHP module, sensor payload schema, durable queue, local OpenAgri cache, sync worker, and fallback inference rules.
+licence: Apache-2.0
+repository_url: https://github.com/openagri-eu/agritwin-placeholder
+documentation_links:
+  - README.md
+  - docs/architecture/agritwin_system_architecture.md
+  - docs/architecture/openagri_integration_architecture.md
+  - docs/architecture/data_model.md
+  - docs/integration/openagri_connectors.md
+  - docs/edge/edge_gateway_runbook.md
+  - docs/edge/sensor_payload_spec.md
+  - docs/evidence/kpi_methodology.md
+  - docs/security/gdpr_and_security.md
+  - docs/operations/local_deployment.md
+deployment_requirements:
+  runtime:
+    - PHP 8.3 or compatible PHP 8.x runtime
+    - PDO MySQL extension for database-backed dashboard pages
+    - MySQL or MariaDB for local demo database
+  optional_services:
+    - Docker and Docker Compose for mock demo
+    - Cesium ion token supplied through environment for live 3D map services
+    - AEMET/OpenAgri credentials supplied through environment for live integrations
+  commands:
+    start_demo: make demo
+    run_tests: make test
+    publication_check: make publication-check
+openagri_dependencies:
+  - OpenAgri GateKeeper
+  - OpenAgri WeatherService
+  - OpenAgri IrrigationManagement
+  - OpenAgri PestAndDiseaseManagement
+  - OpenAgri FarmCalendar
+  - OpenAgri ReportingService
+privacy_limitations:
+  - No raw pilot-farm sensor streams may be published.
+  - No credentials, tokens, TLS certificates, farm network secrets, or operational logs may be published.
+  - No private parcel boundaries, exact asset coordinates, consent records, or site-specific thresholds may be published.
+  - Source PDFs and visual/3D assets require separate redistribution clearance before public release.
+  - Demo fixtures are synthetic and must not be represented as validated pilot evidence.
+maturity: prototype
+contact: replace-with-project-maintainer-contact

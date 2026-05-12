@@ -98,8 +98,8 @@ CREATE TABLE `farms` (
 --
 
 INSERT INTO `farms` (`id`, `farm_name`, `farm_code`, `location`, `country`) VALUES
-(1, 'Fotovoltaica Macotera SL', 'FOTOMACO1', 'Salamanca Region', 'Spain'),
-(2, 'Agia Sofia Estate', 'AGIA', 'Peloponnese Region', 'Greece');
+(1, 'Synthetic Salamanca Demo Farm', 'DEMO_SALAMANCA', 'Salamanca Region', 'Spain'),
+(2, 'Synthetic Mediterranean Demo Farm', 'DEMO_MED', 'Mediterranean Region', 'Spain');
 
 -- --------------------------------------------------------
 
@@ -304,7 +304,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `username`, `password`, `role`, `location`) VALUES
 (1, 'admin', '$2y$10$l5oI7EZQXhX6Ibtxabbdi.Q3gPEvhC.yCs.b/9G.fOfidI/qDPVgq', 'System Administrator', 'Spain'),
-(2, 'Maria Lopes', '$2y$10$EncryptedPw', 'Technician', 'Greece');
+(2, 'demo-technician', '$2y$10$8pS45lBfWnKp2Jr5P3BL5O7jQhf1M.JFzrQj8YGiJ.EZqmsVQEu8G', 'Technician', 'Spain');
 
 --
 -- Indexes for dumped tables

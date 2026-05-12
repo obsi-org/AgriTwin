@@ -1,4 +1,4 @@
-.PHONY: help setup lint test run docs audit test-openagri test-hmi test-kpi test-edge collect-kpis export-kpis compare-ads generate-d1-evidence
+.PHONY: help setup lint test run docs audit test-openagri test-hmi test-kpi test-edge collect-kpis export-kpis compare-ads generate-d1-evidence scan-secrets publication-check demo
 
 PHP_FILES := $(shell find . -name '*.php' -not -path './vendor/*')
 
@@ -15,6 +15,9 @@ help:
 	@echo "  make export-kpis - Export KPI summary to JSON and CSV"
 	@echo "  make compare-ads - Generate cloud-only vs mixed ADS comparison report"
 	@echo "  make generate-d1-evidence - Generate all sample D1 KPI evidence artefacts"
+	@echo "  make scan-secrets - Run conservative publication safety scan"
+	@echo "  make publication-check - Run tests plus publication safety scan"
+	@echo "  make demo   - Start Docker Compose mock demo on http://127.0.0.1:8080"
 	@echo "  make run    - Start PHP built-in server on 127.0.0.1:8080"
 	@echo "  make docs   - List audit and source documentation"
 	@echo "  make audit  - Run lint and show audit documents"
@@ -45,6 +48,14 @@ test-kpi:
 
 test-edge:
 	@php tests/edge_gateway/EdgeGatewayTest.php
+
+scan-secrets:
+	@php scripts/scan-publication-safety.php
+
+publication-check: test scan-secrets
+
+demo:
+	@docker compose --profile mock up --build
 
 collect-kpis:
 	@php scripts/agritwin-kpi.php collect-kpis

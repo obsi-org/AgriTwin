@@ -27,6 +27,20 @@ http://127.0.0.1:8080
 
 The current prototype expects a local database imported from `mysql.sql` and configured through `agritwin_dashboard/db_config.php`. See `docs/operations/local_deployment.md` for details and current limitations.
 
+## Reproducible Mock Demo
+
+Docker Compose mock mode starts the PHP app, MariaDB seeded with synthetic demo data, and the local OpenAgri mock service:
+
+```bash
+make demo
+```
+
+Then open `http://127.0.0.1:8080`. Run all tests and publication safety checks with:
+
+```bash
+make publication-check
+```
+
 ## Documentation Map
 
 - `docs/audit/00_initial_repository_audit.md`: current codebase audit.
@@ -45,16 +59,25 @@ The current prototype expects a local database imported from `mysql.sql` and con
 - `docs/operations/local_deployment.md`: developer setup.
 - `docs/operations/pilot_deployment_runbook.md`: pilot deployment checklist and rollback.
 - `docs/security/gdpr_and_security.md`: GDPR/security engineering baseline.
+- `docs/publication/open_source_publication_checklist.md`: release safety checklist for public publication.
+- `docs/publication/openagri_catalogue_submission.md`: OpenAgri OS Catalogue submission notes.
+- `docs/publication/catalogue_metadata.yml`: draft catalogue metadata.
 - `docs/backlog/implementation_backlog.md`: prioritized implementation backlog.
 - `docs/backlog/proposal_d1_gap_closure_plan.md`: gap-to-action closure plan.
 
-## Licence Note
+## Licence
 
-No project licence file is currently present. Treat the repository as not yet licensed for redistribution until an explicit licence is added by the project owner.
+Original AgriTwin code and documentation in this repository are prepared under Apache-2.0. Third-party services, libraries, source documents, images, and 3D assets remain under their own licences and must be reviewed before public release. See `LICENSE`, `NOTICE`, and `THIRD_PARTY_LICENSES.md`.
 
 ## Security Warning
 
 Do not commit secrets or private pilot-farm data. This includes credentials, tokens, TLS certificates, farm network secrets, operational logs, raw telemetry, private parcel boundaries, asset coordinates, site-specific thresholds, consent records, or identifiable report PDFs.
+
+Run the local publication scan before sharing:
+
+```bash
+make scan-secrets
+```
 
 ## OpenAgri Connector Tests
 

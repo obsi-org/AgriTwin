@@ -1,9 +1,9 @@
 <?php
 // db_config.php
-$host = "localhost";       // Replace with your database host
-$db_name = "agritwin_db";     // Replace with your database name
-$username = "ceres_db_user";     // Replace with your database username
-$password = "db_pass";     // Replace with your database password
+$host = getenv('AGRITWIN_DB_HOST') ?: "localhost";
+$db_name = getenv('AGRITWIN_DB_NAME') ?: "agritwin_db";
+$username = getenv('AGRITWIN_DB_USER') ?: "ceres_db_user";
+$password = getenv('AGRITWIN_DB_PASSWORD') ?: "";
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$db_name;charset=utf8mb4", $username, $password);
