@@ -35,6 +35,8 @@ The current prototype expects a local database imported from `mysql.sql` and con
 - `docs/architecture/openagri_integration_architecture.md`: Gatekeeper, OpenAgri services, FarmCalendar, reporting, and fallback behavior.
 - `docs/architecture/data_model.md`: canonical AgriTwin data records and JSON examples.
 - `docs/integration/openagri_connectors.md`: OpenAgri connector configuration, APIs, cache/offline behavior, and tests.
+- `docs/hmi/hmi_design_notes.md`: farmer HMI journeys, screens, offline behavior, and limitations.
+- `docs/hmi/pilot_user_quick_guide.md`: concise operator guide for the Salamanca pilot.
 - `docs/operations/local_deployment.md`: developer setup.
 - `docs/operations/pilot_deployment_runbook.md`: pilot deployment checklist and rollback.
 - `docs/security/gdpr_and_security.md`: GDPR/security engineering baseline.
