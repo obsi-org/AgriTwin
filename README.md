@@ -35,7 +35,7 @@ Docker Compose mock mode starts the PHP app, MariaDB seeded with synthetic demo 
 make demo
 ```
 
-Then open `http://127.0.0.1:8080`. Run all tests and publication safety checks with:
+Then open `http://127.0.0.1:8080`. If that port is occupied, run with `AGRITWIN_APP_PORT=18081 make demo`. Run all tests and publication safety checks with:
 
 ```bash
 make publication-check
