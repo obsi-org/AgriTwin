@@ -4,7 +4,7 @@ require_once __DIR__ . '/includes/hmi_layout.php';
 $sensors = agritwin_sensors();
 $stations = agritwin_sensor_stations();
 $weatherSource = agritwin_weather_source();
-agritwin_render_page('telemetry', 'Sensor Stations', function () use ($sensors, $stations, $weatherSource): void {
+agritwin_render_page('telemetry', agritwin_t('telemetry'), function () use ($sensors, $stations, $weatherSource): void {
     ?>
     <section class="view-section">
         <div class="section-heading">

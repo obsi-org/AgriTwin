@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/hmi_layout.php';
 
-agritwin_render_page('api', 'API / Swagger', function (): void {
+agritwin_render_page('api', agritwin_t('api'), function (): void {
     ?>
     <section class="view-section">
         <div class="section-heading">

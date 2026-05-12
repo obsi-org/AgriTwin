@@ -5,7 +5,7 @@ $context = agritwin_farm_context();
 $recommendations = agritwin_recommendations();
 $weatherSource = agritwin_weather_source();
 $stations = agritwin_sensor_stations();
-agritwin_render_page('reports', 'Reports / PDF Advisories', function () use ($context, $recommendations, $weatherSource, $stations): void {
+agritwin_render_page('reports', agritwin_t('reports'), function () use ($context, $recommendations, $weatherSource, $stations): void {
     $payload = [
         '@context' => 'https://schema.openagri.local/agritwin-advisory',
         'site' => $context['site'],
@@ -21,7 +21,7 @@ agritwin_render_page('reports', 'Reports / PDF Advisories', function () use ($co
             <h2>Advisory export</h2>
             <button class="primary-action" type="button" onclick="window.print()"><i class="fas fa-print"></i> Print / save PDF</button>
         </div>
-        <p>Report generation uses local demo station data unless a live OpenAgri Reporting Service endpoint is configured and verified. The payload below is safe synthetic data for report validation.</p>
+        <p>Report generation uses local fallback station data unless a live OpenAgri Reporting Service endpoint is configured and verified. The payload below is safe sample data for report validation.</p>
         <pre class="payload-preview"><?= agritwin_h(json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)) ?></pre>
     </section>
     <?php

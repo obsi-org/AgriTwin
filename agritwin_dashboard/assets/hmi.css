@@ -103,6 +103,24 @@ pre:focus-visible {
     font-size: 14px;
 }
 
+.language-form {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.language-form label {
+    font-size: 13px;
+}
+
+.language-form select {
+    min-height: 32px;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+}
+
 .app-shell {
     display: grid;
     grid-template-columns: 260px minmax(0, 1fr);

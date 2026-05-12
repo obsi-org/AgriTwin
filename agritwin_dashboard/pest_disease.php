@@ -3,7 +3,7 @@ require_once __DIR__ . '/includes/hmi_layout.php';
 
 $recommendations = agritwin_recommendations();
 $weatherSource = agritwin_weather_source();
-agritwin_render_page('pest_disease', 'Pest & Disease Alerts', function () use ($recommendations, $weatherSource): void {
+agritwin_render_page('pest_disease', agritwin_t('pest_disease'), function () use ($recommendations, $weatherSource): void {
     ?>
     <section class="view-section">
         <div class="section-heading">

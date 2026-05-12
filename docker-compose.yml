@@ -20,7 +20,7 @@ services:
       DB_DATABASE: agritwin_db
       DB_USERNAME: ceres_db_user
       DB_PASSWORD: agritwin_local_dev_password
-      OPENAGRI_MODE: demo
+      OPENAGRI_MODE: fallback
       OPENAGRI_WEATHER_URL: http://openagri-mock:18080
       OPENAGRI_IRRIGATION_URL: http://openagri-mock:18080
       OPENAGRI_PEST_DISEASE_URL: http://openagri-mock:18080
@@ -28,7 +28,7 @@ services:
       OPENAGRI_REPORTING_URL: http://openagri-mock:18080
       OPENAGRI_GEODATABASE_URL: http://openagri-mock:18080
       AGRITWIN_WEATHER_SOURCE_PREFERENCE: auto
-      AGRITWIN_OPENAGRI_MODE: demo
+      AGRITWIN_OPENAGRI_MODE: fallback
       AGRITWIN_OPENAGRI_WEATHER_URL: http://openagri-mock:18080
       AGRITWIN_OPENAGRI_IRRIGATION_URL: http://openagri-mock:18080
       AGRITWIN_OPENAGRI_PEST_DISEASE_URL: http://openagri-mock:18080

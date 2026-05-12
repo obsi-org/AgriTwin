@@ -5,19 +5,23 @@ require_once __DIR__ . '/hmi_data.php';
 
 function agritwin_nav_items(): array
 {
-    return [
-        'dashboard' => ['href' => 'index.php', 'label' => 'Field Overview', 'icon' => 'fas fa-table-cells-large'],
-        'digital_twin' => ['href' => 'digital_twin.php', 'label' => 'Digital Twin Map', 'icon' => 'fas fa-map-location-dot'],
-        'irrigation' => ['href' => 'irrigation.php', 'label' => 'Irrigation Schedule', 'icon' => 'fas fa-droplet'],
-        'pest_disease' => ['href' => 'pest_disease.php', 'label' => 'Pest & Disease Alerts', 'icon' => 'fas fa-triangle-exclamation'],
-        'telemetry' => ['href' => 'telemetry.php', 'label' => 'Sensor Stations', 'icon' => 'fas fa-tower-broadcast'],
-        'openagri' => ['href' => 'openagri_services.php', 'label' => 'OpenAgri Services', 'icon' => 'fas fa-network-wired'],
-        'calendar' => ['href' => 'farm_calendar.php', 'label' => 'Farm Calendar', 'icon' => 'fas fa-calendar-days'],
-        'reports' => ['href' => 'reports.php', 'label' => 'Reports', 'icon' => 'fas fa-file-pdf'],
-        'kpis' => ['href' => 'kpis.php', 'label' => 'KPI Dashboard', 'icon' => 'fas fa-gauge-high'],
-        'api' => ['href' => 'api_swagger.php', 'label' => 'API / Swagger', 'icon' => 'fas fa-code'],
-        'settings' => ['href' => 'settings.php', 'label' => 'Settings', 'icon' => 'fas fa-gear'],
+    $items = [
+        'dashboard' => ['href' => 'index.php', 'label' => agritwin_t('dashboard'), 'icon' => 'fas fa-table-cells-large'],
+        'digital_twin' => ['href' => 'digital_twin.php', 'label' => agritwin_t('digital_twin'), 'icon' => 'fas fa-map-location-dot'],
+        'irrigation' => ['href' => 'irrigation.php', 'label' => agritwin_t('irrigation'), 'icon' => 'fas fa-droplet'],
+        'pest_disease' => ['href' => 'pest_disease.php', 'label' => agritwin_t('pest_disease'), 'icon' => 'fas fa-triangle-exclamation'],
+        'telemetry' => ['href' => 'telemetry.php', 'label' => agritwin_t('telemetry'), 'icon' => 'fas fa-tower-broadcast'],
+        'openagri' => ['href' => 'openagri_services.php', 'label' => agritwin_t('openagri'), 'icon' => 'fas fa-network-wired'],
+        'calendar' => ['href' => 'farm_calendar.php', 'label' => agritwin_t('calendar'), 'icon' => 'fas fa-calendar-days'],
+        'reports' => ['href' => 'reports.php', 'label' => agritwin_t('reports'), 'icon' => 'fas fa-file-pdf'],
+        'kpis' => ['href' => 'kpis.php', 'label' => agritwin_t('kpis'), 'icon' => 'fas fa-gauge-high'],
+        'api' => ['href' => 'api_swagger.php', 'label' => agritwin_t('api'), 'icon' => 'fas fa-code'],
+        'settings' => ['href' => 'settings.php', 'label' => agritwin_t('settings'), 'icon' => 'fas fa-gear'],
     ];
+    if (agritwin_role_allows('users')) {
+        $items['users'] = ['href' => 'users.php', 'label' => agritwin_t('users'), 'icon' => 'fas fa-users-gear'];
+    }
+    return $items;
 }
 
 function agritwin_render_page(string $active, string $title, callable $content): void
@@ -43,9 +47,17 @@ function agritwin_render_page(string $active, string $title, callable $content):
             <h1><?= agritwin_h($title) ?></h1>
         </div>
         <div class="sync-summary">
-            <span class="confidence-pill confidence-normal">Online</span>
-            <span>Last sync: <?= agritwin_h($context['last_sync']) ?></span>
-            <span>Mode: <?= agritwin_h($context['data_mode']) ?></span>
+            <span class="confidence-pill confidence-normal"><?= agritwin_h(agritwin_t('online')) ?></span>
+            <span><?= agritwin_h(agritwin_t('last_sync')) ?>: <?= agritwin_h($context['last_sync']) ?></span>
+            <span><?= agritwin_h(agritwin_t('mode')) ?>: <?= agritwin_h($context['data_mode']) ?></span>
+            <form class="language-form" method="get">
+                <label for="lang"><?= agritwin_h(agritwin_t('language')) ?></label>
+                <select id="lang" name="lang" onchange="this.form.submit()">
+                    <?php foreach (agritwin_supported_languages() as $code => $language): ?>
+                        <option value="<?= agritwin_h($code) ?>" <?= agritwin_current_language() === $code ? 'selected' : '' ?>><?= agritwin_h($language['flag'] . ' ' . $language['label']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </form>
         </div>
     </header>
     <div class="app-shell">
@@ -58,7 +70,8 @@ function agritwin_render_page(string $active, string $title, callable $content):
                     <i class="<?= agritwin_h($item['icon']) ?>"></i> <?= agritwin_h($item['label']) ?>
                 </a>
             <?php endforeach; ?>
-            <a href="logout.php"><i class="fas fa-right-from-bracket"></i> Logout</a>
+            <a href="user_profile.php"><i class="fas fa-user"></i> <?= agritwin_h(agritwin_t('profile')) ?></a>
+            <a href="logout.php"><i class="fas fa-right-from-bracket"></i> <?= agritwin_h(agritwin_t('logout')) ?></a>
         </nav>
         <main id="main" class="main-panel">
             <?php $content(); ?>
@@ -84,7 +97,7 @@ function agritwin_badge(string $mode): string
 {
     $class = match ($mode) {
         'normal', 'healthy', 'completed', 'live_healthy' => 'confidence-normal',
-        'reduced', 'planned', 'demo_healthy', 'live_fallback' => 'confidence-reduced',
+        'reduced', 'planned', 'local_fallback_active', 'live_fallback' => 'confidence-reduced',
         'stale', 'fallback' => 'confidence-stale',
         default => 'confidence-unavailable',
     };

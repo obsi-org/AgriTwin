@@ -4,7 +4,7 @@ require_once __DIR__ . '/includes/hmi_layout.php';
 $sensors = agritwin_sensors();
 $recommendations = agritwin_recommendations();
 $weatherSource = agritwin_weather_source();
-agritwin_render_page('irrigation', 'Irrigation Schedule', function () use ($sensors, $recommendations, $weatherSource): void {
+agritwin_render_page('irrigation', agritwin_t('irrigation'), function () use ($sensors, $recommendations, $weatherSource): void {
     $soilSensors = array_values(array_filter($sensors, static fn ($sensor): bool => $sensor['parameter'] === 'soil_moisture'));
     ?>
     <section class="view-section">

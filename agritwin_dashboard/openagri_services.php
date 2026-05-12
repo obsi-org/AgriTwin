@@ -3,14 +3,14 @@ require_once __DIR__ . '/includes/hmi_layout.php';
 
 $services = agritwin_service_cards();
 $weatherSource = agritwin_weather_source();
-agritwin_render_page('openagri', 'OpenAgri Services', function () use ($services, $weatherSource): void {
+agritwin_render_page('openagri', agritwin_t('openagri'), function () use ($services, $weatherSource): void {
     ?>
     <section class="view-section">
         <div class="section-heading">
             <h2>Service health and data provenance</h2>
             <?= agritwin_badge($weatherSource['mode'] === 'live' ? 'healthy' : 'reduced') ?>
         </div>
-        <p>AgriTwin only marks a connector as live after a real endpoint request succeeds. Local services are identified as local demo data, fallback, unavailable or not configured.</p>
+        <p>AgriTwin only marks a connector as live after a real endpoint request succeeds. Services without verified connectivity show configuration or fallback states.</p>
         <div class="action-row">
             <a class="secondary-action" href="openagri_services.php"><i class="fas fa-rotate"></i> Run health check</a>
             <a class="secondary-action" href="api_swagger.php"><i class="fas fa-code"></i> API / Swagger</a>
@@ -19,7 +19,7 @@ agritwin_render_page('openagri', 'OpenAgri Services', function () use ($services
         <div class="table-wrap">
             <table class="status-table">
                 <thead>
-                    <tr><th>Service</th><th>Mode</th><th>Status</th><th>Endpoint</th><th>HTTP</th><th>Latency</th><th>Last live check</th><th>Last fallback generation</th><th>Summary</th></tr>
+                    <tr><th><?= agritwin_h(agritwin_t('openagri')) ?></th><th><?= agritwin_h(agritwin_t('mode')) ?></th><th><?= agritwin_h(agritwin_t('status')) ?></th><th><?= agritwin_h(agritwin_t('endpoint')) ?></th><th><?= agritwin_h(agritwin_t('api_docs')) ?></th><th><?= agritwin_h(agritwin_t('authentication')) ?></th><th>HTTP</th><th><?= agritwin_h(agritwin_t('latency')) ?></th><th><?= agritwin_h(agritwin_t('last_success')) ?></th><th><?= agritwin_h(agritwin_t('action')) ?></th></tr>
                 </thead>
                 <tbody>
                 <?php foreach ($services as $service): ?>
@@ -27,12 +27,13 @@ agritwin_render_page('openagri', 'OpenAgri Services', function () use ($services
                         <td><strong><?= agritwin_h($service['name']) ?></strong></td>
                         <td><?= agritwin_h(agritwin_mode_label($service['mode'])) ?></td>
                         <td><?= agritwin_badge($service['status']) ?></td>
-                        <td><?= agritwin_h($service['endpoint']) ?></td>
+                        <td><?= $service['configured'] ? '<a href="' . agritwin_h($service['endpoint']) . '" target="_blank" rel="noopener">' . agritwin_h($service['endpoint']) . '</a>' : agritwin_h(agritwin_t('configuration_required')) ?></td>
+                        <td><?= $service['docs_url'] !== '' ? '<a href="' . agritwin_h($service['docs_url']) . '" target="_blank" rel="noopener">' . agritwin_h(agritwin_t('api_docs')) . '</a>' : '<a href="' . agritwin_h($service['source_repository']) . '" target="_blank" rel="noopener">Source repository</a>' ?></td>
+                        <td><?= agritwin_h($service['auth_type']) ?></td>
                         <td><?= agritwin_h((string) ($service['http_status'] ?? 'n/a')) ?></td>
                         <td><?= $service['latency_ms'] !== null ? agritwin_h((string) $service['latency_ms']) . ' ms' : 'n/a' ?></td>
                         <td><?= agritwin_h((string) ($service['last_successful_live_check'] ?? 'none')) ?></td>
-                        <td><?= agritwin_h((string) ($service['last_mock_fallback_generation'] ?? 'none')) ?></td>
-                        <td><?= agritwin_h($service['error_summary']) ?></td>
+                        <td><a class="secondary-action" href="openagri_services.php?test=<?= agritwin_h($service['key']) ?>"><?= agritwin_h(agritwin_t('test')) ?></a><br><?= agritwin_h($service['error_summary']) ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>

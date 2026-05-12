@@ -1,6 +1,7 @@
 <?php
 // login.php
 session_start();
+require_once __DIR__ . "/agritwin_dashboard/includes/hmi_data.php";
 
 // If user is already logged in, redirect to dashboard
 if (isset($_SESSION['user_id'])) {
@@ -32,17 +33,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!empty($username) && !empty($password)) {
         // Prepare statement to select user
-        $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE username = :username");
+        $stmt = $pdo->prepare("SELECT id, username, password, role, preferred_language, enabled FROM users WHERE username = :username");
         $stmt->bindParam(":username", $username);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user) {
+        if ($user && (int) ($user['enabled'] ?? 1) === 1) {
             // Verify the password using password_verify
             if (password_verify($password, $user['password'])) {
                 // Store user ID in session
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
+                $_SESSION['role'] = $user['role'] ?? 'viewer';
+                $_SESSION['agritwin_lang'] = $user['preferred_language'] ?? agritwin_current_language();
+                $pdo->prepare("UPDATE users SET last_login_at = NOW() WHERE id = :id")->execute(['id' => $user['id']]);
 
                 // Store the chosen farm in session
                 // (You can fetch the farm_name from DB if you want the name in session as well.)
@@ -62,10 +66,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: agritwin_dashboard/index.php");
                 exit();
             } else {
-                $error = "Invalid password.";
+                $error = agritwin_t('password') . " invalid.";
             }
         } else {
-            $error = "User not found.";
+            $error = agritwin_t('username') . " not found or inactive.";
         }
     } else {
         $error = "Please enter both username and password.";
@@ -76,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login - AgriTwin Smart Farming Dashboard</title>
+    <title><?= htmlspecialchars(agritwin_t('login')) ?> - AgriTwin</title>
     <style>
         /* Reset and Body Setup */
         html, body {
@@ -100,6 +104,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background: #4CAF50;
             color: white;
             padding: 10px;
+        }
+        .language-login {
+            display: flex;
+            gap: 8px;
+            align-items: center;
         }
         .top-bar h1 {
             margin: 0;
@@ -194,20 +203,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Top Bar (similar to Dashboard) -->
     <div class="top-bar">
         <h1>AgriTwin - Agricultural Digital Twin for Intelligent Decision-Making</h1>
-        <span>Login Access</span>
+        <form class="language-login" method="get">
+            <label for="lang"><?= htmlspecialchars(agritwin_t('language')) ?></label>
+            <select id="lang" name="lang" onchange="this.form.submit()">
+                <?php foreach (agritwin_supported_languages() as $code => $language): ?>
+                    <option value="<?= htmlspecialchars($code) ?>" <?= agritwin_current_language() === $code ? 'selected' : '' ?>><?= htmlspecialchars($language['flag'] . ' ' . $language['label']) ?></option>
+                <?php endforeach; ?>
+            </select>
+        </form>
     </div>
 
     <!-- Content Wrapper: Centers the Login Box -->
     <div class="content-wrapper">
         <div class="login-container">
-            <h2>AgriTwin Dashboard Login</h2>
+            <h2><?= htmlspecialchars(agritwin_t('login')) ?></h2>
 
             <?php if ($error): ?>
                 <p class="error"><?php echo htmlspecialchars($error); ?></p>
             <?php endif; ?>
 
             <form method="POST" action="index.php">
-                <label for="username">Username:</label>
+                <label for="username"><?= htmlspecialchars(agritwin_t('username')) ?>:</label>
                 <input
                     type="text"
                     name="username"
@@ -216,7 +232,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     autocomplete="off"
                 />
 
-                <label for="password">Password:</label>
+                <label for="password"><?= htmlspecialchars(agritwin_t('password')) ?>:</label>
                 <input
                     type="password"
                     name="password"
@@ -225,7 +241,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 />
 
                 <!-- New: Farm Selection Dropdown -->
-                <label for="farm_id">Select Farm:</label>
+                <label for="farm_id"><?= htmlspecialchars(agritwin_t('select_farm')) ?>:</label>
                 <select name="farm_id" id="farm_id">
                     <?php if (empty($allFarms)): ?>
                         <option value="">No farms found</option>

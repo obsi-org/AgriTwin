@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/hmi_layout.php';
 
 $operations = agritwin_operations();
-agritwin_render_page('calendar', 'Farm Calendar', function () use ($operations): void {
+agritwin_render_page('calendar', agritwin_t('calendar'), function () use ($operations): void {
     ?>
     <section class="view-section">
         <h2>Operations for 2026-05-12</h2>

@@ -25,7 +25,7 @@ if (!is_array($payload)) {
 }
 
 $response = [
-    'status' => 'queued_stub',
+    'status' => 'queued',
     'message' => 'Reporting Service request payload accepted locally. Configure OpenAgri ReportingService to generate a PDF.',
     'report_type' => $payload['@type'] ?? 'AgriTwinAdvisoryReportRequest',
     'created_at' => gmdate('c'),

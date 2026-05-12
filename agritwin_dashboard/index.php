@@ -8,9 +8,9 @@ $services = agritwin_service_cards();
 $weatherSource = agritwin_weather_source();
 $stations = agritwin_sensor_stations();
 
-agritwin_render_page('dashboard', 'Field Overview', function () use ($sensors, $recommendations, $context, $services, $weatherSource, $stations): void {
+agritwin_render_page('dashboard', agritwin_t('dashboard'), function () use ($sensors, $recommendations, $context, $services, $weatherSource, $stations): void {
     $liveServices = count(array_filter($services, static fn ($service): bool => $service['mode'] === 'live' && $service['status'] === 'live_healthy'));
-    $demoServices = count(array_filter($services, static fn ($service): bool => $service['mode'] === 'demo'));
+    $fallbackServices = count(array_filter($services, static fn ($service): bool => $service['mode'] === 'fallback'));
     ?>
     <section class="view-section">
         <div class="section-heading">
@@ -46,8 +46,8 @@ agritwin_render_page('dashboard', 'Field Overview', function () use ($sensors, $
             <article class="priority-card">
                 <?= agritwin_badge($liveServices > 0 ? 'healthy' : 'reduced') ?>
                 <h3>OpenAgri status</h3>
-                <p class="metric"><?= $liveServices ?> live / <?= $demoServices ?> demo</p>
-                <p>Service cards distinguish live checks from local demo data. No local demo service is labelled as live.</p>
+                <p class="metric"><?= $liveServices ?> live / <?= $fallbackServices ?> fallback</p>
+                <p>Service cards distinguish live checks from fallback data. No fallback service is labelled as live.</p>
             </article>
             <article class="priority-card">
                 <?= agritwin_badge(in_array($weatherSource['mode'], ['live', 'fallback'], true) ? 'healthy' : 'reduced') ?>

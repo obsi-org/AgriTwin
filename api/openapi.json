@@ -3,7 +3,7 @@
   "info": {
     "title": "AgriTwin Local Prototype API",
     "version": "0.3.0",
-    "description": "Implemented JSON endpoints for the AgriTwin local operational pilot prototype. Examples use synthetic station data or explicitly labelled live/fallback weather sources and never expose secrets."
+    "description": "Implemented JSON endpoints for the AgriTwin local operational platform. Examples use sample station data or explicitly labelled live/fallback weather sources and never expose secrets."
   },
   "servers": [
     { "url": "/agritwin3", "description": "Local AgriTwin base path" }
@@ -19,6 +19,13 @@
       "get": {
         "summary": "OpenAgri service health and provenance",
         "responses": { "200": { "description": "Connector health records", "content": { "application/json": { "schema": { "type": "object", "properties": { "services": { "type": "array", "items": { "$ref": "#/components/schemas/OpenAgriServiceHealth" } }, "weather_source": { "$ref": "#/components/schemas/WeatherSource" } } } } } } }
+      }
+    },
+    "/api/openagri/services/test": {
+      "post": {
+        "summary": "Test one configured OpenAgri service connection",
+        "parameters": [{ "name": "service", "in": "query", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Connection test result", "content": { "application/json": { "schema": { "type": "object" } } } }, "404": { "description": "Unknown service" } }
       }
     },
     "/api/weather/current": {
@@ -63,6 +70,13 @@
         "responses": { "200": { "description": "KPI records", "content": { "application/json": { "schema": { "type": "object" } } } } }
       }
     },
+    "/api/users": {
+      "get": {
+        "summary": "List users for administrators",
+        "description": "Requires an authenticated administrator session.",
+        "responses": { "200": { "description": "User list", "content": { "application/json": { "schema": { "type": "object" } } } }, "403": { "description": "Administrator role required" } }
+      }
+    },
     "/api/edge/sensor-packets.php": {
       "post": {
         "summary": "Ingest edge sensor packet",
@@ -80,7 +94,7 @@
           "ok": { "type": "boolean" },
           "application": { "type": "string", "example": "AgriTwin" },
           "base_path": { "type": "string", "example": "/agritwin3/" },
-          "data_mode": { "type": "string", "example": "local demo data" }
+          "data_mode": { "type": "string", "example": "Local fallback active" }
         }
       },
       "OpenAgriServiceHealth": {
@@ -89,8 +103,8 @@
           "name": { "type": "string", "example": "OpenAgri Weather Data Service" },
           "endpoint": { "type": "string" },
           "configured": { "type": "boolean" },
-          "mode": { "type": "string", "enum": ["live", "demo", "auto", "fallback", "not_configured"] },
-          "status": { "type": "string", "enum": ["live_healthy", "demo_healthy", "degraded", "unavailable", "unauthenticated", "not_configured"] },
+          "mode": { "type": "string", "enum": ["live", "auto", "fallback", "not_configured"] },
+          "status": { "type": "string", "enum": ["live_healthy", "local_fallback_active", "degraded", "unavailable", "unauthenticated", "not_configured"] },
           "http_status": { "type": "integer", "nullable": true },
           "latency_ms": { "type": "integer", "nullable": true },
           "error_summary": { "type": "string" }

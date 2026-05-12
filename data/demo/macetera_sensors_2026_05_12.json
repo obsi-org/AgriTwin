@@ -3,7 +3,7 @@
   "location": "Macotera, Salamanca, Castilla y Leon, Spain",
   "timezone": "Europe/Madrid",
   "date": "2026-05-12",
-  "data_class": "synthetic local demo station data",
+  "data_class": "sample local fallback station data",
   "stations": [
     {"id": "MAC-ALM-A", "block": "Almond block A", "crop": "Almonds", "readings": {"soil_moisture_vwc_pct": 28.4, "soil_temperature_c": 18.7, "air_temperature_c": 21.6, "relative_humidity_pct": 56, "leaf_wetness_pct": 18, "rainfall_mm": 1.2, "wind_speed_kmh": 14.0, "solar_radiation_w_m2": 690, "irrigation_flow_m3_h": 34.0, "pump_energy_kwh_today": 6.1}},
     {"id": "MAC-ALM-B", "block": "Almond block B", "crop": "Almonds", "readings": {"soil_moisture_vwc_pct": 22.1, "soil_temperature_c": 19.2, "air_temperature_c": 22.4, "relative_humidity_pct": 52, "leaf_wetness_pct": 14, "rainfall_mm": 0.8, "wind_speed_kmh": 16.5, "solar_radiation_w_m2": 715, "irrigation_flow_m3_h": 42.5, "pump_energy_kwh_today": 7.8}},

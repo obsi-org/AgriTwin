@@ -18,6 +18,8 @@ Date: 2026-05-12
 - `GET /agritwin3/api/pest-disease/alerts`
 - `GET /agritwin3/api/farm-calendar/operations`
 - `GET /agritwin3/api/kpis`
+- `GET /agritwin3/api/users`
+- `POST /agritwin3/api/openagri/services/test`
 - `POST /agritwin3/api/edge/sensor-packets.php`
 
 ## Verification
@@ -29,4 +31,4 @@ curl -fsS http://localhost/agritwin3/agritwin_dashboard/api_swagger.php
 
 ## Extension Notes
 
-Add new API endpoints to `api/openapi.json` when adding backend routes. Keep examples synthetic, omit tokens and credentials, and document whether each endpoint returns live, local demo or fallback data.
+Add new API endpoints to `api/openapi.json` when adding backend routes. Keep examples synthetic, omit tokens and credentials, and document whether each endpoint returns live or fallback data.

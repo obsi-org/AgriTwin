@@ -6,6 +6,65 @@ function agritwin_base_path(): string
     return '/agritwin3/agritwin_dashboard/';
 }
 
+function agritwin_supported_languages(): array
+{
+    return [
+        'en' => ['label' => 'English', 'flag' => '🇬🇧'],
+        'pt-PT' => ['label' => 'Português', 'flag' => '🇵🇹'],
+        'es-ES' => ['label' => 'Español', 'flag' => '🇪🇸'],
+    ];
+}
+
+function agritwin_current_language(): string
+{
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        @session_start();
+    }
+    $requested = $_GET['lang'] ?? null;
+    if (is_string($requested) && isset(agritwin_supported_languages()[$requested])) {
+        $_SESSION['agritwin_lang'] = $requested;
+        setcookie('agritwin_lang', $requested, ['expires' => time() + 31536000, 'path' => '/agritwin3/', 'samesite' => 'Lax']);
+        return $requested;
+    }
+    $sessionLang = $_SESSION['agritwin_lang'] ?? null;
+    if (is_string($sessionLang) && isset(agritwin_supported_languages()[$sessionLang])) {
+        return $sessionLang;
+    }
+    $cookieLang = $_COOKIE['agritwin_lang'] ?? null;
+    if (is_string($cookieLang) && isset(agritwin_supported_languages()[$cookieLang])) {
+        return $cookieLang;
+    }
+    $accept = $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '';
+    if (str_starts_with(strtolower($accept), 'pt')) {
+        return 'pt-PT';
+    }
+    if (str_starts_with(strtolower($accept), 'es')) {
+        return 'es-ES';
+    }
+    return 'en';
+}
+
+function agritwin_translations(): array
+{
+    static $translations = null;
+    if ($translations !== null) {
+        return $translations;
+    }
+    $translations = [];
+    foreach (array_keys(agritwin_supported_languages()) as $lang) {
+        $path = dirname(__DIR__) . '/lang/' . $lang . '.php';
+        $translations[$lang] = is_file($path) ? require $path : [];
+    }
+    return $translations;
+}
+
+function agritwin_t(string $key): string
+{
+    $lang = agritwin_current_language();
+    $translations = agritwin_translations();
+    return $translations[$lang][$key] ?? $translations['en'][$key] ?? $key;
+}
+
 function agritwin_demo_date(): DateTimeImmutable
 {
     return new DateTimeImmutable('2026-05-12 10:30:00', new DateTimeZone('Europe/Madrid'));
@@ -23,7 +82,7 @@ function agritwin_farm_context(): array
         'secondary_crops' => ['Pistachios', 'Maize'],
         'timezone' => 'Europe/Madrid',
         'base_path' => '/agritwin3/',
-        'data_mode' => 'local demo data',
+        'data_mode' => 'Local fallback active',
         'last_sync' => agritwin_demo_date()->format(DateTimeInterface::ATOM),
     ];
 }
@@ -104,7 +163,7 @@ function agritwin_sensor_stations(): array
         'timestamp' => $ts,
         'status' => 'healthy',
         'confidence' => 'normal',
-        'source' => 'generated local station dataset',
+        'source' => 'Sample operational dataset',
     ];
     $stations = [
         [
@@ -222,9 +281,9 @@ function agritwin_weather_source(): array
 
     $stationValues = agritwin_weather_from_station();
     return [
-        'label' => 'Weather source: local demo data',
-        'source_name' => 'Local demo fallback',
-        'mode' => 'local demo data',
+        'label' => 'Weather source: Local fallback',
+        'source_name' => 'Local fallback',
+        'mode' => 'local_fallback',
         'status' => 'fallback',
         'timestamp' => $ts,
         'endpoint' => $weather['endpoint'] ?? 'not configured',
@@ -234,7 +293,7 @@ function agritwin_weather_source(): array
         'humidity_pct' => $stationValues['humidity_pct'],
         'wind_kmh' => $stationValues['wind_kmh'],
         'rainfall_mm' => $stationValues['rainfall_mm'],
-        'forecast_summary' => 'Local fallback values from generated station data.',
+        'forecast_summary' => 'Local fallback values from the station dataset.',
     ];
 }
 
@@ -242,7 +301,7 @@ function agritwin_public_weather(): array
 {
     agritwin_load_local_env();
     $preference = strtolower((string) agritwin_hmi_env('AGRITWIN_WEATHER_SOURCE_PREFERENCE', null, 'auto'));
-    if ($preference === 'local_demo') {
+    if ($preference === 'local_fallback') {
         return ['ok' => false, 'error' => 'public_weather_disabled'];
     }
     $context = agritwin_farm_context();
@@ -293,13 +352,13 @@ function agritwin_service_cards(): array
 {
     agritwin_load_local_env();
     $services = [
-        'gatekeeper' => ['name' => 'OpenAgri Gatekeeper / Access Control', 'env' => 'OPENAGRI_GATEKEEPER_URL', 'legacy_env' => 'AGRITWIN_OPENAGRI_GATEKEEPER_URL', 'path' => '/health', 'token_env' => 'OPENAGRI_GATEKEEPER_CLIENT_SECRET', 'legacy_token_env' => 'AGRITWIN_OPENAGRI_GATEKEEPER_ACCESS_TOKEN'],
-        'weather' => ['name' => 'OpenAgri Weather Data Service', 'env' => 'OPENAGRI_WEATHER_URL', 'legacy_env' => 'AGRITWIN_OPENAGRI_WEATHER_URL', 'path' => '/api/data/forecast5?lat=40.9492&lon=-5.6958', 'token_env' => 'OPENAGRI_WEATHER_TOKEN', 'legacy_token_env' => 'AGRITWIN_OPENAGRI_WEATHER_TOKEN'],
-        'irrigation' => ['name' => 'OpenAgri Irrigation Management Service', 'env' => 'OPENAGRI_IRRIGATION_URL', 'legacy_env' => 'AGRITWIN_OPENAGRI_IRRIGATION_URL', 'path' => '/api/irrigation/advisory', 'token_env' => 'OPENAGRI_IRRIGATION_TOKEN', 'legacy_token_env' => 'AGRITWIN_OPENAGRI_IRRIGATION_TOKEN'],
-        'pest_disease' => ['name' => 'OpenAgri Pest & Disease Management Service', 'env' => 'OPENAGRI_PEST_DISEASE_URL', 'legacy_env' => 'AGRITWIN_OPENAGRI_PEST_DISEASE_URL', 'path' => '/api/pest/risk', 'token_env' => 'OPENAGRI_PEST_DISEASE_TOKEN', 'legacy_token_env' => 'AGRITWIN_OPENAGRI_PEST_DISEASE_TOKEN'],
-        'farmcalendar' => ['name' => 'OpenAgri FarmCalendar', 'env' => 'OPENAGRI_FARMCALENDAR_URL', 'legacy_env' => 'AGRITWIN_OPENAGRI_FARMCALENDAR_URL', 'path' => '/api/calendar/operations', 'token_env' => 'OPENAGRI_FARMCALENDAR_TOKEN', 'legacy_token_env' => 'AGRITWIN_OPENAGRI_FARMCALENDAR_TOKEN'],
-        'reporting' => ['name' => 'OpenAgri Reporting Service', 'env' => 'OPENAGRI_REPORTING_URL', 'legacy_env' => 'AGRITWIN_OPENAGRI_REPORTING_URL', 'path' => '/api/reports', 'token_env' => 'OPENAGRI_REPORTING_TOKEN', 'legacy_token_env' => 'AGRITWIN_OPENAGRI_REPORTING_TOKEN'],
-        'geodatabase' => ['name' => 'OpenAgri Geodatabase / OCSM', 'env' => 'OPENAGRI_GEODATABASE_URL', 'legacy_env' => 'AGRITWIN_OPENAGRI_GEODATABASE_URL', 'path' => '/health', 'token_env' => 'OPENAGRI_GEODATABASE_TOKEN', 'legacy_token_env' => 'AGRITWIN_OPENAGRI_GEODATABASE_TOKEN'],
+        'gatekeeper' => ['name' => 'OpenAgri Gatekeeper / Access Control', 'env' => 'OPENAGRI_GATEKEEPER_URL', 'legacy_env' => 'AGRITWIN_OPENAGRI_GATEKEEPER_URL', 'path_env' => 'OPENAGRI_GATEKEEPER_HEALTH_URL', 'docs_env' => 'OPENAGRI_GATEKEEPER_DOCS_URL', 'path' => '/health', 'token_env' => 'OPENAGRI_GATEKEEPER_CLIENT_SECRET', 'legacy_token_env' => 'AGRITWIN_OPENAGRI_GATEKEEPER_ACCESS_TOKEN', 'source_repository' => 'https://github.com/openagri-eu/OpenAgri-GateKeeper'],
+        'weather' => ['name' => 'OpenAgri Weather Data Service', 'env' => 'OPENAGRI_WEATHER_URL', 'legacy_env' => 'AGRITWIN_OPENAGRI_WEATHER_URL', 'path_env' => 'OPENAGRI_WEATHER_HEALTH_URL', 'docs_env' => 'OPENAGRI_WEATHER_DOCS_URL', 'path' => '/api/data/forecast5?lat=40.9492&lon=-5.6958', 'token_env' => 'OPENAGRI_WEATHER_TOKEN', 'legacy_token_env' => 'AGRITWIN_OPENAGRI_WEATHER_TOKEN', 'source_repository' => 'https://github.com/openagri-eu/OpenAgri-WeatherService'],
+        'irrigation' => ['name' => 'OpenAgri Irrigation Management Service', 'env' => 'OPENAGRI_IRRIGATION_URL', 'legacy_env' => 'AGRITWIN_OPENAGRI_IRRIGATION_URL', 'path_env' => 'OPENAGRI_IRRIGATION_HEALTH_URL', 'docs_env' => 'OPENAGRI_IRRIGATION_DOCS_URL', 'path' => '/api/irrigation/advisory', 'token_env' => 'OPENAGRI_IRRIGATION_TOKEN', 'legacy_token_env' => 'AGRITWIN_OPENAGRI_IRRIGATION_TOKEN', 'source_repository' => 'https://github.com/openagri-eu/OpenAgri-IrrigationManagement'],
+        'pest_disease' => ['name' => 'OpenAgri Pest & Disease Management Service', 'env' => 'OPENAGRI_PEST_DISEASE_URL', 'legacy_env' => 'AGRITWIN_OPENAGRI_PEST_DISEASE_URL', 'path_env' => 'OPENAGRI_PEST_DISEASE_HEALTH_URL', 'docs_env' => 'OPENAGRI_PEST_DISEASE_DOCS_URL', 'path' => '/api/pest/risk', 'token_env' => 'OPENAGRI_PEST_DISEASE_TOKEN', 'legacy_token_env' => 'AGRITWIN_OPENAGRI_PEST_DISEASE_TOKEN', 'source_repository' => 'https://github.com/openagri-eu/OpenAgri-PestAndDiseaseManagement'],
+        'farmcalendar' => ['name' => 'OpenAgri FarmCalendar', 'env' => 'OPENAGRI_FARMCALENDAR_URL', 'legacy_env' => 'AGRITWIN_OPENAGRI_FARMCALENDAR_URL', 'path_env' => 'OPENAGRI_FARMCALENDAR_HEALTH_URL', 'docs_env' => 'OPENAGRI_FARMCALENDAR_DOCS_URL', 'path' => '/api/calendar/operations', 'token_env' => 'OPENAGRI_FARMCALENDAR_TOKEN', 'legacy_token_env' => 'AGRITWIN_OPENAGRI_FARMCALENDAR_TOKEN', 'source_repository' => 'https://github.com/openagri-eu/farmcalendar'],
+        'reporting' => ['name' => 'OpenAgri Reporting Service', 'env' => 'OPENAGRI_REPORTING_URL', 'legacy_env' => 'AGRITWIN_OPENAGRI_REPORTING_URL', 'path_env' => 'OPENAGRI_REPORTING_HEALTH_URL', 'docs_env' => 'OPENAGRI_REPORTING_DOCS_URL', 'path' => '/api/reports', 'token_env' => 'OPENAGRI_REPORTING_TOKEN', 'legacy_token_env' => 'AGRITWIN_OPENAGRI_REPORTING_TOKEN', 'source_repository' => 'https://github.com/openagri-eu/OpenAgri-ReportingService'],
+        'geodatabase' => ['name' => 'OpenAgri Geodatabase / OCSM', 'env' => 'OPENAGRI_GEODATABASE_URL', 'legacy_env' => 'AGRITWIN_OPENAGRI_GEODATABASE_URL', 'path_env' => 'OPENAGRI_GEODATABASE_HEALTH_URL', 'docs_env' => 'OPENAGRI_GEODATABASE_DOCS_URL', 'path' => '/health', 'token_env' => 'OPENAGRI_GEODATABASE_TOKEN', 'legacy_token_env' => 'AGRITWIN_OPENAGRI_GEODATABASE_TOKEN', 'source_repository' => 'https://github.com/openagri-eu/'],
     ];
     $cards = [];
     foreach ($services as $key => $service) {
@@ -311,9 +370,11 @@ function agritwin_service_cards(): array
 function agritwin_check_openagri_service(string $key, array $service): array
 {
     $ts = agritwin_demo_date()->format(DateTimeInterface::ATOM);
-    $rawMode = strtolower((string) agritwin_hmi_env('OPENAGRI_MODE', 'AGRITWIN_OPENAGRI_MODE', 'demo'));
-    $mode = $rawMode === 'mock' ? 'demo' : $rawMode;
+    $rawMode = strtolower((string) agritwin_hmi_env('OPENAGRI_MODE', 'AGRITWIN_OPENAGRI_MODE', 'fallback'));
+    $mode = in_array($rawMode, ['demo', 'mock'], true) ? 'fallback' : $rawMode;
     $endpoint = rtrim((string) agritwin_hmi_env($service['env'], $service['legacy_env'] ?? null, ''), '/');
+    $healthPath = (string) agritwin_hmi_env($service['path_env'] ?? '', null, $service['path']);
+    $docsUrl = (string) agritwin_hmi_env($service['docs_env'] ?? '', null, '');
     $token = (string) (agritwin_hmi_env($service['token_env'], $service['legacy_token_env'] ?? null, '') ?: agritwin_hmi_env('AGRITWIN_OPENAGRI_GATEKEEPER_ACCESS_TOKEN', null, ''));
     $isLocal = $endpoint !== '' && (str_contains($endpoint, 'localhost') || str_contains($endpoint, '127.0.0.1') || str_contains($endpoint, 'openagri-mock'));
 
@@ -321,13 +382,17 @@ function agritwin_check_openagri_service(string $key, array $service): array
         'key' => $key,
         'name' => $service['name'],
         'endpoint' => $endpoint !== '' ? $endpoint : 'not configured',
+        'health_path' => $healthPath,
+        'docs_url' => $docsUrl,
+        'source_repository' => $service['source_repository'] ?? '',
+        'auth_type' => $token !== '' ? 'Bearer token / secret from environment' : 'Configuration required',
         'configured' => $endpoint !== '',
         'mode' => 'not_configured',
         'status' => 'not_configured',
         'http_status' => null,
         'latency_ms' => null,
         'last_successful_live_check' => null,
-        'last_mock_fallback_generation' => null,
+        'last_fallback_generation' => null,
         'last_check' => $ts,
         'error_summary' => 'Endpoint is not configured.',
     ];
@@ -336,10 +401,10 @@ function agritwin_check_openagri_service(string $key, array $service): array
         return $base;
     }
 
-    if ($mode === 'demo') {
+    if ($mode === 'fallback') {
         return array_merge($base, [
-            'mode' => 'demo',
-            'status' => 'demo_healthy',
+            'mode' => 'fallback',
+            'status' => 'local_fallback_active',
             'latency_ms' => match ($key) {
                 'gatekeeper' => 32,
                 'weather' => 44,
@@ -349,22 +414,22 @@ function agritwin_check_openagri_service(string $key, array $service): array
                 'geodatabase' => 48,
                 default => 71,
             },
-            'last_mock_fallback_generation' => $ts,
-            'error_summary' => 'Configured for local demo data; no live OpenAgri request was claimed.',
+            'last_fallback_generation' => $ts,
+            'error_summary' => 'Awaiting live service configuration; local fallback is active.',
         ]);
     }
 
     if ($isLocal) {
         return array_merge($base, [
-            'mode' => 'demo',
-            'status' => 'demo_healthy',
+            'mode' => 'fallback',
+            'status' => 'local_fallback_active',
             'latency_ms' => 45,
-            'last_mock_fallback_generation' => $ts,
-            'error_summary' => 'Endpoint points to a local mock service, so it is not treated as live.',
+            'last_fallback_generation' => $ts,
+            'error_summary' => 'Endpoint points to a local fallback service and is not treated as live.',
         ]);
     }
 
-    $url = $endpoint . $service['path'];
+    $url = str_starts_with($healthPath, 'http') ? $healthPath : $endpoint . $healthPath;
     $started = microtime(true);
     $headers = "Accept: application/json\r\n";
     if ($token !== '') {
@@ -409,8 +474,8 @@ function agritwin_check_openagri_service(string $key, array $service): array
         'status' => 'unavailable',
         'http_status' => $status ?: null,
         'latency_ms' => $latency,
-        'last_mock_fallback_generation' => $ts,
-        'error_summary' => $status > 0 ? 'Live endpoint returned HTTP ' . $status . '; local demo data remains active.' : 'Live endpoint could not be reached; local demo data remains active.',
+        'last_fallback_generation' => $ts,
+        'error_summary' => $status > 0 ? 'Live endpoint returned HTTP ' . $status . '; local fallback is active.' : 'Live endpoint could not be reached; local fallback is active.',
     ]);
 }
 
@@ -448,8 +513,8 @@ function agritwin_kpis(): array
 {
     return [
         ['metric' => 'Irrigation schedule latency', 'value' => '38 s', 'status' => 'within D1 target'],
-        ['metric' => 'Water-stress MAE demo', 'value' => '0.002 m3/m3', 'status' => 'synthetic sample'],
-        ['metric' => 'Data continuity', 'value' => '100%', 'status' => 'local demo packets on time'],
+        ['metric' => 'Water-stress MAE sample', 'value' => '0.002 m3/m3', 'status' => 'sample dataset'],
+        ['metric' => 'Data continuity', 'value' => '100%', 'status' => 'fallback packets on time'],
         ['metric' => 'Network use', 'value' => '23.8 MB/h', 'status' => 'mixed edge-cloud sample'],
         ['metric' => 'Forecast-cycle energy', 'value' => '0.009 kWh', 'status' => 'synthetic estimate'],
     ];
@@ -464,11 +529,63 @@ function agritwin_mode_label(string $mode): string
 {
     return match ($mode) {
         'live' => 'Live service',
-        'demo' => 'Demo service',
-        'mock' => 'Local demo data',
+        'demo' => 'Local fallback',
+        'mock' => 'Local fallback',
         'fallback' => 'Fallback data',
         'not_configured' => 'Not configured',
-        'local demo data' => 'Local demo data',
+        'local_fallback' => 'Local fallback',
         default => ucfirst(str_replace('_', ' ', $mode)),
     };
+}
+
+function agritwin_current_user(): ?array
+{
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        @session_start();
+    }
+    if (!isset($_SESSION['user_id'])) {
+        return null;
+    }
+    return [
+        'id' => (int) $_SESSION['user_id'],
+        'username' => (string) ($_SESSION['username'] ?? ''),
+        'role' => (string) ($_SESSION['role'] ?? 'viewer'),
+        'preferred_language' => agritwin_current_language(),
+    ];
+}
+
+function agritwin_role_allows(string $permission): bool
+{
+    $role = strtolower((string) (agritwin_current_user()['role'] ?? 'viewer'));
+    $matrix = [
+        'administrator' => ['users', 'settings', 'api', 'reports', 'operations', 'dashboard'],
+        'technical_manager' => ['settings', 'api', 'reports', 'operations', 'dashboard'],
+        'farm_manager' => ['reports', 'operations', 'dashboard'],
+        'advisor_researcher' => ['api', 'reports', 'dashboard'],
+        'viewer' => ['dashboard'],
+    ];
+    return in_array($permission, $matrix[$role] ?? $matrix['viewer'], true);
+}
+
+function agritwin_csrf_token(): string
+{
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        @session_start();
+    }
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(16));
+    }
+    return $_SESSION['csrf_token'];
+}
+
+function agritwin_require_csrf(): void
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        return;
+    }
+    $token = $_POST['csrf_token'] ?? '';
+    if (!is_string($token) || !hash_equals($_SESSION['csrf_token'] ?? '', $token)) {
+        http_response_code(400);
+        exit('Invalid request token');
+    }
 }
