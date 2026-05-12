@@ -1,0 +1,24 @@
+{
+  "@context": [
+    "https://w3id.org/ocsm/main-context.jsonld"
+  ],
+  "@graph": [
+    {
+      "@type": "IrrigationOperation",
+      "@id": "urn:farmcalendar:IrrigationOperation:demo-1",
+      "title": "Evening drip irrigation",
+      "details": "Synthetic irrigation task",
+      "hasStartDatetime": "2026-05-12T18:00:00Z",
+      "hasAgriParcel": {
+        "@type": "Parcel",
+        "@id": "urn:farmcalendar:Parcel:demo-parcel-1"
+      },
+      "usesAgriculturalMachinery": [
+        {
+          "@id": "urn:farmcalendar:AgriculturalMachine:pump-demo"
+        }
+      ]
+    }
+  ]
+}
+

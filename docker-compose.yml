@@ -1,0 +1,18 @@
+services:
+  openagri-mock:
+    image: php:8.3-cli
+    profiles: ["mock"]
+    working_dir: /app
+    command: php -S 0.0.0.0:18080 tests/fixtures/openagri/mock_router.php
+    ports:
+      - "18080:18080"
+    volumes:
+      - .:/app:ro
+
+  openagri-real-env:
+    image: alpine:3.20
+    profiles: ["real"]
+    command: ["sh", "-c", "env | sort | grep '^AGRITWIN_OPENAGRI_' && sleep infinity"]
+    env_file:
+      - path: .env
+        required: false

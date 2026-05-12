@@ -53,6 +53,10 @@ temp/
 logs/
 *.pid
 *.sock
+var/cache/openagri/*
+var/queue/openagri/*
+!var/cache/openagri/.gitkeep
+!var/queue/openagri/.gitkeep
 
 # OS/editor files
 .DS_Store
@@ -61,4 +65,3 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
-

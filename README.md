@@ -34,6 +34,7 @@ The current prototype expects a local database imported from `mysql.sql` and con
 - `docs/architecture/agritwin_system_architecture.md`: cloud-only and mixed edge-cloud ADS architecture.
 - `docs/architecture/openagri_integration_architecture.md`: Gatekeeper, OpenAgri services, FarmCalendar, reporting, and fallback behavior.
 - `docs/architecture/data_model.md`: canonical AgriTwin data records and JSON examples.
+- `docs/integration/openagri_connectors.md`: OpenAgri connector configuration, APIs, cache/offline behavior, and tests.
 - `docs/operations/local_deployment.md`: developer setup.
 - `docs/operations/pilot_deployment_runbook.md`: pilot deployment checklist and rollback.
 - `docs/security/gdpr_and_security.md`: GDPR/security engineering baseline.
@@ -48,3 +49,12 @@ No project licence file is currently present. Treat the repository as not yet li
 
 Do not commit secrets or private pilot-farm data. This includes credentials, tokens, TLS certificates, farm network secrets, operational logs, raw telemetry, private parcel boundaries, asset coordinates, site-specific thresholds, consent records, or identifiable report PDFs.
 
+## OpenAgri Connector Tests
+
+The OpenAgri integration layer uses mocked local fixtures by default:
+
+```bash
+make test-openagri
+```
+
+For configuration details, see `docs/integration/openagri_connectors.md`.

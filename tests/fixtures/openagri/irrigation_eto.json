@@ -1,0 +1,26 @@
+{
+  "@context": [
+    "https://w3id.org/ocsm/main-context.jsonld"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:openagri:evaporation:calculation:demo-1",
+      "@type": "Observation",
+      "resultTime": "2026-05-12",
+      "hasSimpleResult": "4.8"
+    },
+    {
+      "@id": "urn:openagri:evaporation:calculation:demo-2",
+      "@type": "Observation",
+      "resultTime": "2026-05-13",
+      "hasSimpleResult": "5.1"
+    }
+  ],
+  "kc": 0.72,
+  "water_balance": -12.5,
+  "suggested_schedule": {
+    "start": "2026-05-12T18:00:00Z",
+    "duration_minutes": 35
+  }
+}
+

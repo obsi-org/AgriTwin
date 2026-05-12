@@ -1,4 +1,4 @@
-.PHONY: help setup lint test run docs audit
+.PHONY: help setup lint test run docs audit test-openagri
 
 PHP_FILES := $(shell find . -name '*.php' -not -path './vendor/*')
 
@@ -7,6 +7,7 @@ help:
 	@echo "  make setup  - Show required local services and PHP version"
 	@echo "  make lint   - Run PHP syntax checks"
 	@echo "  make test   - Run available safe checks"
+	@echo "  make test-openagri - Run OpenAgri connector tests with mock service"
 	@echo "  make run    - Start PHP built-in server on 127.0.0.1:8080"
 	@echo "  make docs   - List audit and source documentation"
 	@echo "  make audit  - Run lint and show audit documents"
@@ -19,8 +20,15 @@ setup:
 lint:
 	@set -e; for file in $(PHP_FILES); do php -l "$$file"; done
 
-test: lint
-	@echo "No automated unit/integration test suite is present; see docs/audit/02_test_gap_report.md."
+test: lint test-openagri
+
+test-openagri:
+	@set -e; \
+	php -S 127.0.0.1:18080 tests/fixtures/openagri/mock_router.php >/tmp/agritwin-openagri-mock.log 2>&1 & \
+	pid=$$!; \
+	trap 'kill $$pid >/dev/null 2>&1 || true' EXIT; \
+	sleep 1; \
+	php tests/openagri_connectors/OpenAgriConnectorTest.php
 
 run:
 	@echo "Serving on http://127.0.0.1:8080"
@@ -30,4 +38,3 @@ docs:
 	@find docs -maxdepth 3 -type f | sort
 
 audit: lint docs
-

@@ -1,0 +1,14 @@
+{
+  "models": [
+    {
+      "name": "Almond fungal risk",
+      "eppo_code": "DEMO",
+      "risk_score": 68.5,
+      "risk_class": "High",
+      "confidence": 0.74,
+      "alert_threshold": 65,
+      "date": "2026-05-12"
+    }
+  ]
+}
+
