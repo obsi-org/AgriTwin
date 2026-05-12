@@ -1,4 +1,4 @@
-.PHONY: help setup lint test run docs audit test-openagri test-hmi
+.PHONY: help setup lint test run docs audit test-openagri test-hmi test-kpi collect-kpis export-kpis compare-ads generate-d1-evidence
 
 PHP_FILES := $(shell find . -name '*.php' -not -path './vendor/*')
 
@@ -9,6 +9,11 @@ help:
 	@echo "  make test   - Run available safe checks"
 	@echo "  make test-openagri - Run OpenAgri connector tests with mock service"
 	@echo "  make test-hmi - Run HMI/PWA smoke tests"
+	@echo "  make test-kpi - Run D1 KPI calculation tests"
+	@echo "  make collect-kpis - Seed synthetic KPI events into the local JSONL store"
+	@echo "  make export-kpis - Export KPI summary to JSON and CSV"
+	@echo "  make compare-ads - Generate cloud-only vs mixed ADS comparison report"
+	@echo "  make generate-d1-evidence - Generate all sample D1 KPI evidence artefacts"
 	@echo "  make run    - Start PHP built-in server on 127.0.0.1:8080"
 	@echo "  make docs   - List audit and source documentation"
 	@echo "  make audit  - Run lint and show audit documents"
@@ -21,7 +26,7 @@ setup:
 lint:
 	@set -e; for file in $(PHP_FILES); do php -l "$$file"; done
 
-test: lint test-openagri test-hmi
+test: lint test-openagri test-hmi test-kpi
 
 test-openagri:
 	@set -e; \
@@ -33,6 +38,22 @@ test-openagri:
 
 test-hmi:
 	@php tests/hmi/HmiSmokeTest.php
+
+test-kpi:
+	@php tests/kpi/KpiCalculatorTest.php
+
+collect-kpis:
+	@php scripts/agritwin-kpi.php collect-kpis
+
+export-kpis:
+	@php scripts/agritwin-kpi.php export-kpis --format=json --output=exports/kpi/kpi_summary.json
+	@php scripts/agritwin-kpi.php export-kpis --format=csv --output=exports/kpi/kpi_summary.csv
+
+compare-ads:
+	@php scripts/agritwin-kpi.php compare-ads cloud mixed
+
+generate-d1-evidence:
+	@php scripts/agritwin-kpi.php generate-d1-evidence
 
 run:
 	@echo "Serving on http://127.0.0.1:8080"

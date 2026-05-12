@@ -55,8 +55,12 @@ logs/
 *.sock
 var/cache/openagri/*
 var/queue/openagri/*
+var/kpi/*
+exports/kpi/*
 !var/cache/openagri/.gitkeep
 !var/queue/openagri/.gitkeep
+!var/kpi/.gitkeep
+!exports/kpi/.gitkeep
 
 # OS/editor files
 .DS_Store

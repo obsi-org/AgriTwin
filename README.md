@@ -35,6 +35,9 @@ The current prototype expects a local database imported from `mysql.sql` and con
 - `docs/architecture/openagri_integration_architecture.md`: Gatekeeper, OpenAgri services, FarmCalendar, reporting, and fallback behavior.
 - `docs/architecture/data_model.md`: canonical AgriTwin data records and JSON examples.
 - `docs/integration/openagri_connectors.md`: OpenAgri connector configuration, APIs, cache/offline behavior, and tests.
+- `docs/evidence/kpi_methodology.md`: D1 KPI metric definitions, formulas, collection method, and comparison approach.
+- `docs/evidence/standards_interoperability_switchability.md`: standards, portability, switchability, and hardware reuse evidence model.
+- `docs/evidence/generated/`: generated sample KPI evidence for cloud-only vs mixed edge-cloud ADS comparison.
 - `docs/hmi/hmi_design_notes.md`: farmer HMI journeys, screens, offline behavior, and limitations.
 - `docs/hmi/pilot_user_quick_guide.md`: concise operator guide for the Salamanca pilot.
 - `docs/operations/local_deployment.md`: developer setup.
@@ -60,3 +63,15 @@ make test-openagri
 ```
 
 For configuration details, see `docs/integration/openagri_connectors.md`.
+
+## D1 KPI Evidence
+
+The KPI tooling uses synthetic sample events unless a local approved telemetry store is configured:
+
+```bash
+make test-kpi
+make generate-d1-evidence
+php scripts/agritwin-kpi.php compare-ads cloud mixed
+```
+
+Runtime KPI events are stored in `var/kpi/events.jsonl` and are ignored by git. Generated sample evidence committed under `docs/evidence/generated/` contains no raw pilot-farm data.

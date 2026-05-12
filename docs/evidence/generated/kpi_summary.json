@@ -1,0 +1,102 @@
+{
+    "architecture_mode": "all",
+    "generated_at": "2026-05-12T09:24:35+00:00",
+    "event_count": 27,
+    "irrigation_schedule_latency": {
+        "average_seconds": 65,
+        "minimum_seconds": 38,
+        "maximum_seconds": 92,
+        "samples": 2,
+        "missing_pairs": 0,
+        "definition": "schedule_generated_at minus input_packet_received_at per forecast cycle"
+    },
+    "water_stress_forecast_mae": {
+        "mae_m3_m3": 0.0034999999999999996,
+        "samples": 2,
+        "missing_ground_truth": 0,
+        "definition": "mean absolute error between predicted soil moisture and probe reading"
+    },
+    "nitrogen_recommendation_error": {
+        "mae_kg_ha": 3,
+        "samples": 2,
+        "missing_reference": 0,
+        "definition": "mean absolute error between DSS recommendation and agronomist reference prescription"
+    },
+    "data_continuity_uptime": {
+        "ratio": 0.8333333333333334,
+        "packets_total": 6,
+        "packets_processed_within_30_minutes": 5,
+        "late_packets": 1,
+        "missing_processed_at": 0,
+        "expected_packet_interval_minutes": 15,
+        "definition": "15-minute sensor packets processed within 30 minutes divided by total received packets"
+    },
+    "network_usage": {
+        "bytes_sent": 26948403,
+        "bytes_received": 60607693,
+        "total_mb": 83.5,
+        "mb_per_hour": 41.75,
+        "peak_uplink_mbps": 4.8,
+        "peak_downlink_mbps": 9.2,
+        "by_service": {
+            "openagri": {
+                "bytes_sent": 26948403,
+                "bytes_received": 60607693,
+                "total_mb": 83.5
+            }
+        },
+        "definition": "bytes sent and received per service and architecture mode, normalized to MB/hour where a window exists"
+    },
+    "compute_usage": {
+        "cpu_hours": 0.59,
+        "gpu_hours": 0,
+        "samples": 2,
+        "definition": "measured CPU/GPU hours where available, otherwise duration multiplied by utilization ratio"
+    },
+    "energy_usage": {
+        "forecast_cycle_kwh": 0.026999999999999996,
+        "farming_operation_kwh": 1.6099999999999999,
+        "samples": 4,
+        "sources": [
+            {
+                "system": "synthetic_estimate",
+                "assumption": "device power draw multiplied by processing duration"
+            },
+            {
+                "system": "synthetic_meter",
+                "assumption": "pump meter reading for one irrigation event"
+            },
+            {
+                "system": "synthetic_estimate",
+                "assumption": "device power draw multiplied by processing duration"
+            },
+            {
+                "system": "synthetic_meter",
+                "assumption": "pump meter reading for one irrigation event"
+            }
+        ],
+        "definition": "kWh for forecast processing/transmission and farming operations when meter or estimate data exists"
+    },
+    "standards_interoperability_switchability": {
+        "categories": {
+            "data_formats": [
+                "JSON",
+                "CSV",
+                "Markdown",
+                "JSON-LD/OCSM-compatible payloads"
+            ],
+            "software_modules": [
+                "PHP connectors",
+                "PWA dashboard",
+                "Docker Compose profiles"
+            ],
+            "hardware_modules": [
+                "edge gateway",
+                "soil moisture probes",
+                "pump telemetry adapter"
+            ]
+        },
+        "category_count": 3,
+        "definition": "auditable evidence for standards, interfaces, module replaceability, and hardware reuse"
+    }
+}

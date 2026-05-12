@@ -1,0 +1,271 @@
+[
+    {
+        "event_type": "sensor_packet_received",
+        "architecture_mode": "cloud",
+        "cycle_id": "cloud-cycle-001",
+        "packet_id": "cloud-pkt-001",
+        "packet_created_at": "2026-05-12T07:58:00+00:00",
+        "received_at": "2026-05-12T08:00:00+00:00",
+        "processed_at": "2026-05-12T08:10:00+00:00",
+        "expected_interval_minutes": 15
+    },
+    {
+        "event_type": "sensor_packet_received",
+        "architecture_mode": "cloud",
+        "cycle_id": "cloud-cycle-001",
+        "packet_id": "cloud-pkt-002",
+        "packet_created_at": "2026-05-12T08:15:00+00:00",
+        "received_at": "2026-05-12T08:16:20+00:00",
+        "processed_at": "2026-05-12T08:21:40+00:00",
+        "expected_interval_minutes": 15
+    },
+    {
+        "event_type": "sensor_packet_received",
+        "architecture_mode": "cloud",
+        "cycle_id": "cloud-cycle-001",
+        "packet_id": "cloud-pkt-003",
+        "packet_created_at": "2026-05-12T08:30:00+00:00",
+        "received_at": "2026-05-12T08:33:30+00:00",
+        "processed_at": "2026-05-12T09:05:00+00:00",
+        "expected_interval_minutes": 15
+    },
+    {
+        "event_type": "input_packet_received",
+        "architecture_mode": "cloud",
+        "cycle_id": "cloud-cycle-001",
+        "received_at": "2026-05-12T08:00:00+00:00"
+    },
+    {
+        "event_type": "irrigation_schedule_generated",
+        "architecture_mode": "cloud",
+        "cycle_id": "cloud-cycle-001",
+        "generated_at": "2026-05-12T08:01:32+00:00"
+    },
+    {
+        "event_type": "water_stress_forecast",
+        "architecture_mode": "cloud",
+        "cycle_id": "cloud-cycle-001",
+        "prediction_id": "cloud-water-001",
+        "predicted_soil_moisture_m3_m3": 0.041,
+        "ground_truth_soil_moisture_m3_m3": 0.046,
+        "ground_truth_source": "synthetic_probe_reading"
+    },
+    {
+        "event_type": "nitrogen_recommendation",
+        "architecture_mode": "cloud",
+        "cycle_id": "cloud-cycle-001",
+        "recommendation_id": "cloud-n-001",
+        "recommended_nitrogen_kg_ha": 58,
+        "agronomist_reference_nitrogen_kg_ha": 62,
+        "reference_source": "synthetic_agronomist_prescription"
+    },
+    {
+        "event_type": "network_usage",
+        "architecture_mode": "cloud",
+        "cycle_id": "cloud-cycle-001",
+        "service": "openagri",
+        "window_start": "2026-05-12T08:00:00+00:00",
+        "window_end": "2026-05-12T09:00:00+00:00",
+        "bytes_sent": 19398656,
+        "bytes_received": 43201331,
+        "peak_uplink_mbps": 4.8,
+        "peak_downlink_mbps": 9.2
+    },
+    {
+        "event_type": "compute_usage",
+        "architecture_mode": "cloud",
+        "cycle_id": "cloud-cycle-001",
+        "component": "cloud_dss_worker",
+        "cpu_hours": 0.41,
+        "gpu_hours": 0,
+        "source": {
+            "system": "synthetic_resource_meter"
+        }
+    },
+    {
+        "event_type": "energy_usage",
+        "architecture_mode": "cloud",
+        "cycle_id": "cloud-cycle-001",
+        "scope": "forecast_cycle",
+        "kwh": 0.018,
+        "source": {
+            "system": "synthetic_estimate",
+            "assumption": "device power draw multiplied by processing duration"
+        }
+    },
+    {
+        "event_type": "energy_usage",
+        "architecture_mode": "cloud",
+        "cycle_id": "cloud-cycle-001",
+        "scope": "farming_operation",
+        "operation": "irrigation_pump",
+        "kwh": 0.82,
+        "source": {
+            "system": "synthetic_meter",
+            "assumption": "pump meter reading for one irrigation event"
+        }
+    },
+    {
+        "event_type": "standards_evidence",
+        "architecture_mode": "cloud",
+        "cycle_id": "cloud-cycle-001",
+        "category": "data_formats",
+        "evidence": [
+            "JSON",
+            "CSV",
+            "Markdown",
+            "JSON-LD/OCSM-compatible payloads"
+        ]
+    },
+    {
+        "event_type": "standards_evidence",
+        "architecture_mode": "cloud",
+        "cycle_id": "cloud-cycle-001",
+        "category": "software_modules",
+        "evidence": [
+            "PHP connectors",
+            "PWA dashboard",
+            "Docker Compose profiles"
+        ]
+    },
+    {
+        "event_type": "sensor_packet_received",
+        "architecture_mode": "mixed",
+        "cycle_id": "mixed-cycle-001",
+        "packet_id": "mixed-pkt-001",
+        "packet_created_at": "2026-05-12T08:58:00+00:00",
+        "received_at": "2026-05-12T09:00:00+00:00",
+        "processed_at": "2026-05-12T09:10:00+00:00",
+        "expected_interval_minutes": 15
+    },
+    {
+        "event_type": "sensor_packet_received",
+        "architecture_mode": "mixed",
+        "cycle_id": "mixed-cycle-001",
+        "packet_id": "mixed-pkt-002",
+        "packet_created_at": "2026-05-12T09:15:00+00:00",
+        "received_at": "2026-05-12T09:16:20+00:00",
+        "processed_at": "2026-05-12T09:21:40+00:00",
+        "expected_interval_minutes": 15
+    },
+    {
+        "event_type": "sensor_packet_received",
+        "architecture_mode": "mixed",
+        "cycle_id": "mixed-cycle-001",
+        "packet_id": "mixed-pkt-003",
+        "packet_created_at": "2026-05-12T09:30:00+00:00",
+        "received_at": "2026-05-12T09:33:30+00:00",
+        "processed_at": "2026-05-12T09:41:40+00:00",
+        "expected_interval_minutes": 15
+    },
+    {
+        "event_type": "input_packet_received",
+        "architecture_mode": "mixed",
+        "cycle_id": "mixed-cycle-001",
+        "received_at": "2026-05-12T09:00:00+00:00"
+    },
+    {
+        "event_type": "irrigation_schedule_generated",
+        "architecture_mode": "mixed",
+        "cycle_id": "mixed-cycle-001",
+        "generated_at": "2026-05-12T09:00:38+00:00"
+    },
+    {
+        "event_type": "water_stress_forecast",
+        "architecture_mode": "mixed",
+        "cycle_id": "mixed-cycle-001",
+        "prediction_id": "mixed-water-001",
+        "predicted_soil_moisture_m3_m3": 0.038,
+        "ground_truth_soil_moisture_m3_m3": 0.04,
+        "ground_truth_source": "synthetic_probe_reading"
+    },
+    {
+        "event_type": "nitrogen_recommendation",
+        "architecture_mode": "mixed",
+        "cycle_id": "mixed-cycle-001",
+        "recommendation_id": "mixed-n-001",
+        "recommended_nitrogen_kg_ha": 55,
+        "agronomist_reference_nitrogen_kg_ha": 57,
+        "reference_source": "synthetic_agronomist_prescription"
+    },
+    {
+        "event_type": "network_usage",
+        "architecture_mode": "mixed",
+        "cycle_id": "mixed-cycle-001",
+        "service": "openagri",
+        "window_start": "2026-05-12T09:00:00+00:00",
+        "window_end": "2026-05-12T10:00:00+00:00",
+        "bytes_sent": 7549747,
+        "bytes_received": 17406362,
+        "peak_uplink_mbps": 1.3,
+        "peak_downlink_mbps": 3.1
+    },
+    {
+        "event_type": "compute_usage",
+        "architecture_mode": "mixed",
+        "cycle_id": "mixed-cycle-001",
+        "component": "edge_gateway",
+        "cpu_hours": 0.18,
+        "gpu_hours": 0,
+        "source": {
+            "system": "synthetic_resource_meter"
+        }
+    },
+    {
+        "event_type": "energy_usage",
+        "architecture_mode": "mixed",
+        "cycle_id": "mixed-cycle-001",
+        "scope": "forecast_cycle",
+        "kwh": 0.009,
+        "source": {
+            "system": "synthetic_estimate",
+            "assumption": "device power draw multiplied by processing duration"
+        }
+    },
+    {
+        "event_type": "energy_usage",
+        "architecture_mode": "mixed",
+        "cycle_id": "mixed-cycle-001",
+        "scope": "farming_operation",
+        "operation": "irrigation_pump",
+        "kwh": 0.79,
+        "source": {
+            "system": "synthetic_meter",
+            "assumption": "pump meter reading for one irrigation event"
+        }
+    },
+    {
+        "event_type": "standards_evidence",
+        "architecture_mode": "mixed",
+        "cycle_id": "mixed-cycle-001",
+        "category": "data_formats",
+        "evidence": [
+            "JSON",
+            "CSV",
+            "Markdown",
+            "JSON-LD/OCSM-compatible payloads"
+        ]
+    },
+    {
+        "event_type": "standards_evidence",
+        "architecture_mode": "mixed",
+        "cycle_id": "mixed-cycle-001",
+        "category": "software_modules",
+        "evidence": [
+            "PHP connectors",
+            "PWA dashboard",
+            "Docker Compose profiles"
+        ]
+    },
+    {
+        "event_type": "standards_evidence",
+        "architecture_mode": "mixed",
+        "cycle_id": "mixed-cycle-001",
+        "category": "hardware_modules",
+        "evidence": [
+            "edge gateway",
+            "soil moisture probes",
+            "pump telemetry adapter"
+        ]
+    }
+]

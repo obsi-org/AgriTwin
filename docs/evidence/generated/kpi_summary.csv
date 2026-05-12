@@ -1,0 +1,13 @@
+metric,value,unit,mode
+irrigation_schedule_latency_average,65,seconds,all
+water_stress_mae,0.0035,m3/m3,all
+nitrogen_recommendation_mae,3,kg/ha,all
+data_continuity_uptime_ratio,0.83333333333333,ratio,all
+network_total_mb,83.5,MB,all
+network_mb_per_hour,41.75,MB/hour,all
+network_peak_uplink,4.8,Mbps,all
+network_peak_downlink,9.2,Mbps,all
+compute_cpu_hours,0.59,CPU-hours,all
+compute_gpu_hours,0,GPU-hours,all
+energy_forecast_cycle,0.027,kWh,all
+energy_farming_operation,1.61,kWh,all
