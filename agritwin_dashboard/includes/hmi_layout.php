@@ -10,8 +10,8 @@ function agritwin_nav_items(): array
         'digital_twin' => ['href' => 'digital_twin.php', 'label' => 'Digital Twin Map', 'icon' => 'fas fa-map-location-dot'],
         'irrigation' => ['href' => 'irrigation.php', 'label' => 'Irrigation Schedule', 'icon' => 'fas fa-droplet'],
         'pest_disease' => ['href' => 'pest_disease.php', 'label' => 'Pest & Disease Alerts', 'icon' => 'fas fa-triangle-exclamation'],
-        'telemetry' => ['href' => 'telemetry.php', 'label' => 'Sensor Telemetry', 'icon' => 'fas fa-chart-line'],
-        'openagri' => ['href' => 'openagri_services.php', 'label' => 'OpenAgri Services', 'icon' => 'fas fa-plug-circle-check'],
+        'telemetry' => ['href' => 'telemetry.php', 'label' => 'Sensor Stations', 'icon' => 'fas fa-tower-broadcast'],
+        'openagri' => ['href' => 'openagri_services.php', 'label' => 'OpenAgri Services', 'icon' => 'fas fa-network-wired'],
         'calendar' => ['href' => 'farm_calendar.php', 'label' => 'Farm Calendar', 'icon' => 'fas fa-calendar-days'],
         'reports' => ['href' => 'reports.php', 'label' => 'Reports', 'icon' => 'fas fa-file-pdf'],
         'kpis' => ['href' => 'kpis.php', 'label' => 'KPI Dashboard', 'icon' => 'fas fa-gauge-high'],
@@ -52,8 +52,6 @@ function agritwin_render_page(string $active, string $title, callable $content):
         <nav class="side-nav" aria-label="AgriTwin pages">
             <div class="brand-card">
                 <img src="AgriTwin_logo.png" alt="AgriTwin logo">
-                <strong>AgriTwin</strong>
-                <span>AgriTwin Platform</span>
             </div>
             <?php foreach (agritwin_nav_items() as $key => $item): ?>
                 <a href="<?= agritwin_h($item['href']) ?>" class="<?= $key === $active ? 'active' : '' ?>">
@@ -66,6 +64,7 @@ function agritwin_render_page(string $active, string $title, callable $content):
             <?php $content(); ?>
             <footer class="footer">
                 <div class="footer-logos">
+                    <img src="AgriTwin_logo.png" alt="AgriTwin logo">
                     <img class="footer-logo-partner" src="fotomaco.png" alt="Fotovoltaica Macotera SL logo">
                     <img src="obsidian.png" alt="Obsidian Innovation Institute / OBSIDIAN logo">
                     <img src="OpenAgri.png" alt="OpenAgri logo">
@@ -84,10 +83,10 @@ function agritwin_render_page(string $active, string $title, callable $content):
 function agritwin_badge(string $mode): string
 {
     $class = match ($mode) {
-        'normal', 'healthy', 'completed' => 'confidence-normal',
-        'reduced', 'planned' => 'confidence-reduced',
-        'stale' => 'confidence-stale',
+        'normal', 'healthy', 'completed', 'live_healthy' => 'confidence-normal',
+        'reduced', 'planned', 'demo_healthy', 'live_fallback' => 'confidence-reduced',
+        'stale', 'fallback' => 'confidence-stale',
         default => 'confidence-unavailable',
     };
-    return '<span class="confidence-pill ' . $class . '">' . agritwin_h(ucfirst($mode)) . '</span>';
+    return '<span class="confidence-pill ' . $class . '">' . agritwin_h(ucfirst(str_replace('_', ' ', $mode))) . '</span>';
 }

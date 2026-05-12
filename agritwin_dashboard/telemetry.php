@@ -2,17 +2,31 @@
 require_once __DIR__ . '/includes/hmi_layout.php';
 
 $sensors = agritwin_sensors();
+$stations = agritwin_sensor_stations();
 $weatherSource = agritwin_weather_source();
-agritwin_render_page('telemetry', 'Sensor Telemetry', function () use ($sensors, $weatherSource): void {
+agritwin_render_page('telemetry', 'Sensor Stations', function () use ($sensors, $stations, $weatherSource): void {
     ?>
     <section class="view-section">
         <div class="section-heading">
-            <h2>Macotera multi-sensor table</h2>
+            <h2>Fotovoltaica Macotera SL station overview</h2>
             <?= agritwin_badge('normal') ?>
         </div>
+        <div class="telemetry-grid">
+            <?php foreach ($stations as $station): ?>
+                <article class="telemetry-card">
+                    <span><?= agritwin_h($station['block']) ?></span>
+                    <strong><?= agritwin_h($station['id']) ?></strong>
+                    <p><?= agritwin_h($station['crop']) ?> · <?= agritwin_h($station['timestamp']) ?></p>
+                    <?= agritwin_badge($station['confidence']) ?>
+                </article>
+            <?php endforeach; ?>
+        </div>
+    </section>
+    <section class="view-section">
+        <h2>On-farm telemetry readings</h2>
         <div class="table-wrap">
             <table>
-                <thead><tr><th>Sensor</th><th>Block</th><th>Crop</th><th>Value</th><th>Timestamp</th><th>Status</th></tr></thead>
+                <thead><tr><th>Station / Reading</th><th>Block</th><th>Crop</th><th>Value</th><th>Timestamp</th><th>Status</th></tr></thead>
                 <tbody>
                 <?php foreach ($sensors as $sensor): ?>
                     <tr>
@@ -27,7 +41,7 @@ agritwin_render_page('telemetry', 'Sensor Telemetry', function () use ($sensors,
                 </tbody>
             </table>
         </div>
-        <p class="source-note"><strong><?= agritwin_h($weatherSource['label']) ?>.</strong> Weather station values shown here are part of the synthetic local dataset unless a live source is verified.</p>
+        <p class="source-note"><strong><?= agritwin_h($weatherSource['label']) ?>.</strong> External weather values are shown separately from generated on-farm station readings.</p>
     </section>
     <section class="view-section">
         <h2>Simple telemetry trend</h2>

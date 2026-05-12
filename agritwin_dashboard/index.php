@@ -6,10 +6,11 @@ $recommendations = agritwin_recommendations();
 $context = agritwin_farm_context();
 $services = agritwin_service_cards();
 $weatherSource = agritwin_weather_source();
+$stations = agritwin_sensor_stations();
 
-agritwin_render_page('dashboard', 'Field Overview', function () use ($sensors, $recommendations, $context, $services, $weatherSource): void {
-    $liveServices = count(array_filter($services, static fn ($service): bool => $service['mode'] === 'live' && $service['status'] === 'healthy'));
-    $mockServices = count(array_filter($services, static fn ($service): bool => $service['mode'] === 'mock'));
+agritwin_render_page('dashboard', 'Field Overview', function () use ($sensors, $recommendations, $context, $services, $weatherSource, $stations): void {
+    $liveServices = count(array_filter($services, static fn ($service): bool => $service['mode'] === 'live' && $service['status'] === 'live_healthy'));
+    $demoServices = count(array_filter($services, static fn ($service): bool => $service['mode'] === 'demo'));
     ?>
     <section class="view-section">
         <div class="section-heading">
@@ -45,44 +46,48 @@ agritwin_render_page('dashboard', 'Field Overview', function () use ($sensors, $
             <article class="priority-card">
                 <?= agritwin_badge($liveServices > 0 ? 'healthy' : 'reduced') ?>
                 <h3>OpenAgri status</h3>
-                <p class="metric"><?= $liveServices ?> live / <?= $mockServices ?> local</p>
+                <p class="metric"><?= $liveServices ?> live / <?= $demoServices ?> demo</p>
                 <p>Service cards distinguish live checks from local demo data. No local demo service is labelled as live.</p>
             </article>
             <article class="priority-card">
-                <?= agritwin_badge($weatherSource['mode'] === 'live' ? 'healthy' : 'reduced') ?>
-                <h3>Weather source</h3>
+                <?= agritwin_badge(in_array($weatherSource['mode'], ['live', 'fallback'], true) ? 'healthy' : 'reduced') ?>
+                <h3>External weather service</h3>
                 <p class="metric"><?= agritwin_h(agritwin_mode_label($weatherSource['mode'])) ?></p>
-                <p><?= agritwin_h($weatherSource['reason']) ?></p>
+                <p><?= agritwin_h($weatherSource['source_name'] ?? $weatherSource['label']) ?>: <?= agritwin_h((string) $weatherSource['temperature_c']) ?> degC, <?= agritwin_h((string) $weatherSource['humidity_pct']) ?>% RH, wind <?= agritwin_h((string) $weatherSource['wind_kmh']) ?> km/h, rain <?= agritwin_h((string) $weatherSource['rainfall_mm']) ?> mm.</p>
             </article>
         </div>
     </section>
 
     <section class="view-section">
         <div class="section-heading">
-            <h2>Sensor highlights</h2>
-            <span><?= agritwin_h($context['last_sync']) ?></span>
+            <h2>External weather service</h2>
+            <span><?= agritwin_h($weatherSource['timestamp']) ?></span>
         </div>
+        <p class="source-note"><strong><?= agritwin_h($weatherSource['label']) ?>.</strong> <?= agritwin_h($weatherSource['reason']) ?></p>
         <div class="telemetry-grid">
-            <?php foreach (array_slice($sensors, 0, 8) as $sensor): ?>
-                <article class="telemetry-card">
-                    <span><?= agritwin_h($sensor['block']) ?></span>
-                    <strong><?= agritwin_h((string) $sensor['value']) ?> <?= agritwin_h($sensor['unit']) ?></strong>
-                    <p><strong><?= agritwin_h($sensor['id']) ?></strong><br><?= agritwin_h($sensor['name']) ?></p>
-                    <?= agritwin_badge($sensor['confidence']) ?>
-                </article>
-            <?php endforeach; ?>
+            <article class="telemetry-card"><span>Temperature</span><strong><?= agritwin_h((string) $weatherSource['temperature_c']) ?> degC</strong></article>
+            <article class="telemetry-card"><span>Humidity</span><strong><?= agritwin_h((string) $weatherSource['humidity_pct']) ?>%</strong></article>
+            <article class="telemetry-card"><span>Wind</span><strong><?= agritwin_h((string) $weatherSource['wind_kmh']) ?> km/h</strong></article>
+            <article class="telemetry-card"><span>Precipitation</span><strong><?= agritwin_h((string) $weatherSource['rainfall_mm']) ?> mm</strong></article>
         </div>
+        <p><?= agritwin_h($weatherSource['forecast_summary']) ?></p>
     </section>
 
     <section class="view-section">
-        <h2>Branding and pilot context</h2>
-        <div class="logo-strip">
-            <img src="AgriTwin_logo.png" alt="AgriTwin logo">
-            <img src="fotomaco.png" alt="Fotovoltaica Macotera SL logo">
-            <img src="obsidian.png" alt="Obsidian Innovation Institute / OBSIDIAN logo">
-            <img src="OpenAgri.png" alt="OpenAgri logo">
+        <div class="section-heading">
+            <h2>On-farm sensor stations</h2>
+            <span><?= agritwin_h($context['last_sync']) ?></span>
         </div>
-        <p><?= agritwin_h($context['operator']) ?> · <?= agritwin_h($context['location']) ?> · primary crop: <?= agritwin_h($context['primary_crop']) ?>.</p>
+        <div class="telemetry-grid">
+            <?php foreach ($stations as $station): ?>
+                <article class="telemetry-card">
+                    <span><?= agritwin_h($station['block']) ?></span>
+                    <strong><?= agritwin_h($station['id']) ?></strong>
+                    <p><?= agritwin_h($station['crop']) ?> · <?= count($station['readings']) ?> active readings</p>
+                    <?= agritwin_badge($station['confidence']) ?>
+                </article>
+            <?php endforeach; ?>
+        </div>
     </section>
     <?php
 });

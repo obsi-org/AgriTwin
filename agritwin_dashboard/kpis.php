@@ -2,7 +2,8 @@
 require_once __DIR__ . '/includes/hmi_layout.php';
 
 $kpis = agritwin_kpis();
-agritwin_render_page('kpis', 'KPI Dashboard', function () use ($kpis): void {
+$stations = agritwin_sensor_stations();
+agritwin_render_page('kpis', 'KPI Dashboard', function () use ($kpis, $stations): void {
     ?>
     <section class="view-section">
         <h2>D1 evaluation indicators</h2>
@@ -15,6 +16,7 @@ agritwin_render_page('kpis', 'KPI Dashboard', function () use ($kpis): void {
                 </article>
             <?php endforeach; ?>
         </div>
+        <p class="source-note">KPI demo calculations currently use <?= count($stations) ?> configured sensor stations and synthetic event samples.</p>
     </section>
     <?php
 });

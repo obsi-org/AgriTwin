@@ -29,7 +29,7 @@ agritwin_render_page('settings', 'Settings / Connectivity', function () use ($co
         <div class="service-grid">
             <?php foreach ($services as $service): ?>
                 <article class="service-card">
-                    <?= $service['mode'] === 'mock' ? agritwin_badge('reduced') : agritwin_badge($service['status']) ?>
+                    <?= agritwin_badge($service['status']) ?>
                     <h3><?= agritwin_h($service['name']) ?></h3>
                     <p>Mode: <?= agritwin_h(agritwin_mode_label($service['mode'])) ?></p>
                     <p>Endpoint: <?= agritwin_h($service['endpoint']) ?></p>
@@ -40,9 +40,48 @@ agritwin_render_page('settings', 'Settings / Connectivity', function () use ($co
     </section>
 
     <section class="view-section">
-        <h2>Safe configuration notes</h2>
-        <p>Real credentials must stay in local environment variables or secret stores. The repository contains only local demo placeholders and explicit local-demo service labels.</p>
-        <p>Current local development date for demo data: <?= agritwin_h(agritwin_demo_date()->format('Y-m-d')) ?>.</p>
+        <div class="section-heading">
+            <h2>Environment-managed parameters</h2>
+            <span>Configuration is environment-managed in this local deployment.</span>
+        </div>
+        <form class="settings-form" aria-label="AgriTwin deployment settings">
+            <label>Platform mode
+                <select disabled><option>demo</option><option>live</option><option>auto</option></select>
+            </label>
+            <label>OpenAgri mode
+                <select disabled><option><?= agritwin_h(agritwin_mode_label(strtolower((string) agritwin_hmi_env('OPENAGRI_MODE', 'AGRITWIN_OPENAGRI_MODE', 'demo')))) ?></option></select>
+            </label>
+            <label>Weather source preference
+                <select disabled><option><?= agritwin_h((string) agritwin_hmi_env('AGRITWIN_WEATHER_SOURCE_PREFERENCE', null, 'auto')) ?></option></select>
+            </label>
+            <label>Farm location
+                <input type="text" value="Macotera, Salamanca, Castilla y Leon, Spain" readonly>
+            </label>
+            <label>Latitude
+                <input type="text" value="<?= agritwin_h((string) $context['lat']) ?>" readonly>
+            </label>
+            <label>Longitude
+                <input type="text" value="<?= agritwin_h((string) $context['lon']) ?>" readonly>
+            </label>
+            <label>Sensor station refresh interval
+                <input type="text" value="15 minutes" readonly>
+            </label>
+            <label>OpenAgri health-check interval
+                <input type="text" value="5 minutes" readonly>
+            </label>
+            <label>API base path
+                <input type="text" value="/agritwin3/" readonly>
+            </label>
+            <label>Timezone
+                <input type="text" value="Europe/Madrid" readonly>
+            </label>
+            <label>Data retention / demo-data mode
+                <input type="text" value="Synthetic station data; runtime caches ignored by git" readonly>
+            </label>
+            <label>Report branding
+                <input type="text" value="AgriTwin, Fotovoltaica Macotera SL, OBSIDIAN" readonly>
+            </label>
+        </form>
     </section>
     <?php
 });

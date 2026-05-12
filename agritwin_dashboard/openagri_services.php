@@ -11,6 +11,10 @@ agritwin_render_page('openagri', 'OpenAgri Services', function () use ($services
             <?= agritwin_badge($weatherSource['mode'] === 'live' ? 'healthy' : 'reduced') ?>
         </div>
         <p>AgriTwin only marks a connector as live after a real endpoint request succeeds. Local services are identified as local demo data, fallback, unavailable or not configured.</p>
+        <div class="action-row">
+            <a class="secondary-action" href="openagri_services.php"><i class="fas fa-rotate"></i> Run health check</a>
+            <a class="secondary-action" href="api_swagger.php"><i class="fas fa-code"></i> API / Swagger</a>
+        </div>
         <p class="source-note"><strong><?= agritwin_h($weatherSource['label']) ?>.</strong> <?= agritwin_h($weatherSource['reason']) ?></p>
         <div class="table-wrap">
             <table class="status-table">
@@ -22,7 +26,7 @@ agritwin_render_page('openagri', 'OpenAgri Services', function () use ($services
                     <tr>
                         <td><strong><?= agritwin_h($service['name']) ?></strong></td>
                         <td><?= agritwin_h(agritwin_mode_label($service['mode'])) ?></td>
-                        <td><?= $service['mode'] === 'mock' ? agritwin_badge('reduced') : agritwin_badge($service['status']) ?></td>
+                        <td><?= agritwin_badge($service['status']) ?></td>
                         <td><?= agritwin_h($service['endpoint']) ?></td>
                         <td><?= agritwin_h((string) ($service['http_status'] ?? 'n/a')) ?></td>
                         <td><?= $service['latency_ms'] !== null ? agritwin_h((string) $service['latency_ms']) . ' ms' : 'n/a' ?></td>

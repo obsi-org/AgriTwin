@@ -24,9 +24,11 @@ The AgriTwin sidebar logo is now placed in a white card. Footers consistently in
 
 Follow-up professionalisation reduced the sidebar logo to a balanced size, removed the visible `Pilot HMI` label, and enlarged the Fotovoltaica Macotera SL and OBSIDIAN footer logos for better presentation in local demonstrations.
 
+Final corrections removed duplicate visible sidebar logo text and added the AgriTwin logo to the shared footer.
+
 ## Sidebar Routing
 
-The sidebar no longer uses one-page anchor navigation. It links to separate PHP pages for field overview, Digital Twin, telemetry, irrigation, pest/disease, Farm Calendar, OpenAgri services, reports, KPIs and settings.
+The sidebar no longer uses one-page anchor navigation. It links to separate PHP pages for field overview, Digital Twin, Sensor Stations, irrigation, pest/disease, Farm Calendar, OpenAgri services, reports, KPIs, API / Swagger and settings.
 
 ## GAIA Cleanup
 
@@ -34,11 +36,15 @@ Visible GAIA references in the local HMI were replaced with AgriTwin equivalents
 
 ## Sensor Data Improvements
 
-Added a central synthetic Fotovoltaica Macotera SL / Macotera demo dataset for 2026-05-12 with nine realistic sensor records covering almond blocks, pump flow, PV energy, weather and pistachio reference monitoring.
+Added a central synthetic Fotovoltaica Macotera SL / Macotera demo dataset for 2026-05-12 with five sensor stations covering almond, pistachio and maize blocks plus soil, microclimate, irrigation flow and pump-energy readings.
 
 ## OpenAgri Health Mode
 
-The OpenAgri Services page now distinguishes live, local demo, fallback, unavailable and not-configured connector states. Local mock services are no longer presented as live healthy integrations.
+The OpenAgri Services page now distinguishes live, demo, auto fallback, unavailable, unauthenticated and not-configured connector states. Local demo services are no longer presented as live healthy integrations.
+
+## Weather Source
+
+The dashboard now separates External Weather Service values from On-farm Sensor Stations. OpenAgri Weather is preferred when live-configured and verified; otherwise AgriTwin uses Open-Meteo public forecast as a no-secret live fallback before falling back to local demo station data.
 
 ## Display Name Cleanup
 

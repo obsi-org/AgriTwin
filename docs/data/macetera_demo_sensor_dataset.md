@@ -2,7 +2,7 @@
 
 The AgriTwin HMI uses a synthetic local-demo dataset for 2026-05-12 at the Fotovoltaica Macotera SL Macotera pilot farm in Macotera, Salamanca, Castilla y Leon, Spain.
 
-The canonical fixture is `data/demo/macetera_sensors_2026_05_12.json`; the PHP HMI data provider mirrors the same values in `agritwin_dashboard/includes/hmi_data.php`.
+The canonical fixture is `data/demo/macetera_sensors_2026_05_12.json`; the PHP HMI data provider mirrors the same station values in `agritwin_dashboard/includes/hmi_data.php`.
 
 ## Assumptions
 
@@ -17,17 +17,17 @@ The canonical fixture is `data/demo/macetera_sensors_2026_05_12.json`; the PHP H
 - Rainfall today: 0-4 mm.
 - Pump flow and PV energy values are plausible local-demo values, not measured pilot records.
 
-## Included Sensors
+## Included Stations
 
-- Soil moisture sensor - almond block A: 28.4% VWC.
-- Soil temperature sensor - almond block A: 18.7 degC.
-- Air temperature / humidity station - almond block A: 21.6 degC / 56% RH.
-- Leaf wetness sensor - almond block A: 18%.
-- Soil moisture sensor - almond block B: 22.1% VWC.
-- Irrigation pump flow meter: 42.5 m3/h.
-- PV/energy meter for irrigation pump: 7.8 kWh today.
-- Weather station wind/rainfall sensor: 14 km/h wind, 1.2 mm rainfall today.
-- Pistachio reference soil moisture: 24.8% VWC.
+- MAC-ALM-A: almond block A station with soil, weather, leaf wetness, irrigation flow and pump energy readings.
+- MAC-ALM-B: almond block B station with reduced-confidence water-stress context.
+- MAC-ALM-C: almond block C station with soil and microclimate readings.
+- MAC-PIST-A: pistachio block A station with irrigation flow and pump energy readings.
+- MAC-MAIZE-A: maize block A station with irrigation flow and pump energy readings.
+
+## External Weather
+
+Dashboard weather is not treated as station-only data. AgriTwin first attempts configured OpenAgri Weather live access, then uses the no-secret Open-Meteo public forecast as a truthful live fallback, and only then falls back to local station demo data.
 
 ## Privacy
 

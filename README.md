@@ -58,6 +58,7 @@ make publication-check
 - `docs/architecture/openagri_integration_architecture.md`: Gatekeeper, OpenAgri services, FarmCalendar, reporting, and fallback behavior.
 - `docs/architecture/data_model.md`: canonical AgriTwin data records and JSON examples.
 - `docs/integration/openagri_connectors.md`: OpenAgri connector configuration, APIs, cache/offline behavior, and tests.
+- `docs/integration/openagri_services_configuration.md`: OpenAgri live/demo/auto service-health configuration and weather verification.
 - `docs/edge/edge_gateway_runbook.md`: mixed edge-cloud gateway installation, storage, sync, and troubleshooting.
 - `docs/edge/sensor_payload_spec.md`: canonical sensor packet schema and examples.
 - `docs/evidence/kpi_methodology.md`: D1 KPI metric definitions, formulas, collection method, and comparison approach.
@@ -66,10 +67,12 @@ make publication-check
 - `docs/hmi/hmi_design_notes.md`: farmer HMI journeys, screens, offline behavior, and limitations.
 - `docs/hmi/pilot_user_quick_guide.md`: concise operator guide for the Salamanca pilot.
 - `docs/hmi/hmi_harmonisation_report.md`: final HMI harmonisation, routing, logo/footer, service health, and sensor data notes.
+- `docs/hmi/final_hmi_corrections_report.md`: final dashboard, footer, sidebar, weather, Swagger and settings corrections.
 - `docs/api/swagger_openapi.md`: local API / Swagger catalogue and OpenAPI JSON notes.
 - `docs/audit/openagri_health_truthfulness_report.md`: live-vs-local-demo OpenAgri connector health truthfulness notes.
 - `docs/audit/fotovoltaica_macotera_display_name_cleanup.md`: visible partner display-name cleanup audit.
 - `docs/data/macetera_demo_sensor_dataset.md`: synthetic Fotovoltaica Macotera SL / Macotera sensor dataset used by the local HMI.
+- `docs/data/sensor_stations_macotera.md`: five-station Macotera telemetry model and weather source policy.
 - `docs/operations/local_deployment.md`: developer setup.
 - `docs/operations/pilot_deployment_runbook.md`: pilot deployment checklist and rollback.
 - `docs/security/gdpr_and_security.md`: GDPR/security engineering baseline.
@@ -95,7 +98,7 @@ make scan-secrets
 
 ## OpenAgri Connector Tests
 
-The OpenAgri integration layer uses local demo fixtures by default and does not claim live service health unless `AGRITWIN_OPENAGRI_MODE=live` and a real endpoint request succeeds:
+The OpenAgri integration layer uses local demo fixtures by default and does not claim live service health unless `OPENAGRI_MODE=live` or `OPENAGRI_MODE=auto` and a real endpoint request succeeds:
 
 ```bash
 make test-openagri

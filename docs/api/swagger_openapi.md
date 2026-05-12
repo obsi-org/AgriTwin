@@ -4,16 +4,28 @@ Date: 2026-05-12
 
 ## URLs
 
-- API / Swagger catalogue page: `/agritwin3/agritwin_dashboard/api_swagger.php`
+- Swagger UI: `/agritwin3/agritwin_dashboard/api_swagger.php`
 - OpenAPI JSON: `/agritwin3/api/openapi.json`
 
 ## Endpoints Included
 
-- `GET /agritwin3/api/health.php`
-- `GET /agritwin3/api/openagri-health.php`
-- `GET /agritwin3/api/sensors.php`
-- `GET /agritwin3/api/weather-current.php`
+- `GET /agritwin3/api/health`
+- `GET /agritwin3/api/openagri/services`
+- `GET /agritwin3/api/weather/current`
+- `GET /agritwin3/api/sensor-stations`
+- `GET /agritwin3/api/sensors/readings`
+- `GET /agritwin3/api/irrigation/recommendations`
+- `GET /agritwin3/api/pest-disease/alerts`
+- `GET /agritwin3/api/farm-calendar/operations`
+- `GET /agritwin3/api/kpis`
 - `POST /agritwin3/api/edge/sensor-packets.php`
+
+## Verification
+
+```bash
+curl -fsS http://localhost/agritwin3/api/openapi.json
+curl -fsS http://localhost/agritwin3/agritwin_dashboard/api_swagger.php
+```
 
 ## Extension Notes
 
