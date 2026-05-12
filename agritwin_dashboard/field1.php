@@ -324,7 +324,7 @@ try {
     </div>
     <!-- End of new weather forecast block -->
 
-    <!-- Button for navigating back to GAIA Dashboard -->
+    <!-- Button for navigating back to the AgriTwin Dashboard -->
     <button class="dashboard-button" onclick="window.location.href='index.php'">
         Go to AgriTwin Dashboard
     </button>

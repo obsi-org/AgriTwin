@@ -170,7 +170,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             text-align: center;
             background: #FFFFFF;
             color: #000000;
-            padding: 10px;
+            padding: 16px;
         }
         .logo-section {
             display: flex;
@@ -180,7 +180,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin-bottom: 10px;
         }
         .logo-section img {
-            height: 50px;
+            max-height: 76px;
+            max-width: 180px;
+            object-fit: contain;
         }
     </style>
 </head>
@@ -240,13 +242,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Footer (matches dashboard style) -->
     <div class="footer">
         <div class="logo-section">
-        <img src="AgriTwin_logo.png" alt="agritwin Logo">
-        <img src="obsidian.png" alt="Obsidian Logo">
-        <img src="fotomaco.png" alt="FOTOMACO Logo">
+        <img src="AgriTwin_logo.png" alt="AgriTwin Logo">
+        <img src="fotomaco.png" alt="Fotovoltaica Macotera SL / FOTOMACO Logo">
+        <img src="obsidian.png" alt="Obsidian Innovation Institute / OBSIDIAN Logo">
         <img src="OpenAgri.png" alt="OpenAgri Logo">
         <img src="eufunded.png" alt="EU Funded">
         </div>
-        <p>© 2025 AgriTwin Smart Farming | Powered by OpenAgri</p>
+        <p>© 2026 AgriTwin. All rights reserved.</p>
     </div>
 </body>
 </html>

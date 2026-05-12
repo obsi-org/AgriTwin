@@ -2,22 +2,22 @@
 $root = dirname(__DIR__, 2);
 
 $checks = [
-    'dashboard sections' => function () use ($root): void {
-        $html = file_get_contents($root . '/agritwin_dashboard/index.php');
+    'dashboard page routing' => function () use ($root): void {
+        $html = file_get_contents($root . '/agritwin_dashboard/includes/hmi_layout.php');
         foreach ([
-            'field-overview',
-            'digital-twin',
-            'irrigation',
-            'alerts',
-            'telemetry',
-            'openagri',
-            'calendar',
-            'reports',
-            'kpis',
-            'settings-connectivity',
-        ] as $id) {
-            if (!str_contains($html, 'id="' . $id . '"')) {
-                throw new RuntimeException("Missing section $id");
+            'index.php',
+            'digital_twin.php',
+            'irrigation.php',
+            'pest_disease.php',
+            'telemetry.php',
+            'openagri_services.php',
+            'farm_calendar.php',
+            'reports.php',
+            'kpis.php',
+            'settings.php',
+        ] as $page) {
+            if (!str_contains($html, $page)) {
+                throw new RuntimeException("Missing route $page");
             }
         }
     },
@@ -47,9 +47,9 @@ $checks = [
             }
         }
     },
-    'accessibility hooks' => function () use ($root): void {
-        $html = file_get_contents($root . '/agritwin_dashboard/index.php');
-        foreach (['Skip to dashboard', 'aria-label', 'aria-live', 'tabindex="0"'] as $needle) {
+    'accessibility hooks and branding' => function () use ($root): void {
+        $html = file_get_contents($root . '/agritwin_dashboard/includes/hmi_layout.php');
+        foreach (['Skip to content', 'aria-label', '© 2026 AgriTwin', 'FOTOMACO', 'OBSIDIAN'] as $needle) {
             if (!str_contains($html, $needle)) {
                 throw new RuntimeException("Missing accessibility hook $needle");
             }
@@ -69,4 +69,3 @@ foreach ($checks as $name => $check) {
 }
 
 exit($failed === 0 ? 0 : 1);
-

@@ -1,0 +1,18 @@
+{
+  "site": "FOTOMACO Macotera pilot farm",
+  "location": "Macotera, Salamanca, Castilla y Leon, Spain",
+  "timezone": "Europe/Madrid",
+  "date": "2026-05-12",
+  "data_class": "synthetic local demo",
+  "sensors": [
+    {"id": "MAC-ALM-A-SM-01", "name": "Soil moisture sensor - almond block A", "crop": "Almonds", "block": "Almond block A", "value": 28.4, "unit": "% VWC", "timestamp": "2026-05-12T10:30:00+02:00", "status": "healthy"},
+    {"id": "MAC-ALM-A-ST-01", "name": "Soil temperature sensor - almond block A", "crop": "Almonds", "block": "Almond block A", "value": 18.7, "unit": "degC", "timestamp": "2026-05-12T10:30:00+02:00", "status": "healthy"},
+    {"id": "MAC-ALM-A-MET-01", "name": "Air temperature / humidity station - almond block A", "crop": "Almonds", "block": "Almond block A", "value": 21.6, "unit": "degC / 56% RH", "timestamp": "2026-05-12T10:30:00+02:00", "status": "healthy"},
+    {"id": "MAC-ALM-A-LW-01", "name": "Leaf wetness sensor - almond block A", "crop": "Almonds", "block": "Almond block A", "value": 18.0, "unit": "%", "timestamp": "2026-05-12T10:30:00+02:00", "status": "healthy"},
+    {"id": "MAC-ALM-B-SM-01", "name": "Soil moisture sensor - almond block B", "crop": "Almonds", "block": "Almond block B", "value": 22.1, "unit": "% VWC", "timestamp": "2026-05-12T10:30:00+02:00", "status": "healthy"},
+    {"id": "MAC-PUMP-FLOW-01", "name": "Irrigation pump flow meter", "crop": "Almonds / Pistachios", "block": "Pump house", "value": 42.5, "unit": "m3/h", "timestamp": "2026-05-12T10:30:00+02:00", "status": "healthy"},
+    {"id": "MAC-PV-ENERGY-01", "name": "PV/energy meter for irrigation pump", "crop": "Farm energy", "block": "Pump house", "value": 7.8, "unit": "kWh today", "timestamp": "2026-05-12T10:30:00+02:00", "status": "healthy"},
+    {"id": "MAC-WEATHER-WIND-01", "name": "Weather station wind/rainfall sensor", "crop": "All blocks", "block": "Farm weather mast", "value": 14.0, "unit": "km/h wind, 1.2 mm rain today", "timestamp": "2026-05-12T10:30:00+02:00", "status": "healthy"},
+    {"id": "MAC-PIST-SM-01", "name": "Soil moisture sensor - pistachio reference row", "crop": "Pistachios", "block": "Pistachio reference row", "value": 24.8, "unit": "% VWC", "timestamp": "2026-05-12T10:30:00+02:00", "status": "healthy"}
+  ]
+}

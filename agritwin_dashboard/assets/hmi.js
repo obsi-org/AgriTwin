@@ -127,10 +127,20 @@
     }
 
     function activateCurrentSection() {
-        const links = Array.from(document.querySelectorAll(".side-nav a[href^='#']"));
-        const sections = links
+        const links = Array.from(document.querySelectorAll(".side-nav a"));
+        const pagePath = window.location.pathname.split("/").pop() || "index.php";
+        const anchorLinks = links.filter((link) => (link.getAttribute("href") || "").startsWith("#"));
+        const sections = anchorLinks
             .map((link) => document.querySelector(link.getAttribute("href")))
             .filter(Boolean);
+
+        if (!sections.length) {
+            links.forEach((link) => {
+                const href = link.getAttribute("href") || "";
+                link.classList.toggle("active", !href.startsWith("#") && href.split("/").pop() === pagePath);
+            });
+            return;
+        }
 
         let active = sections[0];
         for (const section of sections) {
@@ -139,7 +149,7 @@
             }
         }
 
-        links.forEach((link) => {
+        anchorLinks.forEach((link) => {
             link.classList.toggle("active", active && link.getAttribute("href") === "#" + active.id);
         });
     }

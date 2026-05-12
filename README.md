@@ -56,6 +56,8 @@ make publication-check
 - `docs/evidence/generated/`: generated sample KPI evidence for cloud-only vs mixed edge-cloud ADS comparison.
 - `docs/hmi/hmi_design_notes.md`: farmer HMI journeys, screens, offline behavior, and limitations.
 - `docs/hmi/pilot_user_quick_guide.md`: concise operator guide for the Salamanca pilot.
+- `docs/hmi/hmi_harmonisation_report.md`: final HMI harmonisation, routing, logo/footer, service health, and sensor data notes.
+- `docs/data/macetera_demo_sensor_dataset.md`: synthetic Macotera/FOTOMACO sensor dataset used by the local HMI.
 - `docs/operations/local_deployment.md`: developer setup.
 - `docs/operations/pilot_deployment_runbook.md`: pilot deployment checklist and rollback.
 - `docs/security/gdpr_and_security.md`: GDPR/security engineering baseline.

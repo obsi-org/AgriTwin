@@ -120,6 +120,34 @@ pre:focus-visible {
     background: var(--green-dark);
 }
 
+.brand-card {
+    display: grid;
+    gap: 8px;
+    justify-items: center;
+    padding: 14px;
+    margin-bottom: 14px;
+    color: var(--ink);
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+.brand-card img {
+    width: min(190px, 100%);
+    height: 104px;
+    object-fit: contain;
+}
+
+.brand-card strong {
+    color: var(--green-dark);
+    font-size: 20px;
+}
+
+.brand-card span {
+    color: var(--muted);
+    font-size: 13px;
+}
+
 .brand-row {
     display: flex;
     gap: 10px;
@@ -130,8 +158,8 @@ pre:focus-visible {
 }
 
 .brand-row img {
-    width: 40px;
-    height: 40px;
+    width: 72px;
+    height: 72px;
     object-fit: contain;
 }
 
@@ -383,15 +411,66 @@ th {
 .footer {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
     align-items: center;
     gap: 12px;
+    max-width: 1180px;
+    padding: 18px;
+    margin: 0 auto;
     color: var(--muted);
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
 }
 
 .footer img {
-    max-height: 34px;
-    max-width: 90px;
+    max-height: 70px;
+    max-width: 170px;
     object-fit: contain;
+}
+
+.footer-logos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+}
+
+.logo-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    align-items: center;
+}
+
+.logo-strip img {
+    max-height: 86px;
+    max-width: 190px;
+    object-fit: contain;
+}
+
+.sensor-map-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 12px;
+}
+
+.sensor-marker-card {
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #f9fbf7;
+}
+
+.sensor-marker-card strong {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.service-card .latency {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--green-dark);
 }
 
 @media (max-width: 860px) {
@@ -417,6 +496,7 @@ th {
     }
 
     .brand-row,
+    .brand-card,
     .farm-switcher {
         grid-column: 1 / -1;
     }
