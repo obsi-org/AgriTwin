@@ -25,7 +25,7 @@ Then open:
 http://127.0.0.1:8080
 ```
 
-The current prototype expects a local database imported from `mysql.sql` and configured through `agritwin_dashboard/db_config.php`. See `docs/operations/local_deployment.md` for details and current limitations.
+The current prototype expects a local database imported from `mysql.sql` and configured through environment variables loaded by `agritwin_dashboard/db_config.php`. See `docs/operations/local_deployment.md` and `docs/operations/database_local_fix.md` for details.
 
 ## Reproducible Mock Demo
 

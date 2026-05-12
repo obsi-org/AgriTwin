@@ -4,16 +4,22 @@ services:
     profiles: ["mock"]
     depends_on:
       db:
-        condition: service_started
+        condition: service_healthy
       openagri-mock:
         condition: service_started
     ports:
       - "${AGRITWIN_APP_PORT:-8080}:80"
     environment:
       AGRITWIN_DB_HOST: db
+      AGRITWIN_DB_PORT: 3306
       AGRITWIN_DB_NAME: agritwin_db
-      AGRITWIN_DB_USER: agritwin
-      AGRITWIN_DB_PASSWORD: agritwin_demo_password
+      AGRITWIN_DB_USER: ceres_db_user
+      AGRITWIN_DB_PASSWORD: agritwin_local_dev_password
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: agritwin_db
+      DB_USERNAME: ceres_db_user
+      DB_PASSWORD: agritwin_local_dev_password
       AGRITWIN_OPENAGRI_MODE: mock
       AGRITWIN_OPENAGRI_WEATHER_URL: http://openagri-mock:18080
       AGRITWIN_OPENAGRI_IRRIGATION_URL: http://openagri-mock:18080
@@ -28,10 +34,16 @@ services:
     profiles: ["mock"]
     environment:
       MYSQL_DATABASE: agritwin_db
-      MYSQL_USER: agritwin
-      MYSQL_PASSWORD: agritwin_demo_password
+      MYSQL_USER: ceres_db_user
+      MYSQL_PASSWORD: agritwin_local_dev_password
       MYSQL_ROOT_PASSWORD: agritwin_demo_root_password
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p\"$${MYSQL_ROOT_PASSWORD}\" --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
     volumes:
+      - ./docker/mysql/init/00-agritwin-user.sql:/docker-entrypoint-initdb.d/00-agritwin-user.sql:ro
       - ./mysql.sql:/docker-entrypoint-initdb.d/001_seed.sql:ro
 
   openagri-mock:

@@ -27,15 +27,16 @@ docs/source/AgriTwin_D1_20260124.pdf
 
 ## Database Setup
 
-Create a local database and user matching `agritwin_dashboard/db_config.php`, or update that local file with developer-only values.
+Create a local database and user matching `agritwin_dashboard/db_config.php`, or set local environment values in `.env`. Do not edit tracked PHP files for credentials.
 
 Current default values in the prototype:
 
 ```text
 host: localhost
+port: 3306
 database: agritwin_db
 user: ceres_db_user
-password: replace-with-local-password
+password: agritwin_local_dev_password
 ```
 
 Import:
@@ -44,7 +45,7 @@ Import:
 mysql -u ceres_db_user -p agritwin_db < mysql.sql
 ```
 
-Do not commit local credential changes. The backlog includes moving this configuration to environment variables.
+If the local user is missing or has a different password, apply `docker/mysql/init/00-agritwin-user.sql` as a privileged local MySQL administrator. See `docs/operations/database_local_fix.md`.
 
 ## Run Checks
 
@@ -71,12 +72,10 @@ The app expects a working database. Login credentials depend on imported seed da
 
 ## Known Local Limitations
 
-- The Dockerfile only copies root `index.php`; it does not run the full dashboard.
-- There is no `docker-compose.yml` for PHP plus MySQL.
-- OpenAgri connectors are not implemented yet.
-- Edge gateway, offline PWA, and reporting services are not implemented yet.
+- Live OpenAgri credentials and pilot endpoints are not committed; mock mode is the default local path.
+- PDF generation still depends on a live or mocked Reporting Service.
 - `field.php` references missing `field2.php` and `field3.php`.
-- Hard-coded credentials/tokens exist and must be removed before shared deployment.
+- Production secret management, backups, and hardening remain deployment tasks.
 
 ## Recommended Developer Workflow
 
