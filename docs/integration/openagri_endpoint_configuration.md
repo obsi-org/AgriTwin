@@ -11,6 +11,22 @@
 
 Use environment variables such as `OPENAGRI_WEATHER_URL`, `OPENAGRI_WEATHER_HEALTH_URL` and `OPENAGRI_WEATHER_DOCS_URL`. Credentials such as `OPENAGRI_GATEKEEPER_CLIENT_SECRET` must remain outside git.
 
+For local development, `scripts/openagri/generate_openagri_local_env.sh` writes `config/openagri.local.env` and appends the same OpenAgri URL block to the ignored local `.env` file. A safe committed template is available at `config/openagri.local.env.example`.
+
+Discovered local URLs:
+
+| Service | Base URL | Health URL/path | Docs URL |
+| --- | --- | --- | --- |
+| Gatekeeper | `http://127.0.0.1:18091` | `/` | `http://127.0.0.1:18091/` |
+| Weather Service | `http://127.0.0.1:18092` | `/docs` | `http://127.0.0.1:18092/docs` |
+| Irrigation Management | `http://127.0.0.1:18093` | `/docs` | `http://127.0.0.1:18093/docs` |
+| Pest and Disease Management | `http://127.0.0.1:18094` | `/docs` | `http://127.0.0.1:18094/docs` |
+| FarmCalendar | `http://127.0.0.1:18095` | `/api/v1/` | `http://127.0.0.1:18095/api/v1/` |
+| Reporting Service | `http://127.0.0.1:18096` | `/docs` | `http://127.0.0.1:18096/docs` |
+| Geodatabase / OCSM | Configuration required | Configuration required | Configuration required |
+
+The Weather Service data URL is configured separately as `OPENAGRI_WEATHER_DATA_URL=/api/data/weather/?lat=40.9492&lon=-5.6958`. That endpoint can require authentication and upstream provider credentials; do not treat documentation availability as proof of live weather data.
+
 Local upstream checkouts are created under ignored path `external/openagri/` by:
 
 ```bash
@@ -23,7 +39,7 @@ The local AgriTwin compose overlay `docker-compose.openagri.yml` maps AgriTwin t
 docker compose -f docker-compose.yml -f docker-compose.openagri.yml config
 ```
 
-`scripts/openagri/start_openagri_services.sh` validates upstream compose files by default. It only starts third-party containers when `OPENAGRI_RUN_CONTAINERS=1` is set, because several official service stacks require local `.env` files and external provider credentials.
+`scripts/openagri/start_openagri_services.sh` validates upstream compose files by default. It starts the generated local runtime when `OPENAGRI_RUN_CONTAINERS=1` is set. External weather-provider credentials still must be supplied outside git when live upstream weather observations are required.
 
 ## Connection States
 

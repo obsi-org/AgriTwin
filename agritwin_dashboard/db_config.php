@@ -22,8 +22,15 @@ try {
         $password !== '' ? 'yes' : 'no',
         $e->getMessage()
     ));
-    echo "Connection failed: " . $e->getMessage();
-    exit();
+    $pdo = null;
+    $agritwin_db_error = sprintf(
+        'Database unavailable for host=%s port=%s database=%s user=%s password_configured=%s',
+        $host,
+        $port,
+        $db_name,
+        $username,
+        $password !== '' ? 'yes' : 'no'
+    );
 }
 
 function agritwin_env(array $names, string $default): string

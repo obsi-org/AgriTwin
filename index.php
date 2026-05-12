@@ -18,6 +18,9 @@ require_once __DIR__ . "/db_init.php";
 
 // 1. Fetch the list of farms for the dropdown
 try {
+    if (!isset($pdo) || !($pdo instanceof PDO)) {
+        throw new RuntimeException($agritwin_db_error ?? 'Database unavailable');
+    }
     $stmt = $pdo->query("SELECT id, farm_name FROM farms ORDER BY farm_name ASC");
     $allFarms = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
@@ -31,7 +34,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'] ?? "";
     $selectedFarmId = $_POST['farm_id'] ?? ""; // Capture selected farm from the form
 
-    if (!empty($username) && !empty($password)) {
+    if (!isset($pdo) || !($pdo instanceof PDO)) {
+        $error = agritwin_t('db_status') . ': ' . agritwin_t('unavailable');
+    } elseif (!empty($username) && !empty($password)) {
         // Prepare statement to select user
         $stmt = $pdo->prepare("SELECT id, username, password, role, preferred_language, enabled FROM users WHERE username = :username");
         $stmt->bindParam(":username", $username);

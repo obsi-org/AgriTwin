@@ -2,6 +2,37 @@
 
 Date: 2026-05-12
 
+## Runtime Automation Update
+
+`scripts/openagri/generate_openagri_local_env.sh` now creates the safe local runtime configuration needed to start the cloned OpenAgri services without committing credentials. Generated files are intentionally untracked:
+
+- `external/openagri/bootstrap-deployment/.env`
+- `external/openagri/gatekeeper/.env`
+- `external/openagri/gatekeeper/mysql_docker/.env`
+- `external/openagri/weather-service/.env`
+- `external/openagri/irrigation-management/.env`
+- `external/openagri/pest-disease-management/.env`
+- `external/openagri/farmcalendar/.env`
+- `external/openagri/reporting-service/.env`
+- `external/openagri/runtime/docker-compose.generated.yml`
+- `config/openagri.local.env`
+
+The generated runtime compose starts stable local service endpoints on ports `18091` through `18096` and does not remove Docker volumes.
+
+Latest local health result:
+
+| Service | Local URL | Health/docs URL | Result |
+| --- | --- | --- | --- |
+| Gatekeeper | `http://127.0.0.1:18091` | `http://127.0.0.1:18091/` | Available, HTTP 200 |
+| Weather Service | `http://127.0.0.1:18092` | `http://127.0.0.1:18092/docs` | Available, HTTP 200; weather data endpoint still requires authentication/provider configuration |
+| Irrigation Management | `http://127.0.0.1:18093` | `http://127.0.0.1:18093/docs` | Available, HTTP 200 after applying a local ignored import patch to the cloned upstream checkout |
+| Pest and Disease Management | `http://127.0.0.1:18094` | `http://127.0.0.1:18094/docs` | Available, HTTP 200 |
+| FarmCalendar | `http://127.0.0.1:18095` | `http://127.0.0.1:18095/api/v1/` | Available, HTTP 200 |
+| Reporting Service | `http://127.0.0.1:18096` | `http://127.0.0.1:18096/docs` | Available, HTTP 200 |
+| Geodatabase / OCSM | Not configured | Not configured | Configuration required |
+
+Weather note: the OpenAgri Weather application is running locally, but `/api/data/weather/` returns authentication required without a valid token and upstream weather-provider credentials. AgriTwin therefore must not present OpenAgri weather observations as live data until those credentials are supplied; it can still show the service process as available.
+
 Upstream OpenAgri repositories were cloned into `external/openagri/` by `scripts/openagri/setup_openagri_services.sh`. That folder is intentionally ignored by git so AgriTwin remains self-contained without vendoring third-party service source.
 
 | Service | Repository | Commit | Docker assets found | Start status |

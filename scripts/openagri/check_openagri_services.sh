@@ -3,10 +3,17 @@ set -u
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 ENV_FILE="${ROOT_DIR}/.env"
+LOCAL_OPENAGRI_ENV="${ROOT_DIR}/config/openagri.local.env"
 if [[ -f "${ENV_FILE}" ]]; then
   set -a
   # shellcheck disable=SC1090
   source "${ENV_FILE}"
+  set +a
+fi
+if [[ -f "${LOCAL_OPENAGRI_ENV}" ]]; then
+  set -a
+  # shellcheck disable=SC1090
+  source "${LOCAL_OPENAGRI_ENV}"
   set +a
 fi
 

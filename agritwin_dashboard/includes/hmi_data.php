@@ -109,21 +109,23 @@ function agritwin_load_local_env(): void
         return;
     }
     $loaded = true;
-    $path = dirname(__DIR__, 2) . '/.env';
-    if (!is_file($path) || !is_readable($path)) {
-        return;
-    }
-    foreach (file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [] as $line) {
-        $line = trim($line);
-        if ($line === '' || str_starts_with($line, '#') || !str_contains($line, '=')) {
+    $root = dirname(__DIR__, 2);
+    foreach ([$root . '/.env', $root . '/config/openagri.local.env'] as $path) {
+        if (!is_file($path) || !is_readable($path)) {
             continue;
         }
-        [$key, $value] = explode('=', $line, 2);
-        $key = trim($key);
-        $value = trim($value, " \t\n\r\0\x0B\"'");
-        if ($key !== '' && getenv($key) === false) {
-            putenv($key . '=' . $value);
-            $_ENV[$key] = $value;
+        foreach (file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [] as $line) {
+            $line = trim($line);
+            if ($line === '' || str_starts_with($line, '#') || !str_contains($line, '=')) {
+                continue;
+            }
+            [$key, $value] = explode('=', $line, 2);
+            $key = trim($key);
+            $value = trim($value, " \t\n\r\0\x0B\"'");
+            if ($key !== '' && (getenv($key) === false || str_starts_with($path, $root . '/config/'))) {
+                putenv($key . '=' . $value);
+                $_ENV[$key] = $value;
+            }
         }
     }
 }
@@ -242,22 +244,24 @@ function agritwin_weather_source(): array
     $ts = agritwin_demo_date()->format(DateTimeInterface::ATOM);
     $weather = agritwin_service_cards()['weather'] ?? null;
     if ($weather !== null && $weather['mode'] === 'live' && $weather['status'] === 'live_healthy') {
-        $stationValues = agritwin_weather_from_station();
-        return [
-            'label' => 'OpenAgri Weather Data Service - live',
-            'source_name' => 'OpenAgri Weather Data Service',
-            'mode' => 'live',
-            'status' => 'healthy',
-            'timestamp' => $weather['last_successful_live_check'] ?? $ts,
-            'endpoint' => $weather['endpoint'],
-            'latency_ms' => $weather['latency_ms'],
-            'reason' => agritwin_t('weather_live_reason'),
-            'temperature_c' => $stationValues['temperature_c'],
-            'humidity_pct' => $stationValues['humidity_pct'],
-            'wind_kmh' => $stationValues['wind_kmh'],
-            'rainfall_mm' => $stationValues['rainfall_mm'],
-            'forecast_summary' => agritwin_t('weather_live_summary'),
-        ];
+        $openAgriWeather = agritwin_openagri_weather_data($weather);
+        if ($openAgriWeather['ok']) {
+            return [
+                'label' => 'OpenAgri Weather Data Service - live',
+                'source_name' => 'OpenAgri Weather Data Service',
+                'mode' => 'live',
+                'status' => 'healthy',
+                'timestamp' => $openAgriWeather['timestamp'],
+                'endpoint' => $openAgriWeather['endpoint'],
+                'latency_ms' => $openAgriWeather['latency_ms'],
+                'reason' => agritwin_t('weather_live_reason'),
+                'temperature_c' => $openAgriWeather['temperature_c'],
+                'humidity_pct' => $openAgriWeather['humidity_pct'],
+                'wind_kmh' => $openAgriWeather['wind_kmh'],
+                'rainfall_mm' => $openAgriWeather['rainfall_mm'],
+                'forecast_summary' => agritwin_t('weather_live_summary'),
+            ];
+        }
     }
 
     $public = agritwin_public_weather();
@@ -294,6 +298,50 @@ function agritwin_weather_source(): array
         'wind_kmh' => $stationValues['wind_kmh'],
         'rainfall_mm' => $stationValues['rainfall_mm'],
         'forecast_summary' => agritwin_t('local_weather_summary'),
+    ];
+}
+
+function agritwin_openagri_weather_data(array $weather): array
+{
+    agritwin_load_local_env();
+    $context = agritwin_farm_context();
+    $dataPath = (string) agritwin_hmi_env('OPENAGRI_WEATHER_DATA_URL', null, '/api/data/weather/?lat=40.9492&lon=-5.6958');
+    if ($dataPath === '') {
+        return ['ok' => false, 'error' => 'Configuration required'];
+    }
+    $url = str_starts_with($dataPath, 'http') ? $dataPath : rtrim((string) $weather['endpoint'], '/') . $dataPath;
+    if (!str_contains($url, 'lat=')) {
+        $url .= (str_contains($url, '?') ? '&' : '?') . sprintf('lat=%.4F&lon=%.4F', $context['lat'], $context['lon']);
+    }
+    $token = (string) (agritwin_hmi_env('OPENAGRI_WEATHER_TOKEN', 'AGRITWIN_OPENAGRI_WEATHER_TOKEN', '') ?: '');
+    $headers = "Accept: application/json\r\n";
+    if ($token !== '') {
+        $headers .= "Authorization: Bearer " . $token . "\r\n";
+    }
+    $started = microtime(true);
+    $raw = @file_get_contents($url, false, stream_context_create(['http' => ['timeout' => 5, 'ignore_errors' => true, 'header' => $headers]]));
+    $latency = (int) round((microtime(true) - $started) * 1000);
+    $status = agritwin_http_status($http_response_header ?? []);
+    $data = is_string($raw) ? json_decode($raw, true) : null;
+    if ($status < 200 || $status >= 300 || !is_array($data)) {
+        return ['ok' => false, 'error' => $status === 401 || $status === 403 ? 'Credentials required' : 'Connection unavailable'];
+    }
+    $temperature = $data['temperature'] ?? $data['temperature_2m'] ?? $data['temp'] ?? $data['main']['temp'] ?? null;
+    $humidity = $data['humidity'] ?? $data['relative_humidity'] ?? $data['relative_humidity_2m'] ?? $data['main']['humidity'] ?? null;
+    $wind = $data['wind_speed'] ?? $data['wind_speed_10m'] ?? $data['wind']['speed'] ?? null;
+    $rain = $data['rainfall'] ?? $data['precipitation'] ?? $data['rain']['1h'] ?? 0;
+    if ($temperature === null || $humidity === null || $wind === null) {
+        return ['ok' => false, 'error' => 'Invalid response'];
+    }
+    return [
+        'ok' => true,
+        'endpoint' => preg_replace('/([?&](appid|api_key|token|key)=)[^&]+/i', '$1redacted', $url),
+        'latency_ms' => $latency,
+        'timestamp' => (string) ($data['timestamp'] ?? $data['time'] ?? gmdate(DateTimeInterface::ATOM)),
+        'temperature_c' => (float) $temperature,
+        'humidity_pct' => (int) $humidity,
+        'wind_kmh' => (float) $wind,
+        'rainfall_mm' => (float) $rain,
     ];
 }
 

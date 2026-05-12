@@ -5,8 +5,7 @@
  */
 
 if (!isset($pdo) || !($pdo instanceof PDO)) {
-    // If $pdo not present, try to include config.
-    require_once __DIR__ . '/ceres_dashboard/db_config.php';
+    return;
 }
 
 /**
@@ -120,7 +119,9 @@ function ensureSchemaAndSeed_min(PDO $pdo): void
 }
 
 try {
-    ensureSchemaAndSeed_min($pdo);
+    if (isset($pdo) && $pdo instanceof PDO) {
+        ensureSchemaAndSeed_min($pdo);
+    }
 } catch (Throwable $e) {
     // rollback is automatic on exception if using InnoDB
     file_put_contents('php://stderr', 'DB init error: ' . $e->getMessage());

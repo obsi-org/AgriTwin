@@ -3,6 +3,12 @@ set -u
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 TARGET_DIR="${ROOT_DIR}/external/openagri"
+GENERATED_COMPOSE="${TARGET_DIR}/runtime/docker-compose.generated.yml"
+
+if [[ -f "${GENERATED_COMPOSE}" ]]; then
+  echo "[stop] generated local OpenAgri runtime"
+  docker compose -f "${GENERATED_COMPOSE}" down --remove-orphans || true
+fi
 
 if [[ -d "${TARGET_DIR}" ]]; then
   for repo in "${TARGET_DIR}"/*; do

@@ -3,6 +3,7 @@ set -u
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 TARGET_DIR="${ROOT_DIR}/external/openagri"
+GENERATED_COMPOSE="${TARGET_DIR}/runtime/docker-compose.generated.yml"
 RUN_CONTAINERS="${OPENAGRI_RUN_CONTAINERS:-0}"
 
 if [[ ! -d "${TARGET_DIR}" ]]; then
@@ -10,12 +11,18 @@ if [[ ! -d "${TARGET_DIR}" ]]; then
   exit 0
 fi
 
+"${ROOT_DIR}/scripts/openagri/generate_openagri_local_env.sh"
+
 start_repo() {
   local repo_dir="$1"
   local name
   name="$(basename "${repo_dir}")"
   local compose_file
-  compose_file="$(find "${repo_dir}" -maxdepth 3 \( -name 'docker-compose*.yml' -o -name 'compose*.yml' \) -print | head -n 1)"
+  if [[ "${name}" == "weather-service" && "$(uname -m)" != "aarch64" ]]; then
+    compose_file="$(find "${repo_dir}" -maxdepth 3 -name 'docker-compose-x86_64.yml' -print | head -n 1)"
+  else
+    compose_file="$(find "${repo_dir}" -maxdepth 3 \( -name 'docker-compose*.yml' -o -name 'compose*.yml' \) -print | head -n 1)"
+  fi
   if [[ -z "${compose_file}" ]]; then
     echo "[start] ${name}: no Docker Compose file found"
     return 0
@@ -36,10 +43,24 @@ start_repo() {
   fi
 }
 
-for repo in "${TARGET_DIR}"/*; do
-  [[ -d "${repo}" ]] || continue
-  start_repo "${repo}"
-done
+if [[ "${OPENAGRI_VALIDATE_UPSTREAM_COMPOSE:-1}" == "1" ]]; then
+  for repo in "${TARGET_DIR}"/*; do
+    [[ -d "${repo}" ]] || continue
+    [[ "$(basename "${repo}")" == "runtime" ]] && continue
+    start_repo "${repo}"
+  done
+fi
+
+if [[ -f "${GENERATED_COMPOSE}" ]]; then
+  echo "[start] validating generated local runtime compose"
+  docker compose -f "${GENERATED_COMPOSE}" config >/tmp/agritwin-openagri-generated.config
+  if [[ "${RUN_CONTAINERS}" == "1" ]]; then
+    echo "[start] starting generated local OpenAgri runtime"
+    docker compose -f "${GENERATED_COMPOSE}" up -d --build || true
+  else
+    echo "[start] generated runtime validated; set OPENAGRI_RUN_CONTAINERS=1 to start containers"
+  fi
+fi
 
 echo "[start] AgriTwin compose overlay validation"
 docker compose -f "${ROOT_DIR}/docker-compose.yml" -f "${ROOT_DIR}/docker-compose.openagri.yml" config >/tmp/agritwin-openagri-overlay.config

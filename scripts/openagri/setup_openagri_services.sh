@@ -55,3 +55,5 @@ clone_or_update "reporting-service" "https://github.com/openagri-eu/reporting-se
 
 echo "[setup] checkout inventory: ${TARGET_DIR}/openagri_checkout_inventory.txt"
 cat "${TARGET_DIR}/openagri_checkout_inventory.txt"
+
+"${ROOT_DIR}/scripts/openagri/generate_openagri_local_env.sh"
