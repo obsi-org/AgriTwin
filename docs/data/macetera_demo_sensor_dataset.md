@@ -1,6 +1,6 @@
 # Macotera Demo Sensor Dataset
 
-The AgriTwin HMI uses a synthetic local-demo dataset for 2026-05-12 at the FOTOMACO Macotera pilot farm in Macotera, Salamanca, Castilla y Leon, Spain.
+The AgriTwin HMI uses a synthetic local-demo dataset for 2026-05-12 at the Fotovoltaica Macotera SL Macotera pilot farm in Macotera, Salamanca, Castilla y Leon, Spain.
 
 The canonical fixture is `data/demo/macetera_sensors_2026_05_12.json`; the PHP HMI data provider mirrors the same values in `agritwin_dashboard/includes/hmi_data.php`.
 

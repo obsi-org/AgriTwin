@@ -14,6 +14,7 @@ $checks = [
             'farm_calendar.php',
             'reports.php',
             'kpis.php',
+            'api_swagger.php',
             'settings.php',
         ] as $page) {
             if (!str_contains($html, $page)) {
@@ -49,7 +50,7 @@ $checks = [
     },
     'accessibility hooks and branding' => function () use ($root): void {
         $html = file_get_contents($root . '/agritwin_dashboard/includes/hmi_layout.php');
-        foreach (['Skip to content', 'aria-label', '© 2026 AgriTwin', 'FOTOMACO', 'OBSIDIAN'] as $needle) {
+        foreach (['Skip to content', 'aria-label', '© 2026 AgriTwin', 'Fotovoltaica Macotera SL', 'OBSIDIAN'] as $needle) {
             if (!str_contains($html, $needle)) {
                 throw new RuntimeException("Missing accessibility hook $needle");
             }

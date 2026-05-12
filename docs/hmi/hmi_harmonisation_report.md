@@ -20,7 +20,9 @@ Added a shared plain-PHP HMI layout under `agritwin_dashboard/includes/`. It pro
 
 ## Logo and Footer Changes
 
-The AgriTwin sidebar logo is now placed in a white card and rendered substantially larger. Footers consistently include FOTOMACO, OBSIDIAN, OpenAgri and EU acknowledgement logos with `© 2026 AgriTwin. All rights reserved.`
+The AgriTwin sidebar logo is now placed in a white card. Footers consistently include Fotovoltaica Macotera SL, OBSIDIAN, OpenAgri and EU acknowledgement logos with `© 2026 AgriTwin. All rights reserved.`
+
+Follow-up professionalisation reduced the sidebar logo to a balanced size, removed the visible `Pilot HMI` label, and enlarged the Fotovoltaica Macotera SL and OBSIDIAN footer logos for better presentation in local demonstrations.
 
 ## Sidebar Routing
 
@@ -32,11 +34,15 @@ Visible GAIA references in the local HMI were replaced with AgriTwin equivalents
 
 ## Sensor Data Improvements
 
-Added a central synthetic Macotera/FOTOMACO demo dataset for 2026-05-12 with nine realistic sensor records covering almond blocks, pump flow, PV energy, weather and pistachio reference monitoring.
+Added a central synthetic Fotovoltaica Macotera SL / Macotera demo dataset for 2026-05-12 with nine realistic sensor records covering almond blocks, pump flow, PV energy, weather and pistachio reference monitoring.
 
 ## OpenAgri Health Mode
 
-The OpenAgri Services page shows all required services as healthy in local demo/mock mode with realistic latency values and timestamps. This does not fake production status; it is labelled local demo/mock.
+The OpenAgri Services page now distinguishes live, local demo, fallback, unavailable and not-configured connector states. Local mock services are no longer presented as live healthy integrations.
+
+## Display Name Cleanup
+
+Visible shorthand names such as `FOTOMACO` were replaced with `Fotovoltaica Macotera SL` in the active UI. Technical filenames and asset paths such as `fotomaco.png` were retained because changing them would break existing references.
 
 ## Verification
 

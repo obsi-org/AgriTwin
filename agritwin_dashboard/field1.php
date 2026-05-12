@@ -257,7 +257,7 @@ try {
     <div id="logoContainer">
         <img src="AgriTwin_logo.png" alt="agritwin Logo">
         <img src="obsidian.png" alt="Obsidian Logo">
-        <img src="fotomaco.png" alt="FOTOMACO Logo">
+        <img src="fotomaco.png" alt="Fotovoltaica Macotera SL Logo">
         <img src="OpenAgri.png" alt="OpenAgri Logo">
         <img src="eufunded.png" alt="EU Funded">
     </div>
@@ -268,7 +268,7 @@ try {
 
 <!-- Right sidebar for sensor data, AI insights, tasks, button -->
 <div id="sidebar">
-    <h2>FOTOMACO - Field Monitoring</h2>
+    <h2>Fotovoltaica Macotera SL - Field Monitoring</h2>
 
 <div class="sensor-data">
   <h3>Local Weather Station (Nava de Sotrobal) – 15 : 00&nbsp;Today</h3>

@@ -1,0 +1,177 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AgriTwin Local Prototype API",
+    "version": "0.2.0",
+    "description": "Local API catalogue for the AgriTwin operational pilot prototype. Examples use synthetic demo data and do not expose credentials or private pilot-farm data."
+  },
+  "servers": [
+    {
+      "url": "/agritwin3",
+      "description": "Local AgriTwin base path"
+    }
+  ],
+  "paths": {
+    "/api/health.php": {
+      "get": {
+        "summary": "Application health",
+        "responses": {
+          "200": {
+            "description": "Application status",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HealthStatus" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/openagri-health.php": {
+      "get": {
+        "summary": "OpenAgri connector health and provenance",
+        "responses": {
+          "200": {
+            "description": "Connector health records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "services": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/OpenAgriServiceHealth" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sensors.php": {
+      "get": {
+        "summary": "Synthetic Macotera sensor inventory and latest readings",
+        "responses": {
+          "200": {
+            "description": "Sensor records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sensors": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/SensorRecord" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/weather-current.php": {
+      "get": {
+        "summary": "Current weather provenance and local demo weather values",
+        "responses": {
+          "200": {
+            "description": "Weather source status and values",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WeatherStatus" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/edge/sensor-packets.php": {
+      "post": {
+        "summary": "Ingest edge sensor packet",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SensorPacket" }
+            }
+          }
+        },
+        "responses": {
+          "202": { "description": "Packet accepted" },
+          "409": { "description": "Duplicate packet" },
+          "422": { "description": "Invalid packet" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HealthStatus": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "application": { "type": "string", "example": "AgriTwin" },
+          "base_path": { "type": "string", "example": "/agritwin3/" },
+          "data_mode": { "type": "string", "example": "local demo data" }
+        }
+      },
+      "OpenAgriServiceHealth": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "endpoint": { "type": "string" },
+          "configured": { "type": "boolean" },
+          "mode": { "type": "string", "enum": ["live", "mock", "fallback", "not_configured"] },
+          "status": { "type": "string", "enum": ["healthy", "degraded", "unavailable", "unauthenticated", "unknown"] },
+          "http_status": { "type": "integer", "nullable": true },
+          "latency_ms": { "type": "integer", "nullable": true },
+          "error_summary": { "type": "string" }
+        }
+      },
+      "SensorRecord": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "MAC-ALM-A-SM-01" },
+          "name": { "type": "string" },
+          "block": { "type": "string" },
+          "crop": { "type": "string" },
+          "value": { "type": "number" },
+          "unit": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" },
+          "confidence": { "type": "string" }
+        }
+      },
+      "WeatherStatus": {
+        "type": "object",
+        "properties": {
+          "source": { "type": "object" },
+          "values": { "type": "object" }
+        }
+      },
+      "SensorPacket": {
+        "type": "object",
+        "required": ["gateway_id", "packet_id", "created_at", "measurements"],
+        "properties": {
+          "gateway_id": { "type": "string" },
+          "packet_id": { "type": "string" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "measurements": {
+            "type": "array",
+            "items": { "type": "object" }
+          }
+        }
+      }
+    }
+  }
+}

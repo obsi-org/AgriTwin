@@ -25,6 +25,15 @@ Then open:
 http://127.0.0.1:8080
 ```
 
+Dashboard URLs under the Apache deployment path are:
+
+```text
+http://localhost/agritwin3/
+http://localhost/agritwin3/agritwin_dashboard/index.php
+http://localhost/agritwin3/agritwin_dashboard/api_swagger.php
+http://localhost/agritwin3/api/openapi.json
+```
+
 The current prototype expects a local database imported from `mysql.sql` and configured through environment variables loaded by `agritwin_dashboard/db_config.php`. See `docs/operations/local_deployment.md` and `docs/operations/database_local_fix.md` for details.
 
 ## Reproducible Mock Demo
@@ -57,7 +66,10 @@ make publication-check
 - `docs/hmi/hmi_design_notes.md`: farmer HMI journeys, screens, offline behavior, and limitations.
 - `docs/hmi/pilot_user_quick_guide.md`: concise operator guide for the Salamanca pilot.
 - `docs/hmi/hmi_harmonisation_report.md`: final HMI harmonisation, routing, logo/footer, service health, and sensor data notes.
-- `docs/data/macetera_demo_sensor_dataset.md`: synthetic Macotera/FOTOMACO sensor dataset used by the local HMI.
+- `docs/api/swagger_openapi.md`: local API / Swagger catalogue and OpenAPI JSON notes.
+- `docs/audit/openagri_health_truthfulness_report.md`: live-vs-local-demo OpenAgri connector health truthfulness notes.
+- `docs/audit/fotovoltaica_macotera_display_name_cleanup.md`: visible partner display-name cleanup audit.
+- `docs/data/macetera_demo_sensor_dataset.md`: synthetic Fotovoltaica Macotera SL / Macotera sensor dataset used by the local HMI.
 - `docs/operations/local_deployment.md`: developer setup.
 - `docs/operations/pilot_deployment_runbook.md`: pilot deployment checklist and rollback.
 - `docs/security/gdpr_and_security.md`: GDPR/security engineering baseline.
@@ -83,7 +95,7 @@ make scan-secrets
 
 ## OpenAgri Connector Tests
 
-The OpenAgri integration layer uses mocked local fixtures by default:
+The OpenAgri integration layer uses local demo fixtures by default and does not claim live service health unless `AGRITWIN_OPENAGRI_MODE=live` and a real endpoint request succeeds:
 
 ```bash
 make test-openagri

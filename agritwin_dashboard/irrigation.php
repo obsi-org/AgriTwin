@@ -3,7 +3,8 @@ require_once __DIR__ . '/includes/hmi_layout.php';
 
 $sensors = agritwin_sensors();
 $recommendations = agritwin_recommendations();
-agritwin_render_page('irrigation', 'Irrigation Schedule', function () use ($sensors, $recommendations): void {
+$weatherSource = agritwin_weather_source();
+agritwin_render_page('irrigation', 'Irrigation Schedule', function () use ($sensors, $recommendations, $weatherSource): void {
     $soilSensors = array_values(array_filter($sensors, static fn ($sensor): bool => $sensor['parameter'] === 'soil_moisture'));
     ?>
     <section class="view-section">
@@ -12,7 +13,8 @@ agritwin_render_page('irrigation', 'Irrigation Schedule', function () use ($sens
             <?= agritwin_badge($recommendations['irrigation']['confidence']) ?>
         </div>
         <p><?= agritwin_h($recommendations['irrigation']['label']) ?></p>
-        <p>Data sources: almond block A/B soil moisture, pump flow meter, PV energy meter, weather wind/rainfall sensor, OpenAgri Irrigation Management mock health.</p>
+        <p>Data sources: almond block A/B soil moisture, pump flow meter, PV energy meter and local weather observations.</p>
+        <p class="source-note"><strong><?= agritwin_h($weatherSource['label']) ?>.</strong> <?= agritwin_h($weatherSource['reason']) ?></p>
     </section>
     <section class="view-section">
         <h2>Soil moisture inputs</h2>

@@ -180,9 +180,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin-bottom: 10px;
         }
         .logo-section img {
-            max-height: 76px;
-            max-width: 180px;
+            max-height: 92px;
+            max-width: 220px;
             object-fit: contain;
+        }
+        .logo-section img.partner-logo {
+            max-height: 112px;
+            max-width: 260px;
         }
     </style>
 </head>
@@ -243,8 +247,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="footer">
         <div class="logo-section">
         <img src="AgriTwin_logo.png" alt="AgriTwin Logo">
-        <img src="fotomaco.png" alt="Fotovoltaica Macotera SL / FOTOMACO Logo">
-        <img src="obsidian.png" alt="Obsidian Innovation Institute / OBSIDIAN Logo">
+        <img class="partner-logo" src="fotomaco.png" alt="Fotovoltaica Macotera SL Logo">
+        <img class="partner-logo" src="obsidian.png" alt="Obsidian Innovation Institute / OBSIDIAN Logo">
         <img src="OpenAgri.png" alt="OpenAgri Logo">
         <img src="eufunded.png" alt="EU Funded">
         </div>

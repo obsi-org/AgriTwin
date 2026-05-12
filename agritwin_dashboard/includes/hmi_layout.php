@@ -15,6 +15,7 @@ function agritwin_nav_items(): array
         'calendar' => ['href' => 'farm_calendar.php', 'label' => 'Farm Calendar', 'icon' => 'fas fa-calendar-days'],
         'reports' => ['href' => 'reports.php', 'label' => 'Reports', 'icon' => 'fas fa-file-pdf'],
         'kpis' => ['href' => 'kpis.php', 'label' => 'KPI Dashboard', 'icon' => 'fas fa-gauge-high'],
+        'api' => ['href' => 'api_swagger.php', 'label' => 'API / Swagger', 'icon' => 'fas fa-code'],
         'settings' => ['href' => 'settings.php', 'label' => 'Settings', 'icon' => 'fas fa-gear'],
     ];
 }
@@ -44,7 +45,7 @@ function agritwin_render_page(string $active, string $title, callable $content):
         <div class="sync-summary">
             <span class="confidence-pill confidence-normal">Online</span>
             <span>Last sync: <?= agritwin_h($context['last_sync']) ?></span>
-            <span>Mode: local demo/mock</span>
+            <span>Mode: <?= agritwin_h($context['data_mode']) ?></span>
         </div>
     </header>
     <div class="app-shell">
@@ -52,7 +53,7 @@ function agritwin_render_page(string $active, string $title, callable $content):
             <div class="brand-card">
                 <img src="AgriTwin_logo.png" alt="AgriTwin logo">
                 <strong>AgriTwin</strong>
-                <span>FOTOMACO pilot HMI</span>
+                <span>AgriTwin Platform</span>
             </div>
             <?php foreach (agritwin_nav_items() as $key => $item): ?>
                 <a href="<?= agritwin_h($item['href']) ?>" class="<?= $key === $active ? 'active' : '' ?>">
@@ -65,7 +66,7 @@ function agritwin_render_page(string $active, string $title, callable $content):
             <?php $content(); ?>
             <footer class="footer">
                 <div class="footer-logos">
-                    <img src="fotomaco.png" alt="Fotovoltaica Macotera SL / FOTOMACO logo">
+                    <img class="footer-logo-partner" src="fotomaco.png" alt="Fotovoltaica Macotera SL logo">
                     <img src="obsidian.png" alt="Obsidian Innovation Institute / OBSIDIAN logo">
                     <img src="OpenAgri.png" alt="OpenAgri logo">
                     <img src="eufunded.png" alt="EU funded acknowledgement">

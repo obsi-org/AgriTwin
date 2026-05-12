@@ -2,7 +2,8 @@
 require_once __DIR__ . '/includes/hmi_layout.php';
 
 $sensors = agritwin_sensors();
-agritwin_render_page('telemetry', 'Sensor Telemetry', function () use ($sensors): void {
+$weatherSource = agritwin_weather_source();
+agritwin_render_page('telemetry', 'Sensor Telemetry', function () use ($sensors, $weatherSource): void {
     ?>
     <section class="view-section">
         <div class="section-heading">
@@ -26,6 +27,7 @@ agritwin_render_page('telemetry', 'Sensor Telemetry', function () use ($sensors)
                 </tbody>
             </table>
         </div>
+        <p class="source-note"><strong><?= agritwin_h($weatherSource['label']) ?>.</strong> Weather station values shown here are part of the synthetic local dataset unless a live source is verified.</p>
     </section>
     <section class="view-section">
         <h2>Simple telemetry trend</h2>

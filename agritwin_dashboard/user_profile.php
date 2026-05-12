@@ -8,7 +8,7 @@ agritwin_render_page('settings', 'Operator Profile', function (): void {
         <p>This local prototype uses synthetic operator and farm data. User profile editing remains a deployment-specific workflow.</p>
         <div class="telemetry-grid">
             <article class="telemetry-card"><span>Role</span><strong>Farm operator</strong></article>
-            <article class="telemetry-card"><span>Site</span><strong>FOTOMACO Macotera</strong></article>
+            <article class="telemetry-card"><span>Site</span><strong>Fotovoltaica Macotera SL Macotera</strong></article>
             <article class="telemetry-card"><span>Platform</span><strong>AgriTwin</strong></article>
         </div>
     </section>

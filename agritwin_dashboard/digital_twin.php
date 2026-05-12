@@ -2,7 +2,8 @@
 require_once __DIR__ . '/includes/hmi_layout.php';
 
 $sensors = agritwin_sensors();
-agritwin_render_page('digital_twin', 'Digital Twin Map', function () use ($sensors): void {
+$weatherSource = agritwin_weather_source();
+agritwin_render_page('digital_twin', 'Digital Twin Map', function () use ($sensors, $weatherSource): void {
     ?>
     <section class="view-section split-section">
         <div>
@@ -15,9 +16,12 @@ agritwin_render_page('digital_twin', 'Digital Twin Map', function () use ($senso
             </div>
         </div>
         <div class="map-placeholder">
-            <span>FOTOMACO Macotera Digital Twin</span>
+            <span>Fotovoltaica Macotera SL Digital Twin</span>
             <ul><li>Almond block A/B</li><li>Pump house</li><li>Weather mast</li><li>Pistachio reference row</li></ul>
         </div>
+    </section>
+    <section class="view-section">
+        <p class="source-note"><strong><?= agritwin_h($weatherSource['label']) ?>.</strong> Weather-driven map context uses <?= agritwin_h($weatherSource['mode']) ?> unless a live OpenAgri request succeeds.</p>
     </section>
     <section class="view-section">
         <h2>Overlay marker list</h2>
