@@ -82,7 +82,7 @@ function agritwin_farm_context(): array
         'secondary_crops' => ['Pistachios', 'Maize'],
         'timezone' => 'Europe/Madrid',
         'base_path' => '/agritwin3/',
-        'data_mode' => 'Local fallback active',
+        'data_mode' => agritwin_t('local_fallback'),
         'last_sync' => agritwin_demo_date()->format(DateTimeInterface::ATOM),
     ];
 }
@@ -219,20 +219,20 @@ function agritwin_sensor_stations(): array
 function agritwin_station_readings(float $soilMoisture, float $soilTemp, float $airTemp, int $humidity, int $leafWetness, float $rainfall, float $wind, int $solar, ?float $flow, ?float $energy): array
 {
     $readings = [
-        ['parameter' => 'soil_moisture', 'label' => 'Soil moisture', 'value' => $soilMoisture, 'unit' => '% VWC'],
-        ['parameter' => 'soil_temperature', 'label' => 'Soil temperature', 'value' => $soilTemp, 'unit' => 'degC'],
-        ['parameter' => 'air_temperature', 'label' => 'Air temperature', 'value' => $airTemp, 'unit' => 'degC'],
-        ['parameter' => 'relative_humidity', 'label' => 'Relative humidity', 'value' => $humidity, 'unit' => '%'],
-        ['parameter' => 'leaf_wetness', 'label' => 'Leaf wetness', 'value' => $leafWetness, 'unit' => '%'],
-        ['parameter' => 'rainfall', 'label' => 'Rainfall today', 'value' => $rainfall, 'unit' => 'mm'],
-        ['parameter' => 'wind_speed', 'label' => 'Wind speed', 'value' => $wind, 'unit' => 'km/h'],
-        ['parameter' => 'solar_radiation', 'label' => 'Solar radiation', 'value' => $solar, 'unit' => 'W/m2'],
+        ['parameter' => 'soil_moisture', 'label' => agritwin_t('soil_moisture'), 'value' => $soilMoisture, 'unit' => '% VWC'],
+        ['parameter' => 'soil_temperature', 'label' => agritwin_t('soil_temperature'), 'value' => $soilTemp, 'unit' => 'degC'],
+        ['parameter' => 'air_temperature', 'label' => agritwin_t('air_temperature'), 'value' => $airTemp, 'unit' => 'degC'],
+        ['parameter' => 'relative_humidity', 'label' => agritwin_t('relative_humidity'), 'value' => $humidity, 'unit' => '%'],
+        ['parameter' => 'leaf_wetness', 'label' => agritwin_t('leaf_wetness'), 'value' => $leafWetness, 'unit' => '%'],
+        ['parameter' => 'rainfall', 'label' => agritwin_t('rainfall_today'), 'value' => $rainfall, 'unit' => 'mm'],
+        ['parameter' => 'wind_speed', 'label' => agritwin_t('wind_speed'), 'value' => $wind, 'unit' => 'km/h'],
+        ['parameter' => 'solar_radiation', 'label' => agritwin_t('solar_radiation'), 'value' => $solar, 'unit' => 'W/m2'],
     ];
     if ($flow !== null) {
-        $readings[] = ['parameter' => 'irrigation_flow', 'label' => 'Irrigation flow', 'value' => $flow, 'unit' => 'm3/h'];
+        $readings[] = ['parameter' => 'irrigation_flow', 'label' => agritwin_t('irrigation_flow'), 'value' => $flow, 'unit' => 'm3/h'];
     }
     if ($energy !== null) {
-        $readings[] = ['parameter' => 'pump_energy', 'label' => 'Pump energy', 'value' => $energy, 'unit' => 'kWh today'];
+        $readings[] = ['parameter' => 'pump_energy', 'label' => agritwin_t('pump_energy'), 'value' => $energy, 'unit' => 'kWh today'];
     }
     return $readings;
 }
@@ -251,12 +251,12 @@ function agritwin_weather_source(): array
             'timestamp' => $weather['last_successful_live_check'] ?? $ts,
             'endpoint' => $weather['endpoint'],
             'latency_ms' => $weather['latency_ms'],
-            'reason' => 'Real endpoint returned a successful response.',
+            'reason' => agritwin_t('weather_live_reason'),
             'temperature_c' => $stationValues['temperature_c'],
             'humidity_pct' => $stationValues['humidity_pct'],
             'wind_kmh' => $stationValues['wind_kmh'],
             'rainfall_mm' => $stationValues['rainfall_mm'],
-            'forecast_summary' => 'OpenAgri Weather live endpoint was verified. Current display values use the local normalized weather model.',
+            'forecast_summary' => agritwin_t('weather_live_summary'),
         ];
     }
 
@@ -270,7 +270,7 @@ function agritwin_weather_source(): array
             'timestamp' => $public['timestamp'],
             'endpoint' => $public['endpoint'],
             'latency_ms' => $public['latency_ms'],
-            'reason' => 'OpenAgri Weather is not live-verified; no-secret public weather fallback returned current data.',
+            'reason' => agritwin_t('public_weather_reason'),
             'temperature_c' => $public['temperature_c'],
             'humidity_pct' => $public['humidity_pct'],
             'wind_kmh' => $public['wind_kmh'],
@@ -288,12 +288,12 @@ function agritwin_weather_source(): array
         'timestamp' => $ts,
         'endpoint' => $weather['endpoint'] ?? 'not configured',
         'latency_ms' => null,
-        'reason' => ($weather['error_summary'] ?? 'OpenAgri Weather live endpoint has not been verified for this local run.') . ' Public weather fallback was unavailable.',
+        'reason' => ($weather['error_summary'] ?? agritwin_t('local_weather_reason')),
         'temperature_c' => $stationValues['temperature_c'],
         'humidity_pct' => $stationValues['humidity_pct'],
         'wind_kmh' => $stationValues['wind_kmh'],
         'rainfall_mm' => $stationValues['rainfall_mm'],
-        'forecast_summary' => 'Local fallback values from the station dataset.',
+        'forecast_summary' => agritwin_t('local_weather_summary'),
     ];
 }
 
@@ -328,7 +328,7 @@ function agritwin_public_weather(): array
         'humidity_pct' => (int) ($current['relative_humidity_2m'] ?? 0),
         'wind_kmh' => (float) ($current['wind_speed_10m'] ?? 0),
         'rainfall_mm' => (float) ($current['precipitation'] ?? ($data['daily']['precipitation_sum'][0] ?? 0)),
-        'forecast_summary' => 'Open-Meteo current conditions for Macotera/Salamanca with no API key required.',
+        'forecast_summary' => agritwin_t('public_weather_summary'),
     ];
 }
 
@@ -376,7 +376,7 @@ function agritwin_check_openagri_service(string $key, array $service): array
     $healthPath = (string) agritwin_hmi_env($service['path_env'] ?? '', null, $service['path']);
     $docsUrl = (string) agritwin_hmi_env($service['docs_env'] ?? '', null, '');
     $token = (string) (agritwin_hmi_env($service['token_env'], $service['legacy_token_env'] ?? null, '') ?: agritwin_hmi_env('AGRITWIN_OPENAGRI_GATEKEEPER_ACCESS_TOKEN', null, ''));
-    $isLocal = $endpoint !== '' && (str_contains($endpoint, 'localhost') || str_contains($endpoint, '127.0.0.1') || str_contains($endpoint, 'openagri-mock'));
+    $isLocalFallback = $endpoint !== '' && str_contains($endpoint, 'openagri-mock');
 
     $base = [
         'key' => $key,
@@ -394,7 +394,7 @@ function agritwin_check_openagri_service(string $key, array $service): array
         'last_successful_live_check' => null,
         'last_fallback_generation' => null,
         'last_check' => $ts,
-        'error_summary' => 'Endpoint is not configured.',
+        'error_summary' => agritwin_t('endpoint_not_configured'),
     ];
 
     if ($endpoint === '') {
@@ -415,17 +415,17 @@ function agritwin_check_openagri_service(string $key, array $service): array
                 default => 71,
             },
             'last_fallback_generation' => $ts,
-            'error_summary' => 'Awaiting live service configuration; local fallback is active.',
+            'error_summary' => agritwin_t('awaiting_live_configuration_error'),
         ]);
     }
 
-    if ($isLocal) {
+    if ($isLocalFallback) {
         return array_merge($base, [
             'mode' => 'fallback',
             'status' => 'local_fallback_active',
             'latency_ms' => 45,
             'last_fallback_generation' => $ts,
-            'error_summary' => 'Endpoint points to a local fallback service and is not treated as live.',
+            'error_summary' => agritwin_t('local_endpoint_fallback_error'),
         ]);
     }
 
@@ -453,7 +453,7 @@ function agritwin_check_openagri_service(string $key, array $service): array
             'status' => 'unauthenticated',
             'http_status' => $status,
             'latency_ms' => $latency,
-            'error_summary' => 'Live endpoint rejected the request; authentication is required or invalid.',
+            'error_summary' => agritwin_t('endpoint_auth_error'),
         ]);
     }
 
@@ -465,7 +465,7 @@ function agritwin_check_openagri_service(string $key, array $service): array
             'http_status' => $status,
             'latency_ms' => $latency,
             'last_successful_live_check' => gmdate(DateTimeInterface::ATOM),
-            'error_summary' => 'Live endpoint returned a successful response.',
+            'error_summary' => agritwin_t('endpoint_success'),
         ]);
     }
 
@@ -475,7 +475,7 @@ function agritwin_check_openagri_service(string $key, array $service): array
         'http_status' => $status ?: null,
         'latency_ms' => $latency,
         'last_fallback_generation' => $ts,
-        'error_summary' => $status > 0 ? 'Live endpoint returned HTTP ' . $status . '; local fallback is active.' : 'Live endpoint could not be reached; local fallback is active.',
+        'error_summary' => $status > 0 ? 'HTTP ' . $status . '; ' . agritwin_t('local_fallback') : agritwin_t('endpoint_unreachable_error'),
     ]);
 }
 
@@ -492,31 +492,31 @@ function agritwin_http_status(array $headers): int
 function agritwin_operations(): array
 {
     return [
-        ['time' => '2026-05-12T07:30:00+02:00', 'operation' => 'Irrigation pump inspection', 'block' => 'Pump house', 'status' => 'completed'],
-        ['time' => '2026-05-12T09:00:00+02:00', 'operation' => 'Almond block A sensor check', 'block' => 'Almond block A', 'status' => 'completed'],
-        ['time' => '2026-05-12T12:30:00+02:00', 'operation' => 'Almond block B irrigation review', 'block' => 'Almond block B', 'status' => 'planned'],
-        ['time' => '2026-05-12T17:00:00+02:00', 'operation' => 'Pest scouting pheromone trap check', 'block' => 'Almond buffer rows', 'status' => 'planned'],
+        ['time' => '2026-05-12T07:30:00+02:00', 'operation' => agritwin_t('op_pump_inspection'), 'block' => 'Pump house', 'status' => 'completed'],
+        ['time' => '2026-05-12T09:00:00+02:00', 'operation' => agritwin_t('op_sensor_check'), 'block' => 'Almond block A', 'status' => 'completed'],
+        ['time' => '2026-05-12T12:30:00+02:00', 'operation' => agritwin_t('op_irrigation_review'), 'block' => 'Almond block B', 'status' => 'planned'],
+        ['time' => '2026-05-12T17:00:00+02:00', 'operation' => agritwin_t('op_pest_scouting'), 'block' => 'Almond buffer rows', 'status' => 'planned'],
     ];
 }
 
 function agritwin_recommendations(): array
 {
     return [
-        'water_stress' => ['label' => 'Moderate in block B', 'value' => '22.1% VWC', 'confidence' => 'reduced'],
-        'irrigation' => ['label' => 'Irrigate almond block B for 35 minutes after 18:30 if wind remains below 18 km/h.', 'confidence' => 'normal'],
-        'pest' => ['label' => 'Low to moderate fungal pressure; leaf wetness is low but continue scouting after light rain.', 'risk' => '34/100', 'confidence' => 'normal'],
-        'nitrogen' => ['label' => 'No immediate nitrogen correction. Keep next fertigation review on 2026-05-14.', 'confidence' => 'normal'],
+        'water_stress' => ['label' => agritwin_t('water_stress_label'), 'value' => '22.1% VWC', 'confidence' => 'reduced'],
+        'irrigation' => ['label' => agritwin_t('irrigation_label'), 'confidence' => 'normal'],
+        'pest' => ['label' => agritwin_t('pest_label'), 'risk' => '34/100', 'confidence' => 'normal'],
+        'nitrogen' => ['label' => agritwin_t('nitrogen_label'), 'confidence' => 'normal'],
     ];
 }
 
 function agritwin_kpis(): array
 {
     return [
-        ['metric' => 'Irrigation schedule latency', 'value' => '38 s', 'status' => 'within D1 target'],
-        ['metric' => 'Water-stress MAE sample', 'value' => '0.002 m3/m3', 'status' => 'sample dataset'],
-        ['metric' => 'Data continuity', 'value' => '100%', 'status' => 'fallback packets on time'],
-        ['metric' => 'Network use', 'value' => '23.8 MB/h', 'status' => 'mixed edge-cloud sample'],
-        ['metric' => 'Forecast-cycle energy', 'value' => '0.009 kWh', 'status' => 'synthetic estimate'],
+        ['metric' => agritwin_t('kpi_irrigation_latency'), 'value' => '38 s', 'status' => agritwin_t('kpi_within_target')],
+        ['metric' => agritwin_t('kpi_water_stress_mae'), 'value' => '0.002 m3/m3', 'status' => agritwin_t('kpi_sample_dataset')],
+        ['metric' => agritwin_t('kpi_data_continuity'), 'value' => '100%', 'status' => agritwin_t('kpi_packets_on_time')],
+        ['metric' => agritwin_t('kpi_network_use'), 'value' => '23.8 MB/h', 'status' => agritwin_t('kpi_mixed_sample')],
+        ['metric' => agritwin_t('kpi_energy'), 'value' => '0.009 kWh', 'status' => agritwin_t('kpi_synthetic_estimate')],
     ];
 }
 
@@ -528,14 +528,20 @@ function agritwin_h(string $value): string
 function agritwin_mode_label(string $mode): string
 {
     return match ($mode) {
-        'live' => 'Live service',
-        'demo' => 'Local fallback',
-        'mock' => 'Local fallback',
-        'fallback' => 'Fallback data',
-        'not_configured' => 'Not configured',
-        'local_fallback' => 'Local fallback',
+        'live' => agritwin_t('live_service'),
+        'demo' => agritwin_t('local_fallback'),
+        'mock' => agritwin_t('local_fallback'),
+        'fallback' => agritwin_t('fallback_data'),
+        'not_configured' => agritwin_t('not_configured'),
+        'local_fallback' => agritwin_t('local_fallback'),
+        'auto' => agritwin_t('auto'),
         default => ucfirst(str_replace('_', ' ', $mode)),
     };
+}
+
+function agritwin_status_label(string $status): string
+{
+    return agritwin_t($status) !== $status ? agritwin_t($status) : ucfirst(str_replace('_', ' ', $status));
 }
 
 function agritwin_current_user(): ?array

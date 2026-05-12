@@ -18,10 +18,10 @@ agritwin_render_page('reports', agritwin_t('reports'), function () use ($context
     ?>
     <section class="view-section">
         <div class="section-heading">
-            <h2>Advisory export</h2>
-            <button class="primary-action" type="button" onclick="window.print()"><i class="fas fa-print"></i> Print / save PDF</button>
+            <h2><?= agritwin_h(agritwin_t('advisory_export')) ?></h2>
+            <button class="primary-action" type="button" onclick="window.print()"><i class="fas fa-print"></i> <?= agritwin_h(agritwin_t('print_save_pdf')) ?></button>
         </div>
-        <p>Report generation uses local fallback station data unless a live OpenAgri Reporting Service endpoint is configured and verified. The payload below is safe sample data for report validation.</p>
+        <p><?= agritwin_h(agritwin_t('report_generation_note')) ?></p>
         <pre class="payload-preview"><?= agritwin_h(json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)) ?></pre>
     </section>
     <?php

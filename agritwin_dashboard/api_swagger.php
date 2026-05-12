@@ -7,13 +7,13 @@ agritwin_render_page('api', agritwin_t('api'), function (): void {
         <div class="section-heading">
             <div>
                 <p class="eyebrow">OpenAPI 3.0</p>
-                <h2>Swagger UI</h2>
+                <h2><?= agritwin_h(agritwin_t('swagger_ui')) ?></h2>
             </div>
-            <a class="primary-action" href="../api/openapi.json"><i class="fas fa-file-code"></i> Open openapi.json</a>
+            <a class="primary-action" href="../api/openapi.json"><i class="fas fa-file-code"></i> <?= agritwin_h(agritwin_t('open_openapi_json')) ?></a>
         </div>
-        <p>Swagger UI loads the implemented AgriTwin local API specification from `/agritwin3/api/openapi.json`. Examples use synthetic station data and never include secrets.</p>
+        <p><?= agritwin_h(agritwin_t('swagger_note')) ?></p>
         <div id="swagger-ui" class="swagger-frame"></div>
-        <noscript><p>JavaScript is required for Swagger UI. The OpenAPI JSON remains available at <a href="../api/openapi.json">/agritwin3/api/openapi.json</a>.</p></noscript>
+        <noscript><p><?= agritwin_h(agritwin_t('javascript_required')) ?> <a href="../api/openapi.json">/agritwin3/api/openapi.json</a>.</p></noscript>
         <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
         <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
         <script>

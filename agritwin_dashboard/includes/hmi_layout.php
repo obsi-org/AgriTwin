@@ -29,7 +29,7 @@ function agritwin_render_page(string $active, string $title, callable $content):
     $context = agritwin_farm_context();
     ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= agritwin_h(agritwin_current_language()) ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -40,7 +40,7 @@ function agritwin_render_page(string $active, string $title, callable $content):
     <link rel="stylesheet" href="assets/hmi.css">
 </head>
 <body>
-    <a class="skip-link" href="#main">Skip to content</a>
+    <a class="skip-link" href="#main" aria-label="Skip to content"><?= agritwin_h(agritwin_t('skip_to_content')) ?></a>
     <header class="app-header">
         <div>
             <p class="eyebrow">Macotera / Salamanca / Castilla y Leon / Spain</p>
@@ -83,7 +83,7 @@ function agritwin_render_page(string $active, string $title, callable $content):
                     <img src="OpenAgri.png" alt="OpenAgri logo">
                     <img src="eufunded.png" alt="EU funded acknowledgement">
                 </div>
-                <span>© 2026 AgriTwin. All rights reserved.</span>
+                <span title="© 2026 AgriTwin"><?= agritwin_h(agritwin_t('footer_rights')) ?></span>
             </footer>
         </main>
     </div>
@@ -101,5 +101,5 @@ function agritwin_badge(string $mode): string
         'stale', 'fallback' => 'confidence-stale',
         default => 'confidence-unavailable',
     };
-    return '<span class="confidence-pill ' . $class . '">' . agritwin_h(ucfirst(str_replace('_', ' ', $mode))) . '</span>';
+    return '<span class="confidence-pill ' . $class . '">' . agritwin_h(agritwin_status_label($mode)) . '</span>';
 }

@@ -5,7 +5,7 @@ require_once __DIR__ . '/db_config.php';
 if (!agritwin_role_allows('users')) {
     http_response_code(403);
     agritwin_render_page('users', agritwin_t('user_management'), function (): void {
-        echo '<section class="view-section"><h2>' . agritwin_h(agritwin_t('configuration_required')) . '</h2><p>Administrator role required.</p></section>';
+        echo '<section class="view-section"><h2>' . agritwin_h(agritwin_t('configuration_required')) . '</h2><p>' . agritwin_h(agritwin_t('administrator_required')) . '</p></section>';
     });
     exit;
 }
@@ -29,9 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'role' => $role,
                 'language' => $language,
             ]);
-            $message = 'User created.';
+            $message = agritwin_t('user_created');
         } else {
-            $message = 'Username and password of at least 10 characters are required.';
+            $message = agritwin_t('username_password_required');
         }
     } elseif ($action === 'update') {
         $id = (int) ($_POST['id'] ?? 0);
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->prepare("UPDATE users SET password = :password, password_change_required = 1 WHERE id = :id")
                 ->execute(['password' => password_hash((string) $_POST['new_password'], PASSWORD_DEFAULT), 'id' => $id]);
         }
-        $message = 'User updated.';
+        $message = agritwin_t('user_updated');
     }
 }
 
@@ -81,7 +81,7 @@ agritwin_render_page('users', agritwin_t('user_management'), function () use ($u
                             <td><select name="preferred_language"><?php foreach (agritwin_supported_languages() as $code => $language): ?><option value="<?= agritwin_h($code) ?>" <?= $user['preferred_language'] === $code ? 'selected' : '' ?>><?= agritwin_h($language['flag'] . ' ' . $language['label']) ?></option><?php endforeach; ?></select></td>
                             <td><input type="checkbox" name="enabled" <?= (int) $user['enabled'] === 1 ? 'checked' : '' ?>></td>
                             <td><?= agritwin_h((string) ($user['last_login_at'] ?? '')) ?></td>
-                            <td><input name="new_password" type="password" placeholder="New password"><button class="secondary-action" type="submit"><?= agritwin_h(agritwin_t('save')) ?></button></td>
+                            <td><input name="new_password" type="password" placeholder="<?= agritwin_h(agritwin_t('new_password')) ?>"><button class="secondary-action" type="submit"><?= agritwin_h(agritwin_t('save')) ?></button></td>
                         </form>
                     </tr>
                 <?php endforeach; ?>

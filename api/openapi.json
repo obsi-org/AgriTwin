@@ -28,6 +28,29 @@
         "responses": { "200": { "description": "Connection test result", "content": { "application/json": { "schema": { "type": "object" } } } }, "404": { "description": "Unknown service" } }
       }
     },
+    "/api/openagri/services/check-all": {
+      "post": {
+        "summary": "Check all configured OpenAgri service connections",
+        "responses": {
+          "200": {
+            "description": "Connection test results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "services": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/OpenAgriServiceHealth" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/weather/current": {
       "get": {
         "summary": "External weather source and on-farm weather station readings",

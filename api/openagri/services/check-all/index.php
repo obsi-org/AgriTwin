@@ -1,0 +1,11 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../../../../agritwin_dashboard/includes/hmi_data.php';
+
+header('Content-Type: application/json; charset=utf-8');
+echo json_encode([
+    'checked_at' => agritwin_demo_date()->format(DateTimeInterface::ATOM),
+    'services' => array_values(agritwin_service_cards()),
+    'weather_source' => agritwin_weather_source(),
+], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);

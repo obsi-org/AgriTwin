@@ -23,7 +23,7 @@ try {
 } catch (Exception $e) {
     // Handle DB error (e.g., table doesn't exist)
     $allFarms = [];
-    $error = "Database error: " . $e->getMessage();
+    $error = agritwin_t('db_status') . ': ' . agritwin_t('unavailable');
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -66,18 +66,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: agritwin_dashboard/index.php");
                 exit();
             } else {
-                $error = agritwin_t('password') . " invalid.";
+                $error = agritwin_t('invalid_password');
             }
         } else {
-            $error = agritwin_t('username') . " not found or inactive.";
+            $error = agritwin_t('user_not_found');
         }
     } else {
-        $error = "Please enter both username and password.";
+        $error = agritwin_t('username_password_required');
     }
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= htmlspecialchars(agritwin_current_language()) ?>">
 <head>
     <meta charset="UTF-8">
     <title><?= htmlspecialchars(agritwin_t('login')) ?> - AgriTwin</title>
@@ -202,7 +202,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <!-- Top Bar (similar to Dashboard) -->
     <div class="top-bar">
-        <h1>AgriTwin - Agricultural Digital Twin for Intelligent Decision-Making</h1>
+        <h1>AgriTwin - <?= htmlspecialchars(agritwin_t('app_tagline')) ?></h1>
         <form class="language-login" method="get">
             <label for="lang"><?= htmlspecialchars(agritwin_t('language')) ?></label>
             <select id="lang" name="lang" onchange="this.form.submit()">
@@ -216,7 +216,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Content Wrapper: Centers the Login Box -->
     <div class="content-wrapper">
         <div class="login-container">
-            <h2><?= htmlspecialchars(agritwin_t('login')) ?></h2>
+            <h2><?= htmlspecialchars(agritwin_t('login_access')) ?></h2>
 
             <?php if ($error): ?>
                 <p class="error"><?php echo htmlspecialchars($error); ?></p>
@@ -228,7 +228,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     type="text"
                     name="username"
                     id="username"
-                    placeholder="Enter username"
+                    placeholder="<?= htmlspecialchars(agritwin_t('username')) ?>"
                     autocomplete="off"
                 />
 
@@ -237,14 +237,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     type="password"
                     name="password"
                     id="password"
-                    placeholder="Enter password"
+                    placeholder="<?= htmlspecialchars(agritwin_t('password')) ?>"
                 />
 
                 <!-- New: Farm Selection Dropdown -->
                 <label for="farm_id"><?= htmlspecialchars(agritwin_t('select_farm')) ?>:</label>
                 <select name="farm_id" id="farm_id">
                     <?php if (empty($allFarms)): ?>
-                        <option value="">No farms found</option>
+                        <option value=""><?= htmlspecialchars(agritwin_t('no_farms_found')) ?></option>
                     <?php else: ?>
                         <?php foreach ($allFarms as $farm): ?>
                             <option value="<?php echo $farm['id']; ?>">
@@ -254,7 +254,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <?php endif; ?>
                 </select>
 
-                <input type="submit" value="Login">
+                <input type="submit" value="<?= htmlspecialchars(agritwin_t('login')) ?>">
             </form>
         </div>
     </div>
@@ -268,7 +268,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <img src="OpenAgri.png" alt="OpenAgri Logo">
         <img src="eufunded.png" alt="EU Funded">
         </div>
-        <p>© 2026 AgriTwin. All rights reserved.</p>
+        <p><?= htmlspecialchars(agritwin_t('footer_rights')) ?></p>
     </div>
 </body>
 </html>

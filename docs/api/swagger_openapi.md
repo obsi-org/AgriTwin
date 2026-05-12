@@ -20,6 +20,7 @@ Date: 2026-05-12
 - `GET /agritwin3/api/kpis`
 - `GET /agritwin3/api/users`
 - `POST /agritwin3/api/openagri/services/test`
+- `POST /agritwin3/api/openagri/services/check-all`
 - `POST /agritwin3/api/edge/sensor-packets.php`
 
 ## Verification

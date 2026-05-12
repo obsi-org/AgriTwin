@@ -50,6 +50,20 @@ Then open `http://127.0.0.1:8080`. If that port is occupied, run with `AGRITWIN_
 make publication-check
 ```
 
+## Languages and OpenAgri Local Services
+
+The operational HMI supports English, Portuguese from Portugal and Spanish from Spain through the language selector or `?lang=en`, `?lang=pt-PT`, `?lang=es-ES`.
+
+OpenAgri upstream services can be cloned and inspected without committing third-party source:
+
+```bash
+scripts/openagri/setup_openagri_services.sh
+scripts/openagri/start_openagri_services.sh
+scripts/openagri/check_openagri_services.sh
+```
+
+The checkouts live under ignored path `external/openagri/`. Use `docker-compose.openagri.yml` to point AgriTwin at local OpenAgri service endpoints once each upstream service has its required local `.env` and credentials configured outside git.
+
 ## Documentation Map
 
 - `docs/audit/00_initial_repository_audit.md`: current codebase audit.
@@ -70,6 +84,10 @@ make publication-check
 - `docs/hmi/hmi_harmonisation_report.md`: final HMI harmonisation, routing, logo/footer, service health, and sensor data notes.
 - `docs/hmi/final_hmi_corrections_report.md`: final dashboard, footer, sidebar, weather, Swagger and settings corrections.
 - `docs/i18n/multilingual_platform.md`: English, Portuguese and Spanish translation structure.
+- `docs/i18n/central_pages_translation_completion.md`: central page translation completion audit.
+- `docs/integration/openagri_services_installation_report.md`: upstream OpenAgri clone/install analysis.
+- `docs/integration/openagri_local_docker_deployment.md`: local OpenAgri helper scripts and compose overlay.
+- `docs/integration/openagri_service_health_report.md`: latest local OpenAgri health status.
 - `docs/security/user_management.md`: roles, permissions and account lifecycle.
 - `docs/api/swagger_openapi.md`: local API / Swagger catalogue and OpenAPI JSON notes.
 - `docs/audit/openagri_health_truthfulness_report.md`: live-vs-local-demo OpenAgri connector health truthfulness notes.

@@ -8,7 +8,7 @@ agritwin_render_page('telemetry', agritwin_t('telemetry'), function () use ($sen
     ?>
     <section class="view-section">
         <div class="section-heading">
-            <h2>Fotovoltaica Macotera SL station overview</h2>
+            <h2><?= agritwin_h(agritwin_t('station_overview')) ?></h2>
             <?= agritwin_badge('normal') ?>
         </div>
         <div class="telemetry-grid">
@@ -23,10 +23,10 @@ agritwin_render_page('telemetry', agritwin_t('telemetry'), function () use ($sen
         </div>
     </section>
     <section class="view-section">
-        <h2>On-farm telemetry readings</h2>
+        <h2><?= agritwin_h(agritwin_t('telemetry_readings')) ?></h2>
         <div class="table-wrap">
             <table>
-                <thead><tr><th>Station / Reading</th><th>Block</th><th>Crop</th><th>Value</th><th>Timestamp</th><th>Status</th></tr></thead>
+                <thead><tr><th><?= agritwin_h(agritwin_t('station_reading')) ?></th><th><?= agritwin_h(agritwin_t('block')) ?></th><th><?= agritwin_h(agritwin_t('crop')) ?></th><th><?= agritwin_h(agritwin_t('value')) ?></th><th><?= agritwin_h(agritwin_t('timestamp')) ?></th><th><?= agritwin_h(agritwin_t('status')) ?></th></tr></thead>
                 <tbody>
                 <?php foreach ($sensors as $sensor): ?>
                     <tr>
@@ -41,10 +41,10 @@ agritwin_render_page('telemetry', agritwin_t('telemetry'), function () use ($sen
                 </tbody>
             </table>
         </div>
-        <p class="source-note"><strong><?= agritwin_h($weatherSource['label']) ?>.</strong> External weather values are shown separately from generated on-farm station readings.</p>
+        <p class="source-note"><strong><?= agritwin_h($weatherSource['label']) ?>.</strong> <?= agritwin_h(agritwin_t('telemetry_weather_note')) ?></p>
     </section>
     <section class="view-section">
-        <h2>Simple telemetry trend</h2>
+        <h2><?= agritwin_h(agritwin_t('simple_telemetry_trend')) ?></h2>
         <div class="telemetry-grid">
             <?php foreach ($sensors as $sensor): ?>
                 <article class="telemetry-card">

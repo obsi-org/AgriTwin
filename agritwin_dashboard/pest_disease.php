@@ -7,13 +7,13 @@ agritwin_render_page('pest_disease', agritwin_t('pest_disease'), function () use
     ?>
     <section class="view-section">
         <div class="section-heading">
-            <h2>Almond scouting advisory</h2>
+            <h2><?= agritwin_h(agritwin_t('almond_scouting_advisory')) ?></h2>
             <?= agritwin_badge($recommendations['pest']['confidence']) ?>
         </div>
         <article class="alert-card calm">
-            <h3>Risk index <?= agritwin_h($recommendations['pest']['risk']) ?></h3>
+            <h3><?= agritwin_h(agritwin_t('risk_index')) ?> <?= agritwin_h($recommendations['pest']['risk']) ?></h3>
             <p><?= agritwin_h($recommendations['pest']['label']) ?></p>
-            <p>Inputs: 21.6 degC air temperature, 56% humidity, 18% leaf wetness and 1.2 mm rainfall today.</p>
+            <p><?= agritwin_h(agritwin_t('pest_inputs')) ?></p>
             <p class="source-note"><strong><?= agritwin_h($weatherSource['label']) ?>.</strong> <?= agritwin_h($weatherSource['reason']) ?></p>
         </article>
     </section>

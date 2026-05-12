@@ -6,7 +6,7 @@ $stations = agritwin_sensor_stations();
 agritwin_render_page('kpis', agritwin_t('kpis'), function () use ($kpis, $stations): void {
     ?>
     <section class="view-section">
-        <h2>D1 evaluation indicators</h2>
+        <h2><?= agritwin_h(agritwin_t('d1_indicators')) ?></h2>
         <div class="kpi-grid">
             <?php foreach ($kpis as $kpi): ?>
                 <article>
@@ -16,7 +16,7 @@ agritwin_render_page('kpis', agritwin_t('kpis'), function () use ($kpis, $statio
                 </article>
             <?php endforeach; ?>
         </div>
-        <p class="source-note">KPI calculations currently use <?= count($stations) ?> configured sensor stations and sample event records.</p>
+        <p class="source-note"><?= agritwin_h(sprintf(agritwin_t('kpi_source_note'), count($stations))) ?></p>
     </section>
     <?php
 });

@@ -34,6 +34,9 @@ venv/
 env/
 __pycache__/
 
+# Upstream OpenAgri service checkouts are reproducibly cloned by scripts/openagri.
+external/openagri/
+
 # Build and generated outputs
 dist/
 build/

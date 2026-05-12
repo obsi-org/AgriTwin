@@ -9,15 +9,15 @@ agritwin_render_page('irrigation', agritwin_t('irrigation'), function () use ($s
     ?>
     <section class="view-section">
         <div class="section-heading">
-            <h2>Today's recommendation</h2>
+            <h2><?= agritwin_h(agritwin_t('todays_recommendation')) ?></h2>
             <?= agritwin_badge($recommendations['irrigation']['confidence']) ?>
         </div>
         <p><?= agritwin_h($recommendations['irrigation']['label']) ?></p>
-        <p>Data sources: almond block A/B soil moisture, pump flow meter, PV energy meter and local weather observations.</p>
+        <p><?= agritwin_h(agritwin_t('data_sources_irrigation')) ?></p>
         <p class="source-note"><strong><?= agritwin_h($weatherSource['label']) ?>.</strong> <?= agritwin_h($weatherSource['reason']) ?></p>
     </section>
     <section class="view-section">
-        <h2>Soil moisture inputs</h2>
+        <h2><?= agritwin_h(agritwin_t('soil_moisture_inputs')) ?></h2>
         <div class="telemetry-grid">
             <?php foreach ($soilSensors as $sensor): ?>
                 <article class="telemetry-card">
