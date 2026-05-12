@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Ensuring mobile responsiveness -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CERES Field Monitoring - Agia Sofia Estate (Mobile Friendly)</title>
+    
+    <!-- Cesium -->
+    <script src="https://cdn.jsdelivr.net/npm/cesium@1.104/Build/Cesium/Cesium.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/cesium@1.104/Build/Cesium/Widgets/widgets.css" rel="stylesheet" />
+
+    <style>
+        /* Base and Reset */
+        * {
+            box-sizing: border-box;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Arial', sans-serif;
+            color: white;
+            background: linear-gradient(to right, #1b5e20, #2e7d32);
+        }
+
+        /* Container for the Cesium view */
+        #cesiumContainer {
+            width: 100%;
+            height: 100vh; /* Occupy full viewport height */
+            position: relative;
+        }
+
+        /* Sidebar styling */
+        #sidebar {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100vh;
+            background: rgba(0, 51, 0, 0.8);
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 1.5em;
+        }
+        .sensor-data, .task-list {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        /* Logo container */
+        #logoContainer {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #logoContainer img {
+            height: 40px;
+        }
+
+        /* Move Cesium toolbar to the top-left */
+        .cesium-viewer-toolbar {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: auto !important;
+        }
+
+        /* Hamburger menu icon */
+        #menuToggle {
+            display: none; /* Hidden by default; shown on smaller screens */
+            font-size: 30px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: #fff;
+            padding: 5px 10px;
+            cursor: pointer;
+            z-index: 1100; /* Above the logos */
+        }
+
+        /* Default (desktop) - sidebar is always visible */
+        #sidebar.open {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            /* For smaller screens: the sidebar is initially hidden off-screen */
+            #sidebar {
+                transform: translateX(100%);
+            }
+            #sidebar.open {
+                transform: translateX(0%);
+            }
+            #menuToggle {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Toggling button for mobile view -->
+<button id="menuToggle">&#9776;</button>
+
+<div id="cesiumContainer">
+    <div id="logoContainer">
+        <img src="CERES_logo.png" alt="CERES Logo">
+        <img src="xilbi.png" alt="Xilbi Logo">
+        <img src="nemo_logo_big.png" alt="NEMO Logo">
+        <img src="EN-Funded-by-the-EU-WHITE-Outline-300x63-1.png" alt="EU Funded">
+    </div>
+</div>
+
+<div id="sidebar" class="open">
+    <h2>Field Monitoring</h2>
+    <div class="sensor-data">
+        <h3>IoT Sensor Data</h3>
+        <p><strong>Soil Moisture:</strong> 23%</p>
+        <p><strong>Temperature:</strong> 28°C</p>
+        <p><strong>Humidity:</strong> 45%</p>
+    </div>
+    <div class="sensor-data">
+        <h3>AI Insights</h3>
+        <p><strong>Alert:</strong> Low soil moisture detected!</p>
+        <p><strong>Recommendation:</strong> Schedule irrigation within 3 hours.</p>
+    </div>
+    <div class="task-list">
+        <h3>Task Scheduling</h3>
+        <ul>
+            <li>✅ Irrigation - Completed</li>
+            <li>🔄 Drone Surveillance - In Progress</li>
+            <li>📅 Fertilisation - Scheduled for Tomorrow</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    // Toggle sidebar in mobile view
+    const menuToggle = document.getElementById("menuToggle");
+    const sidebar = document.getElementById("sidebar");
+
+    menuToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("open");
+    });
+
+    // Initialise Cesium
+    Cesium.Ion.defaultAccessToken = "YOUR_ACCESS_TOKEN_HERE";
+    var viewer = new Cesium.Viewer("cesiumContainer", {
+        terrainProvider: Cesium.createWorldTerrain(),
+    });
+
+    // GIBS WMS Imagery Provider for MODIS_Terra_NDVI_8Day
+    var ndviProvider = new Cesium.WebMapServiceImageryProvider({
+        url: 'https://gibs.earthdata.nasa.gov/wms/epsg3857/best/wms.cgi',
+        layers: 'MODIS_Terra_NDVI_8Day',
+        parameters: {
+            service: 'WMS',
+            version: '1.3.0',
+            request: 'GetMap',
+            format: 'image/png',
+            transparent: 'true',
+            styles: '',
+            crs: 'EPSG:3857'
+        }
+    });
+
+    // Add it to the scene but hide it initially
+    var ndviLayer = viewer.imageryLayers.addImageryProvider(ndviProvider);
+    ndviLayer.show = false;
+
+    // Listen for 'n' on the keyboard to toggle show/hide of NDVI
+    document.addEventListener("keydown", function(event) {
+        if (event.key === 'n') {
+            ndviLayer.show = !ndviLayer.show;
+        }
+    });
+
+    // Property boundary
+    var boundaryCoordinates = [
+        Cesium.Cartesian3.fromDegrees(23.02049407868811, 36.61385295059171),
+        Cesium.Cartesian3.fromDegrees(23.021620222544382, 36.61401052654541),
+        Cesium.Cartesian3.fromDegrees(23.02208492511248, 36.61444700641653),
+        Cesium.Cartesian3.fromDegrees(23.021921503951919, 36.61559510224406),
+        Cesium.Cartesian3.fromDegrees(23.023107655184059, 36.61710966555575),
+        Cesium.Cartesian3.fromDegrees(23.02265151088648, 36.61756764149855),
+        Cesium.Cartesian3.fromDegrees(23.022542209823659, 36.61865231940611),
+        Cesium.Cartesian3.fromDegrees(23.02121207846255, 36.61809919888842),
+        Cesium.Cartesian3.fromDegrees(23.020752955924539, 36.61737396622382),
+        Cesium.Cartesian3.fromDegrees(23.020140428998118, 36.61708185386033),
+        Cesium.Cartesian3.fromDegrees(23.020243545497401, 36.61627357657555),
+        Cesium.Cartesian3.fromDegrees(23.019061892664361, 36.61507127862355),
+        Cesium.Cartesian3.fromDegrees(23.01830401199657, 36.61507962751998),
+        Cesium.Cartesian3.fromDegrees(23.017578007451551, 36.61445898916048),
+        Cesium.Cartesian3.fromDegrees(23.016947008955722, 36.61283341328340),
+        Cesium.Cartesian3.fromDegrees(23.017218076909138, 36.61269291144050),
+        Cesium.Cartesian3.fromDegrees(23.017754773421672, 36.61284744991899),
+        Cesium.Cartesian3.fromDegrees(23.02049407868811, 36.61385295059171) // Closing the boundary
+    ];
+    viewer.entities.add({
+        name: "Property Boundary",
+        polyline: {
+            positions: boundaryCoordinates,
+            width: 4,
+            material: Cesium.Color.RED,
+            clampToGround: true
+        }
+    });
+
+    // Fly the camera to the bounding rectangle
+    viewer.camera.flyTo({
+        destination: Cesium.Rectangle.fromCartesianArray(boundaryCoordinates),
+        duration: 2
+    });
+</script>
+
+</body>
+</html>

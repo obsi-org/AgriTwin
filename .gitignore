@@ -1,0 +1,64 @@
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+*token*
+*secret*
+credentials.json
+secrets/
+
+# Local databases, dumps, and private pilot-farm data
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.bak
+*.backup
+private_data/
+pilot_data/
+raw_pilot_data/
+raw-farm-data/
+farm_private/
+uploads/private/
+
+# Dependencies
+node_modules/
+vendor/
+.venv/
+venv/
+env/
+__pycache__/
+
+# Build and generated outputs
+dist/
+build/
+target/
+coverage/
+.cache/
+.pytest_cache/
+.phpunit.cache/
+.parcel-cache/
+.next/
+tmp/
+temp/
+*.tmp
+
+# Logs and runtime files
+*.log
+logs/
+*.pid
+*.sock
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
