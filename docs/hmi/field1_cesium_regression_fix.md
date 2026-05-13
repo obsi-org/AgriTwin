@@ -2,7 +2,7 @@
 
 ## Root Cause
 
-The known-working reference was supplied locally as `reference/field1_working_reference.php`. The current `agritwin_dashboard/field1.php` had been simplified during HMI integration and no longer carried all of the working Cesium logic from the reference. The missing pieces were world-terrain initialisation, Copernicus/Sentinel WMS layers, NASA GIBS NDVI, CSV-driven tree loading, GLTF pivot/solar models, selection highlighting and the complete layer-control set.
+The known-working reference was supplied locally as `docs/reference/field1_working_reference.php`. The current `agritwin_dashboard/field1.php` had been simplified during HMI integration and no longer carried all of the working Cesium logic from the reference. The missing pieces were world-terrain initialisation, Copernicus/Sentinel WMS layers, NASA GIBS NDVI, CSV-driven tree loading, GLTF pivot/solar models, selection highlighting and the complete layer-control set.
 
 The earlier standalone page also redirected unauthenticated users to a non-existent local `login.php` path. The repaired page keeps the current AgriTwin shared layout and redirects unauthenticated users through the repository-root login page.
 
@@ -11,11 +11,12 @@ The earlier standalone page also redirected unauthenticated users to a non-exist
 - `agritwin_dashboard/field1.php`
 - `agritwin_dashboard/assets/js/field1_cesium.js`
 - `agritwin_dashboard/assets/hmi.css`
-- `agritwin_dashboard/digital_twin.php`
 - `agritwin_dashboard/lang/en.php`
 - `agritwin_dashboard/lang/pt-PT.php`
 - `agritwin_dashboard/lang/es-ES.php`
 - `.gitignore`
+
+The local reference file remains ignored by Git and was used only for comparison.
 
 ## Cesium Loading Strategy
 

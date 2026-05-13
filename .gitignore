@@ -14,6 +14,7 @@ LOCAL_CREDENTIALS.md
 secrets/
 storage/secrets/
 reference/
+docs/reference/
 
 # Local databases, dumps, and private pilot-farm data
 *.sqlite
