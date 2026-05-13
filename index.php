@@ -262,6 +262,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <input type="submit" value="<?= htmlspecialchars(agritwin_t('login')) ?>">
             </form>
+            <p><a href="agritwin_dashboard/help.php?lang=<?= htmlspecialchars(agritwin_current_language()) ?>#getting-started"><?= htmlspecialchars(agritwin_t('open_help')) ?></a></p>
         </div>
     </div>
 

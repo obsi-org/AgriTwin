@@ -8,7 +8,7 @@ agritwin_render_page('pest_disease', agritwin_t('pest_disease'), function () use
     <section class="view-section">
         <div class="section-heading">
             <h2><?= agritwin_h(agritwin_t('almond_scouting_advisory')) ?></h2>
-            <?= agritwin_badge($recommendations['pest']['confidence']) ?>
+            <div class="action-row"><?= agritwin_help_link('pest-disease') ?><?= agritwin_badge($recommendations['pest']['confidence']) ?></div>
         </div>
         <article class="alert-card calm">
             <h3><?= agritwin_h(agritwin_t('risk_index')) ?> <?= agritwin_h($recommendations['pest']['risk']) ?></h3>

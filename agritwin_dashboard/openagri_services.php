@@ -45,12 +45,12 @@ agritwin_render_page('openagri', agritwin_t('openagri'), function () use ($servi
     <section class="view-section">
         <div class="section-heading">
             <h2><?= agritwin_h(agritwin_t('core_openagri_services')) ?></h2>
-            <?= agritwin_badge($weatherSource['mode'] === 'live' ? 'healthy' : 'reduced') ?>
+            <div class="action-row"><?= agritwin_help_link('openagri-services') ?><?= agritwin_badge($weatherSource['mode'] === 'live' ? 'healthy' : 'reduced') ?></div>
         </div>
         <p><?= agritwin_h(agritwin_t('service_health_explanation')) ?></p>
         <div class="action-row">
             <a class="secondary-action" href="openagri_services.php"><i class="fas fa-rotate"></i> <?= agritwin_h(agritwin_t('run_health_check')) ?></a>
-            <a class="secondary-action" href="api_swagger.php"><i class="fas fa-code"></i> API / Swagger</a>
+            <a class="secondary-action" href="api_swagger.php"><i class="fas fa-code"></i> <?= agritwin_h(agritwin_t('api')) ?></a>
         </div>
         <p class="source-note"><strong><?= agritwin_h($weatherSource['label']) ?>.</strong> <?= agritwin_h($weatherSource['reason']) ?></p>
         <?php $renderServiceTable($groups['core'], 'mandatory-service-table'); ?>

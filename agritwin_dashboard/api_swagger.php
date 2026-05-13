@@ -9,7 +9,7 @@ agritwin_render_page('api', agritwin_t('api'), function (): void {
                 <p class="eyebrow">OpenAPI 3.0</p>
                 <h2><?= agritwin_h(agritwin_t('swagger_ui')) ?></h2>
             </div>
-            <a class="primary-action" href="../api/openapi.json"><i class="fas fa-file-code"></i> <?= agritwin_h(agritwin_t('open_openapi_json')) ?></a>
+            <div class="action-row"><?= agritwin_help_link('api-swagger') ?><a class="primary-action" href="../api/openapi.json"><i class="fas fa-file-code"></i> <?= agritwin_h(agritwin_t('open_openapi_json')) ?></a></div>
         </div>
         <p><?= agritwin_h(agritwin_t('swagger_note')) ?></p>
         <div id="swagger-ui" class="swagger-frame"></div>

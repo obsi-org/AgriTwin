@@ -32,6 +32,8 @@ The shared HMI layout now exposes a small JavaScript-safe translation object for
 - Moved shared station, crop, block, weather-source, role and JavaScript labels into translation files.
 - Replaced hardcoded labels in Digital Twin, Energy Management, User Profile, User Management and the Cesium field view.
 - Added translated role names and operational field-view labels.
+- Added a complete multilingual Help System with long-form content in `agritwin_dashboard/lang/help/`.
+- Extended the audit script to validate Help System section parity and blocked wording.
 - Confirmed all three dictionaries contain the same number of keys, with no missing or empty values.
 - Confirmed active translation strings do not contain blocked project/prototype wording.
 
@@ -54,7 +56,7 @@ php scripts/i18n/audit_translations.php
 Expected result:
 
 ```text
-translation-audit: locales=en,pt-PT,es-ES keys=399 hard_failures=0
+translation-audit: locales=en,pt-PT,es-ES keys=409 hard_failures=0
 ```
 
 The generated detailed reports are:

@@ -19,7 +19,7 @@ agritwin_render_page('reports', agritwin_t('reports'), function () use ($context
     <section class="view-section">
         <div class="section-heading">
             <h2><?= agritwin_h(agritwin_t('advisory_export')) ?></h2>
-            <button class="primary-action" type="button" onclick="window.print()"><i class="fas fa-print"></i> <?= agritwin_h(agritwin_t('print_save_pdf')) ?></button>
+            <div class="action-row"><?= agritwin_help_link('reports') ?><button class="primary-action" type="button" onclick="window.print()"><i class="fas fa-print"></i> <?= agritwin_h(agritwin_t('print_save_pdf')) ?></button></div>
         </div>
         <p><?= agritwin_h(agritwin_t('report_generation_note')) ?></p>
         <pre class="payload-preview"><?= agritwin_h(json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)) ?></pre>

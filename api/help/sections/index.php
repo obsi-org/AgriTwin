@@ -1,0 +1,21 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../../../agritwin_dashboard/includes/hmi_data.php';
+require_once __DIR__ . '/../../../agritwin_dashboard/includes/help_content.php';
+
+header('Content-Type: application/json');
+
+$sections = array_map(static fn (array $section): array => [
+    'id' => $section['id'],
+    'title' => $section['title'],
+    'audience' => $section['audience'],
+    'administrator_access_required' => (bool) ($section['admin'] ?? false),
+    'item_count' => count($section['items'] ?? []),
+], agritwin_help_sections());
+
+echo json_encode([
+    'language' => agritwin_current_language(),
+    'generated_at' => gmdate(DateTimeInterface::ATOM),
+    'sections' => $sections,
+], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);

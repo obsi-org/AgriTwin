@@ -203,6 +203,32 @@
         "responses": { "200": { "description": "User list", "content": { "application/json": { "schema": { "type": "object" } } } }, "403": { "description": "Administrator role required" } }
       }
     },
+    "/api/help/sections": {
+      "get": {
+        "summary": "Help section metadata",
+        "description": "Returns translated Help System section metadata for the selected language.",
+        "parameters": [{ "name": "lang", "in": "query", "required": false, "schema": { "type": "string", "enum": ["en", "pt-PT", "es-ES"] } }],
+        "responses": {
+          "200": {
+            "description": "Help section index",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "language": { "type": "string", "example": "en" },
+                    "sections": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/HelpSection" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/edge/sensor-packets.php": {
       "post": {
         "summary": "Ingest edge sensor packet",
@@ -339,6 +365,16 @@
           "packet_id": { "type": "string" },
           "created_at": { "type": "string", "format": "date-time" },
           "measurements": { "type": "array", "items": { "type": "object" } }
+        }
+      },
+      "HelpSection": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "dashboard" },
+          "title": { "type": "string", "example": "Dashboard" },
+          "audience": { "type": "string", "example": "All users" },
+          "administrator_access_required": { "type": "boolean", "example": false },
+          "item_count": { "type": "integer", "example": 4 }
         }
       }
     }

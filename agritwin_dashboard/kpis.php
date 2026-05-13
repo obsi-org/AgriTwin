@@ -6,7 +6,10 @@ $stations = agritwin_sensor_stations();
 agritwin_render_page('kpis', agritwin_t('kpis'), function () use ($kpis, $stations): void {
     ?>
     <section class="view-section">
-        <h2><?= agritwin_h(agritwin_t('d1_indicators')) ?></h2>
+        <div class="section-heading">
+            <h2><?= agritwin_h(agritwin_t('d1_indicators')) ?></h2>
+            <?= agritwin_help_link('analytics') ?>
+        </div>
         <div class="kpi-grid">
             <?php foreach ($kpis as $kpi): ?>
                 <article>

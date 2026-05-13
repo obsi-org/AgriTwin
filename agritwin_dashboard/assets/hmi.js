@@ -156,6 +156,34 @@
         });
     }
 
+    function initHelpSearch() {
+        const config = window.agritwinHelpSearch;
+        if (!config) {
+            return;
+        }
+        const input = document.getElementById(config.inputId);
+        const noResults = document.getElementById(config.noResultsId);
+        const sections = Array.from(document.querySelectorAll("[data-help-section]"));
+        if (!input || !sections.length) {
+            return;
+        }
+        input.addEventListener("input", function () {
+            const query = input.value.trim().toLocaleLowerCase();
+            let visible = 0;
+            sections.forEach((section) => {
+                const text = (section.dataset.helpText || "").toLocaleLowerCase();
+                const match = query === "" || text.includes(query);
+                section.hidden = !match;
+                if (match) {
+                    visible += 1;
+                }
+            });
+            if (noResults) {
+                noResults.hidden = visible > 0;
+            }
+        });
+    }
+
     window.addEventListener("online", updateOnlineState);
     window.addEventListener("offline", updateOnlineState);
     window.addEventListener("scroll", activateCurrentSection, { passive: true });
@@ -180,6 +208,7 @@
     }
 
     updateOnlineState();
+    initHelpSearch();
     restoreDashboardState();
     activateCurrentSection();
     saveDashboardState();

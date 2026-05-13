@@ -169,7 +169,7 @@ agritwin_render_page('analytics', agritwin_t('analytics'), function () use ($ana
                 <h2><?= agritwin_h(agritwin_t('analytics_overview')) ?></h2>
                 <p><?= agritwin_h(agritwin_t('analytics_operational_picture')) ?></p>
             </div>
-            <?= agritwin_badge('normal') ?>
+            <div class="action-row"><?= agritwin_help_link('analytics') ?><?= agritwin_badge('normal') ?></div>
         </div>
         <form class="analytics-controls" method="get">
             <label><?= agritwin_h(agritwin_t('time_range')) ?>

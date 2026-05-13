@@ -10,7 +10,7 @@ agritwin_render_page('irrigation', agritwin_t('irrigation'), function () use ($s
     <section class="view-section">
         <div class="section-heading">
             <h2><?= agritwin_h(agritwin_t('todays_recommendation')) ?></h2>
-            <?= agritwin_badge($recommendations['irrigation']['confidence']) ?>
+            <div class="action-row"><?= agritwin_help_link('irrigation') ?><?= agritwin_badge($recommendations['irrigation']['confidence']) ?></div>
         </div>
         <p><?= agritwin_h($recommendations['irrigation']['label']) ?></p>
         <p><?= agritwin_h(agritwin_t('data_sources_irrigation')) ?></p>

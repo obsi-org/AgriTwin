@@ -22,6 +22,12 @@ foreach ($locales as $locale) {
     $translations[$locale] = is_file($path) ? require $path : [];
 }
 
+$helpContent = [];
+foreach ($locales as $locale) {
+    $path = $langDir . '/help/' . $locale . '.php';
+    $helpContent[$locale] = is_file($path) ? require $path : [];
+}
+
 $allKeys = [];
 foreach ($translations as $dict) {
     $allKeys = array_unique(array_merge($allKeys, array_keys($dict)));
@@ -37,6 +43,7 @@ $report = [
     'empty_values' => [],
     'identical_to_english' => [],
     'forbidden_terms' => [],
+    'help_content' => [],
     'used_keys_missing_from_english' => [],
     'suspicious_template_strings' => [],
 ];
@@ -67,6 +74,32 @@ foreach ($translations as $locale => $dict) {
             }
             if (!$allowed && preg_match('/[A-Za-z]{4,}/', $value)) {
                 $report['identical_to_english'][$locale][] = ['key' => $key, 'value' => $value];
+            }
+        }
+    }
+}
+
+$englishHelpIds = array_map(static fn (array $section): string => (string) ($section['id'] ?? ''), $helpContent['en']);
+foreach ($helpContent as $locale => $sections) {
+    $ids = array_map(static fn (array $section): string => (string) ($section['id'] ?? ''), $sections);
+    $report['help_content'][$locale] = [
+        'section_count' => count($sections),
+        'missing_sections' => array_values(array_diff($englishHelpIds, $ids)),
+        'extra_sections' => array_values(array_diff($ids, $englishHelpIds)),
+        'empty_sections' => [],
+        'forbidden_terms' => [],
+    ];
+    foreach ($sections as $section) {
+        $id = (string) ($section['id'] ?? '');
+        $strings = array_merge([(string) ($section['title'] ?? ''), (string) ($section['audience'] ?? '')], array_map('strval', $section['items'] ?? []));
+        if ($id === '' || trim((string) ($section['title'] ?? '')) === '' || empty($section['items'])) {
+            $report['help_content'][$locale]['empty_sections'][] = $id !== '' ? $id : '[missing-id]';
+        }
+        foreach ($strings as $value) {
+            foreach ($forbidden as $term) {
+                if (preg_match('/\b' . preg_quote($term, '/') . '\b/i', $value)) {
+                    $report['help_content'][$locale]['forbidden_terms'][] = ['id' => $id, 'term' => $term, 'value' => $value];
+                }
             }
         }
     }
@@ -150,6 +183,7 @@ $sections = [
     'empty_values' => 'Empty Values',
     'identical_to_english' => 'Potentially Untranslated Values',
     'forbidden_terms' => 'Forbidden Terms',
+    'help_content' => 'Help Content',
     'used_keys_missing_from_english' => 'Used Keys Missing From English',
     'suspicious_template_strings' => 'Suspicious Template Strings',
 ];
@@ -157,6 +191,17 @@ foreach ($sections as $key => $title) {
     $lines[] = '';
     $lines[] = '## ' . $title;
     $data = $report[$key];
+    if ($key === 'help_content') {
+        foreach ($data as $locale => $items) {
+            $lines[] = '### ' . $locale;
+            $lines[] = '- sections: ' . $items['section_count'];
+            $lines[] = '- missing sections: ' . ($items['missing_sections'] === [] ? 'None' : implode(', ', $items['missing_sections']));
+            $lines[] = '- extra sections: ' . ($items['extra_sections'] === [] ? 'None' : implode(', ', $items['extra_sections']));
+            $lines[] = '- empty sections: ' . ($items['empty_sections'] === [] ? 'None' : implode(', ', $items['empty_sections']));
+            $lines[] = '- forbidden terms: ' . ($items['forbidden_terms'] === [] ? 'None' : json_encode($items['forbidden_terms'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        }
+        continue;
+    }
     if ($data === [] || $data === null) {
         $lines[] = 'None.';
         continue;
@@ -187,6 +232,9 @@ foreach (['missing_keys', 'empty_values', 'forbidden_terms'] as $section) {
     foreach ($report[$section] as $items) {
         $hardFailures += count($items);
     }
+}
+foreach ($report['help_content'] as $items) {
+    $hardFailures += count($items['missing_sections']) + count($items['empty_sections']) + count($items['forbidden_terms']);
 }
 
 echo 'translation-audit: locales=' . implode(',', $locales) . ' keys=' . count($allKeys) . ' hard_failures=' . $hardFailures . PHP_EOL;

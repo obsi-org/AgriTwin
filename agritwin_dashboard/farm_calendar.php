@@ -5,7 +5,10 @@ $operations = agritwin_operations();
 agritwin_render_page('calendar', agritwin_t('calendar'), function () use ($operations): void {
     ?>
     <section class="view-section">
-        <h2><?= agritwin_h(agritwin_t('operations_for_date')) ?></h2>
+        <div class="section-heading">
+            <h2><?= agritwin_h(agritwin_t('operations_for_date')) ?></h2>
+            <?= agritwin_help_link('farm-calendar') ?>
+        </div>
         <div class="table-wrap">
             <table>
                 <thead><tr><th><?= agritwin_h(agritwin_t('time')) ?></th><th><?= agritwin_h(agritwin_t('operation')) ?></th><th><?= agritwin_h(agritwin_t('block')) ?></th><th><?= agritwin_h(agritwin_t('status')) ?></th></tr></thead>

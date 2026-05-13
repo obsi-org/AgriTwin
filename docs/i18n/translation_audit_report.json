@@ -1,5 +1,5 @@
 {
-    "generated_at": "2026-05-13T10:33:51+00:00",
+    "generated_at": "2026-05-13T10:45:39+00:00",
     "locales": [
         "en",
         "pt-PT",
@@ -7,13 +7,13 @@
     ],
     "summary": {
         "en": {
-            "key_count": 399
+            "key_count": 409
         },
         "pt-PT": {
-            "key_count": 399
+            "key_count": 409
         },
         "es-ES": {
-            "key_count": 399
+            "key_count": 409
         }
     },
     "missing_keys": {
@@ -29,6 +29,29 @@
     "empty_values": [],
     "identical_to_english": [],
     "forbidden_terms": [],
+    "help_content": {
+        "en": {
+            "section_count": 15,
+            "missing_sections": [],
+            "extra_sections": [],
+            "empty_sections": [],
+            "forbidden_terms": []
+        },
+        "pt-PT": {
+            "section_count": 15,
+            "missing_sections": [],
+            "extra_sections": [],
+            "empty_sections": [],
+            "forbidden_terms": []
+        },
+        "es-ES": {
+            "section_count": 15,
+            "missing_sections": [],
+            "extra_sections": [],
+            "empty_sections": [],
+            "forbidden_terms": []
+        }
+    },
     "used_keys_missing_from_english": [],
     "suspicious_template_strings": []
 }

@@ -570,6 +570,81 @@ pre:focus-visible {
     border-color: var(--line);
 }
 
+.context-help-link {
+    display: inline-flex;
+    gap: 7px;
+    align-items: center;
+    min-height: 34px;
+    padding: 6px 10px;
+    color: var(--blue);
+    background: #eef6f8;
+    border: 1px solid #c9dfe6;
+    border-radius: 6px;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.help-hero {
+    display: grid;
+    gap: 16px;
+}
+
+.help-search {
+    display: grid;
+    gap: 6px;
+    max-width: 520px;
+    font-weight: 700;
+}
+
+.help-search input {
+    min-height: 42px;
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-weight: 400;
+}
+
+.help-toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.help-toc a {
+    padding: 7px 10px;
+    color: var(--green-dark);
+    background: #eef3ee;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.help-grid {
+    display: grid;
+    gap: 0;
+}
+
+.help-section {
+    scroll-margin-top: 18px;
+}
+
+.help-list {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding-left: 20px;
+}
+
+.help-list li {
+    padding-left: 4px;
+}
+
+.help-no-results {
+    color: var(--muted);
+    font-weight: 700;
+}
+
 .danger-action {
     color: #fff;
     background: var(--red);

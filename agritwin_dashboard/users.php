@@ -55,7 +55,7 @@ agritwin_render_page('users', agritwin_t('user_management'), function () use ($u
     <section class="view-section">
         <div class="section-heading">
             <h2><?= agritwin_h(agritwin_t('user_management')) ?></h2>
-            <?= $message !== '' ? '<span class="confidence-pill confidence-normal">' . agritwin_h($message) . '</span>' : '' ?>
+            <div class="action-row"><?= agritwin_help_link('user-management') ?><?= $message !== '' ? '<span class="confidence-pill confidence-normal">' . agritwin_h($message) . '</span>' : '' ?></div>
         </div>
         <form class="settings-form" method="post">
             <input type="hidden" name="csrf_token" value="<?= agritwin_h(agritwin_csrf_token()) ?>">

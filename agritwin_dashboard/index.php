@@ -24,7 +24,7 @@ agritwin_render_page('dashboard', agritwin_t('dashboard'), function () use ($sen
                 <p class="eyebrow"><?= agritwin_h($context['site']) ?></p>
                 <h2><?= agritwin_h(agritwin_t('daily_operator_summary')) ?></h2>
             </div>
-            <?= agritwin_badge('normal') ?>
+            <div class="action-row"><?= agritwin_help_link('dashboard') ?><?= agritwin_badge('normal') ?></div>
         </div>
         <div class="priority-grid">
             <article class="priority-card">

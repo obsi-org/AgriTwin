@@ -1,0 +1,172 @@
+<?php
+return [
+    [
+        'id' => 'getting-started',
+        'title' => 'Primeros Pasos',
+        'audience' => 'Todos los usuarios',
+        'items' => [
+            'AgriTwin apoya decisiones agrícolas diarias para Fotovoltaica Macotera SL combinando telemetría de campo, meteorología, estado de servicios OpenAgri y salidas de recomendación.',
+            'Inicie sesión con el nombre de usuario asignado por el administrador. Si la cuenta requiere cambio de contraseña, abra Perfil y defina una nueva contraseña antes de continuar.',
+            'Cambie el idioma de la interfaz desde el selector de la cabecera. La selección se mantiene entre páginas mediante la sesión del navegador y la cookie.',
+            'El acceso se basa en roles: Administrador, Gestor Técnico, Responsable de Explotación, Asesor / Investigador y Visor. Las páginas restringidas muestran mensajes de configuración o acceso cuando el rol actual no permite realizar una acción.',
+        ],
+    ],
+    [
+        'id' => 'dashboard',
+        'title' => 'Panel de Control',
+        'audience' => 'Responsable de Explotación, Asesor / Investigador, Visor',
+        'items' => [
+            'El Panel de Control es el centro operativo del estado actual de la explotación, con estrés hídrico, riego, presión de plagas, nitrógeno, meteorología y preparación OpenAgri.',
+            'Las tarjetas meteorológicas distinguen datos del servicio meteorológico externo de lecturas de estaciones en campo. Revise la fuente antes de usar los valores para decisiones.',
+            'Las tarjetas de estaciones resumen número de estaciones, bloque agrícola, lecturas recientes y confianza. Confianza reducida significa que los datos deben revisarse antes de actuar.',
+            'La preparación de servicios OpenAgri principales cubre Gatekeeper, Weather, Irrigation y Pest & Disease. La tarjeta indica cuántos servicios principales están disponibles actualmente.',
+        ],
+    ],
+    [
+        'id' => 'analytics',
+        'title' => 'Analítica',
+        'audience' => 'Responsable de Explotación, Gestor Técnico, Asesor / Investigador',
+        'items' => [
+            'Use los filtros de rango temporal, estación y cultivo para centrar los gráficos en las últimas 24 horas, 7 días o 30 días cuando haya datos.',
+            'Los gráficos meteorológicos combinan temperatura, humedad, viento y precipitación para interpretar conjuntamente condiciones de riego y plagas.',
+            'Los gráficos de sensores comparan humedad y temperatura del suelo por estación. Flechas de tendencia y colores de umbral identifican bloques que requieren atención.',
+            'Los paneles de riego, plagas y KPIs muestran volumen, energía, riesgo, latencia, continuidad y actualidad para revisión operativa.',
+        ],
+    ],
+    [
+        'id' => 'sensor-stations',
+        'title' => 'Estaciones de Sensores',
+        'audience' => 'Responsable de Explotación, Gestor Técnico, Visor',
+        'items' => [
+            'Las estaciones se nombran por sitio y bloque, por ejemplo MAC-ALM-A para el Bloque A de almendros. Cada estación agrupa varias lecturas de un activo de campo.',
+            'Las unidades incluyen humedad del suelo VWC %, temperatura del suelo degC, temperatura del aire degC, humedad relativa %, precipitación mm, viento km/h, radiación solar W/m2, caudal de riego m3/h y energía kWh.',
+            'La actualidad se basa en la marca temporal más reciente. Valores antiguos o incompletos reducen la confianza y deben compararse con las condiciones de campo.',
+            'Los problemas habituales incluyen falta de energía, cobertura radio deficiente, pluviómetros obstruidos, sondas desconectadas y sincronización retrasada.',
+        ],
+    ],
+    [
+        'id' => 'weather-openagri',
+        'title' => 'Meteorología y OpenAgri Weather',
+        'audience' => 'Responsable de Explotación, Gestor Técnico',
+        'items' => [
+            'Las lecturas en campo proceden de estaciones locales; los valores del servicio meteorológico externo llegan por la ruta OpenAgri Weather o por una fuente meteorológica pública aprobada.',
+            'El estado del servicio Weather muestra si el punto de conexión es alcanzable y si hay observaciones en tiempo real disponibles.',
+            'Las credenciales del proveedor meteorológico se configuran en Configuración por usuarios autorizados. Las claves guardadas nunca se muestran después de guardarlas.',
+            'La meteorología afecta a recomendaciones de riego, estimaciones de evapotranspiración, presión de plagas e interpretación de riesgo de enfermedad. Si faltan credenciales, la plataforma informa claramente de esa necesidad.',
+        ],
+    ],
+    [
+        'id' => 'irrigation',
+        'title' => 'Riego',
+        'audience' => 'Responsable de Explotación, Asesor / Investigador',
+        'items' => [
+            'Las recomendaciones de riego combinan humedad del suelo, meteorología, balance hídrico, caudal y energía cuando esos datos están disponibles.',
+            'Los indicadores de balance hídrico y déficit de riego muestran si un bloque se acerca a umbrales de humedad por debajo del nivel preferido.',
+            'Los valores de caudal y energía de la bomba ayudan a confirmar si la ventana recomendada es viable y eficiente.',
+            'Las etiquetas de confianza indican si las entradas están actualizadas y completas. Una confianza más baja requiere confirmación en campo antes de ejecutar la acción.',
+        ],
+    ],
+    [
+        'id' => 'pest-disease',
+        'title' => 'Plagas y Enfermedades',
+        'audience' => 'Responsable de Explotación, Asesor / Investigador',
+        'items' => [
+            'Los niveles de riesgo combinan temperatura, humedad, mojado foliar, precipitación y contexto del cultivo. Úselos como apoyo a la decisión, no como única fuente de inspección.',
+            'Los grados-día de crecimiento, cuando están disponibles, apoyan la interpretación de fases de plagas y el calendario de observación.',
+            'Riesgo moderado o alto debe activar observación en campo, comprobación de trampas y revisión de asesoramiento agronómico local.',
+            'Los resultados dependen de la calidad de las entradas. Meteorología ausente o datos antiguos de mojado foliar pueden reducir la confianza.',
+        ],
+    ],
+    [
+        'id' => 'farm-calendar',
+        'title' => 'Calendario Agrícola',
+        'audience' => 'Responsable de Explotación, Asesor / Investigador',
+        'items' => [
+            'El Calendario Agrícola registra operaciones, observaciones, activos y registros de la explotación que explican cambios en las condiciones.',
+            'Las operaciones incluyen comprobaciones de riego, sensores, observación de plagas, inspección de bomba y otras actividades agrícolas.',
+            'La integración FarmCalendar permite que los servicios OpenAgri compartan contexto operativo cuando está configurada.',
+            'Mantenga registros concisos y con fecha/hora para que informes y análisis sean auditables.',
+        ],
+    ],
+    [
+        'id' => 'reports',
+        'title' => 'Informes',
+        'audience' => 'Responsable de Explotación, Asesor / Investigador, Administrador',
+        'items' => [
+            'Los informes resumen recomendaciones de riego, plagas y enfermedades, estaciones de sensores, estado de servicios y evidencia operativa.',
+            'Las acciones de exportación preparan salidas para impresión o JSON con marcas AgriTwin, Fotovoltaica Macotera SL y OBSIDIAN.',
+            'Los informes incluyen datos operativos necesarios para revisión y evitan secretos o credenciales.',
+            'Revise las etiquetas de origen de datos antes de distribuir un informe externamente.',
+        ],
+    ],
+    [
+        'id' => 'openagri-services',
+        'title' => 'Servicios OpenAgri',
+        'audience' => 'Gestor Técnico, Administrador',
+        'items' => [
+            'Los servicios OpenAgri principales son Gatekeeper / Access Control, Weather Data Service, Irrigation Management Service y Pest & Disease Management Service.',
+            'Los servicios operativos adicionales son FarmCalendar y Reporting Service. Geodatabase / OCSM es opcional y solo afecta a instalaciones que lo configuren.',
+            'Los estados incluyen Servicio disponible, Servicio no disponible, Configuración necesaria, Credenciales necesarias y Configuración del proveedor externo necesaria.',
+            'Los enlaces de punto de conexión son URLs de servicio, los enlaces de documentación API explican el uso y los enlaces de repositorio apuntan al código fuente.',
+        ],
+    ],
+    [
+        'id' => 'settings',
+        'title' => 'Configuración',
+        'audience' => 'Administrador, Gestor Técnico',
+        'admin' => true,
+        'items' => [
+            'Configuración muestra modo de plataforma, URLs OpenAgri, preferencia meteorológica, ruta base de API, zona horaria, intervalos de actualización y estado de base de datos.',
+            'Las claves API meteorológicas pueden guardarse, validarse y eliminarse por usuarios autorizados. Los secretos permanecen locales y nunca se devuelven en el código de la página ni en respuestas API.',
+            'Las URLs de servicio pueden revisarse en Configuración, mientras que las credenciales sensibles deben permanecer gestionadas por entorno o en la ruta local segura.',
+            'Use el panel de diagnóstico de base de datos para confirmar host, puerto, nombre de base de datos y estado de conexión sin exponer contraseñas.',
+        ],
+    ],
+    [
+        'id' => 'user-management',
+        'title' => 'Gestión de Usuarios',
+        'audience' => 'Administrador',
+        'admin' => true,
+        'items' => [
+            'Los Administradores pueden crear usuarios, asignar roles, restablecer contraseñas, activar o desactivar cuentas y definir idioma preferido.',
+            'Las contraseñas se almacenan como hashes. Las contraseñas temporales deben cambiarse en el primer acceso.',
+            'Los roles Gestor Técnico, Responsable de Explotación, Asesor / Investigador y Visor reciben niveles progresivamente más restringidos.',
+            'Desactive cuentas sin uso en lugar de borrar historial operativo.',
+        ],
+    ],
+    [
+        'id' => 'api-swagger',
+        'title' => 'API / Swagger',
+        'audience' => 'Gestor Técnico, Administrador, Asesor / Investigador',
+        'items' => [
+            'Swagger presenta la descripción OpenAPI de los endpoints AgriTwin, incluyendo salud, meteorología, estaciones, analítica, servicios OpenAgri y KPIs.',
+            'Los usuarios técnicos pueden consultar formatos de solicitud y respuesta y probar endpoints de lectura cuando los permisos lo permitan.',
+            'El JSON OpenAPI está orientado a herramientas de integración y no contiene credenciales.',
+            'Las acciones de escritura requieren el rol autenticado adecuado y protección CSRF cuando se usan mediante formularios del navegador.',
+        ],
+    ],
+    [
+        'id' => 'troubleshooting',
+        'title' => 'Resolución de Problemas',
+        'audience' => 'Todos los usuarios, Gestor Técnico',
+        'items' => [
+            'Si la base de datos no está disponible, ejecute scripts/start_local_stack.sh y después scripts/check_local_stack.sh. No elimine volúmenes de base de datos durante la recuperación normal.',
+            'Si un servicio OpenAgri no está disponible, ejecute scripts/openagri/check_openagri_services.sh y revise punto de conexión, credenciales y estado del contenedor.',
+            'Si se requieren credenciales meteorológicas, un usuario autorizado debe configurar la clave del proveedor en Configuración.',
+            'Si los gráficos no cargan, actualice la página y confirme que JavaScript está activo. Si el idioma no persiste, revise las cookies del navegador para /agritwin3/.',
+            'Para problemas de acceso o contraseña, contacte con un Administrador para restablecer la cuenta o confirmar permisos.',
+        ],
+    ],
+    [
+        'id' => 'glossary',
+        'title' => 'Glosario',
+        'audience' => 'Todos los usuarios',
+        'items' => [
+            'ADS: apoyo a la decisión agrícola. API: interfaz de programación de aplicaciones. OpenAPI y Swagger: formatos y herramientas para documentación de APIs.',
+            'Gatekeeper controla autenticación y acceso a servicios. Weather Service, Irrigation Management y Pest & Disease Management proporcionan funciones OpenAgri principales.',
+            'FarmCalendar registra operaciones y observaciones. Estación de sensores significa un activo de campo que recoge varias mediciones.',
+            'VWC es contenido volumétrico de agua. ET0 es evapotranspiración de referencia. Kc es coeficiente de cultivo. NDVI y NDRE son índices de vegetación.',
+            'KPI significa indicador clave de rendimiento. Modo local de contingencia significa que la plataforma usa datos operativos locales mientras una conexión en tiempo real no está disponible. Credenciales necesarias significa que se necesita un secreto configurado. Servicio disponible significa que la comprobación del punto de conexión fue correcta.',
+        ],
+    ],
+];

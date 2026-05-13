@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/hmi_data.php';
+require_once __DIR__ . '/help_content.php';
 
 function agritwin_nav_items(): array
 {
@@ -18,6 +19,7 @@ function agritwin_nav_items(): array
         'analytics' => ['href' => 'analytics.php', 'label' => agritwin_t('analytics'), 'icon' => 'fas fa-chart-line'],
         'api' => ['href' => 'api_swagger.php', 'label' => agritwin_t('api'), 'icon' => 'fas fa-code'],
         'settings' => ['href' => 'settings.php', 'label' => agritwin_t('settings'), 'icon' => 'fas fa-gear'],
+        'help' => ['href' => 'help.php', 'label' => agritwin_t('help'), 'icon' => 'fas fa-circle-question'],
     ];
     if (agritwin_role_allows('users')) {
         $items['users'] = ['href' => 'users.php', 'label' => agritwin_t('users'), 'icon' => 'fas fa-users-gear'];

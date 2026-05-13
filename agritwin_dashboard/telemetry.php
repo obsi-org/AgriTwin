@@ -9,7 +9,7 @@ agritwin_render_page('telemetry', agritwin_t('telemetry'), function () use ($sen
     <section class="view-section">
         <div class="section-heading">
             <h2><?= agritwin_h(agritwin_t('station_overview')) ?></h2>
-            <?= agritwin_badge('normal') ?>
+            <div class="action-row"><?= agritwin_help_link('sensor-stations') ?><?= agritwin_badge('normal') ?></div>
         </div>
         <div class="telemetry-grid">
             <?php foreach ($stations as $station): ?>

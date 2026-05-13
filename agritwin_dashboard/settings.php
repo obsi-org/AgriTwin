@@ -67,7 +67,7 @@ agritwin_render_page('settings', agritwin_t('settings'), function () use ($conte
     <section class="view-section">
         <div class="section-heading">
             <h2><?= agritwin_h(agritwin_t('platform_settings')) ?></h2>
-            <div><?= $settingsMessage !== '' ? '<span class="confidence-pill confidence-normal">' . agritwin_h($settingsMessage) . '</span>' : '' ?> <?= agritwin_badge($dbOk ? 'healthy' : 'unavailable') ?></div>
+            <div class="action-row"><?= agritwin_help_link('settings') ?><?= $settingsMessage !== '' ? '<span class="confidence-pill confidence-normal">' . agritwin_h($settingsMessage) . '</span>' : '' ?> <?= agritwin_badge($dbOk ? 'healthy' : 'unavailable') ?></div>
         </div>
         <div class="telemetry-grid">
             <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('api_base_path')) ?></span><strong><?= agritwin_h($context['base_path']) ?></strong></article>
