@@ -41,7 +41,13 @@ $fieldText = [
         'select_index' => 'Select Index',
         'none' => 'None',
         'default_imagery_only' => 'Default imagery only',
+        'copernicus_vegetation_index' => 'Copernicus vegetation index',
+        'copernicus_ndvi' => 'NDVI (Copernicus)',
+        'copernicus_lai_savi' => 'LAI/SAVI (Copernicus)',
+        'configuration_required' => 'Configuration required',
+        'copernicus_layer_unavailable' => 'Copernicus layer unavailable',
         'legend' => 'Legend',
+        'legend_unavailable' => 'Legend unavailable',
         'index_legend' => 'Index legend',
         'toggle_sidebar' => 'Toggle side panel (R)',
         'back_dashboard' => 'Back to AgriTwin Dashboard',
@@ -88,7 +94,13 @@ $fieldText = [
         'select_index' => 'Selecionar índice',
         'none' => 'Nenhum',
         'default_imagery_only' => 'Apenas imagem base',
+        'copernicus_vegetation_index' => 'Índice de vegetação Copernicus',
+        'copernicus_ndvi' => 'NDVI (Copernicus)',
+        'copernicus_lai_savi' => 'LAI/SAVI (Copernicus)',
+        'configuration_required' => 'Configuração necessária',
+        'copernicus_layer_unavailable' => 'Camada Copernicus indisponível',
         'legend' => 'Legenda',
+        'legend_unavailable' => 'Legenda indisponível',
         'index_legend' => 'Legenda do índice',
         'toggle_sidebar' => 'Alternar painel lateral (R)',
         'back_dashboard' => 'Voltar ao painel de controlo AgriTwin',
@@ -135,7 +147,13 @@ $fieldText = [
         'select_index' => 'Seleccionar índice',
         'none' => 'Ninguno',
         'default_imagery_only' => 'Solo imagen base',
+        'copernicus_vegetation_index' => 'Índice de vegetación Copernicus',
+        'copernicus_ndvi' => 'NDVI (Copernicus)',
+        'copernicus_lai_savi' => 'LAI/SAVI (Copernicus)',
+        'configuration_required' => 'Configuración necesaria',
+        'copernicus_layer_unavailable' => 'Capa Copernicus no disponible',
         'legend' => 'Leyenda',
+        'legend_unavailable' => 'Leyenda no disponible',
         'index_legend' => 'Leyenda del índice',
         'toggle_sidebar' => 'Alternar panel lateral (R)',
         'back_dashboard' => 'Volver al panel de control AgriTwin',
@@ -185,11 +203,12 @@ try {
         "SELECT value FROM app_settings WHERE name = 'copernicus_id' LIMIT 1"
     );
     $stmtCop->execute();
-    $copernicusId = $stmtCop->fetchColumn() ?: '';
+    $copernicusId = trim((string) ($stmtCop->fetchColumn() ?: ''));
 } catch (Exception $e) {
     $copernicusId = '';
     // Optionally: error_log($e->getMessage());
 }
+$copernicusConfigured = $copernicusId !== '';
 
 // Operational data defaults used when the latest database row is unavailable.
 $dbSoilMoisture = "N/A";
@@ -345,6 +364,21 @@ try {
             font-family: sans-serif;
             z-index: 1100;
         }
+        .layerTogglePanel label {
+            display: inline-block;
+            margin: 2px 0;
+        }
+        .layerTogglePanel input:disabled + span,
+        .layerTogglePanel input:disabled {
+            opacity: 0.65;
+        }
+        .layer-status {
+            margin: 8px 0 0;
+            max-width: 220px;
+            color: #d6f5d6;
+            font-size: 12px;
+            line-height: 1.3;
+        }
 
         /* Legend container for NDVI/LAI_SAVI */
         #legendContainer {
@@ -476,7 +510,7 @@ try {
     </button>
 </div>
 
-<!-- Panel for NDVI / LAI_SAVI toggles via radio buttons -->
+<!-- Panel for Copernicus NDVI / LAI_SAVI toggles via radio buttons -->
 <div class="layerTogglePanel">
     <p><strong><?= htmlspecialchars($t('select_index'), ENT_QUOTES, 'UTF-8') ?></strong></p>
     <label>
@@ -485,17 +519,26 @@ try {
     </label>
     <br>
     <label>
-      <input type="radio" name="indexLayer" value="NDVI"/>
-      NDVI (Sentinel Hub)
+      <input type="radio" name="indexLayer" value="NDVI"<?= $copernicusConfigured ? '' : ' disabled' ?>/>
+      <?= htmlspecialchars($t('copernicus_ndvi'), ENT_QUOTES, 'UTF-8') ?>
     </label>
     <br>
     <label>
-      <input type="radio" name="indexLayer" value="LAI_SAVI"/>
-      LAI_SAVI (Sentinel Hub)
+      <input type="radio" name="indexLayer" value="LAI_SAVI"<?= $copernicusConfigured ? '' : ' disabled' ?>/>
+      <?= htmlspecialchars($t('copernicus_lai_savi'), ENT_QUOTES, 'UTF-8') ?>
     </label>
+    <p id="copernicusLayerStatus"
+       class="layer-status"
+       data-configured="<?= $copernicusConfigured ? '1' : '0' ?>"
+       data-ready-text="<?= htmlspecialchars($t('copernicus_vegetation_index'), ENT_QUOTES, 'UTF-8') ?>"
+       data-required-text="<?= htmlspecialchars($t('configuration_required'), ENT_QUOTES, 'UTF-8') ?>"
+       data-unavailable-text="<?= htmlspecialchars($t('copernicus_layer_unavailable'), ENT_QUOTES, 'UTF-8') ?>"
+       data-legend-unavailable-text="<?= htmlspecialchars($t('legend_unavailable'), ENT_QUOTES, 'UTF-8') ?>">
+      <?= htmlspecialchars($copernicusConfigured ? $t('copernicus_vegetation_index') : $t('configuration_required'), ENT_QUOTES, 'UTF-8') ?>
+    </p>
 </div>
 
-<!-- Legend container for Sentinel NDVI/LAI_SAVI -->
+<!-- Legend container for Copernicus NDVI/LAI_SAVI -->
 <div id="legendContainer">
     <div id="legendTitle"><?= htmlspecialchars($t('legend'), ENT_QUOTES, 'UTF-8') ?></div>
     <img id="legendImage" src="" alt="<?= htmlspecialchars($t('index_legend'), ENT_QUOTES, 'UTF-8') ?>" />
@@ -549,7 +592,7 @@ const viewer = new Cesium.Viewer('cesiumContainer', {
     });
 
     /*********************************************
-     * 3) Sentinel Hub NDVI / LAI_SAVI + bounding
+     * 3) Copernicus NDVI / LAI_SAVI + bounding
      *********************************************/
     var boundingRectangle = Cesium.Rectangle.fromDegrees(
         -5.262770243294276,  // West
@@ -560,9 +603,9 @@ const viewer = new Cesium.Viewer('cesiumContainer', {
     var initialFieldView = {
       longitude: -5.259723,
       latitude: 40.883642,
-      height: 950,
+      height: 940,
       heading: 0,
-      pitch: -55,
+      pitch: 0,
       roll: 0
     };
     viewer.camera.flyTo({
@@ -579,40 +622,76 @@ const viewer = new Cesium.Viewer('cesiumContainer', {
       duration: 2
     });
 
-const COPERNICUS_ID = <?= json_encode($copernicusId) ?>;
-const sentinelWmsUrl = `https://sh.dataspace.copernicus.eu/ogc/wms/${COPERNICUS_ID}?`;
+const COPERNICUS_ID = String(<?= json_encode($copernicusId) ?> || '').trim();
+const sentinelWmsUrl = COPERNICUS_ID ? `https://sh.dataspace.copernicus.eu/ogc/wms/${COPERNICUS_ID}?` : '';
+const copernicusDiagnostics = {
+  idConfigured: Boolean(COPERNICUS_ID),
+  wmsUrlConfigured: Boolean(sentinelWmsUrl),
+  ndviProviderInitialised: false,
+  laiSaviProviderInitialised: false,
+  selectedIndexLayer: 'none',
+  lastLayerError: ''
+};
+window.AgriTwinCopernicusDiagnostics = copernicusDiagnostics;
 
+    var newNdviLayer = null;
+    var laiSaviLayer = null;
+    var copernicusStatus = document.getElementById("copernicusLayerStatus");
 
-    var wmsOptions = {
-      url: sentinelWmsUrl,
-      parameters: {
-        service: "WMS",
-        version: "1.3.0",
-        request: "GetMap",
-        format: "image/png",
-        transparent: "true",
-        CRS: "EPSG:3857"
-      },
-      rectangle: boundingRectangle,
-      tilingScheme: new Cesium.WebMercatorTilingScheme(),
-      enablePickFeatures: false,
-      maximumLevel: 14,
-      credit: "Sentinel Hub / Copernicus"
-    };
+    function updateCopernicusStatus(message) {
+      if (copernicusStatus) {
+        copernicusStatus.textContent = message;
+      }
+    }
 
-    var newNdviProvider = new Cesium.WebMapServiceImageryProvider({
-      ...wmsOptions,
-      layers: "NDVI"
-    });
-    var newNdviLayer = viewer.imageryLayers.addImageryProvider(newNdviProvider);
-    newNdviLayer.show = false;
+    function registerImageryError(provider, layerName) {
+      if (provider && provider.errorEvent) {
+        provider.errorEvent.addEventListener(function(error) {
+          copernicusDiagnostics.lastLayerError = layerName + ': ' + (error && error.message ? error.message : 'imagery request failed');
+          updateCopernicusStatus(copernicusStatus ? copernicusStatus.dataset.unavailableText : FIELD_TEXT.copernicus_layer_unavailable);
+        });
+      }
+    }
 
-    var laiSaviProvider = new Cesium.WebMapServiceImageryProvider({
-      ...wmsOptions,
-      layers: "LAI_SAVI"
-    });
-    var laiSaviLayer = viewer.imageryLayers.addImageryProvider(laiSaviProvider);
-    laiSaviLayer.show = false;
+    if (COPERNICUS_ID) {
+      var wmsOptions = {
+        url: sentinelWmsUrl,
+        parameters: {
+          service: "WMS",
+          version: "1.3.0",
+          request: "GetMap",
+          format: "image/png",
+          transparent: "true",
+          CRS: "EPSG:3857"
+        },
+        rectangle: boundingRectangle,
+        tilingScheme: new Cesium.WebMercatorTilingScheme(),
+        enablePickFeatures: false,
+        maximumLevel: 14,
+        credit: "Sentinel Hub / Copernicus"
+      };
+
+      var newNdviProvider = new Cesium.WebMapServiceImageryProvider({
+        ...wmsOptions,
+        layers: "NDVI"
+      });
+      registerImageryError(newNdviProvider, "NDVI");
+      newNdviLayer = viewer.imageryLayers.addImageryProvider(newNdviProvider);
+      newNdviLayer.show = false;
+      copernicusDiagnostics.ndviProviderInitialised = true;
+
+      var laiSaviProvider = new Cesium.WebMapServiceImageryProvider({
+        ...wmsOptions,
+        layers: "LAI_SAVI"
+      });
+      registerImageryError(laiSaviProvider, "LAI_SAVI");
+      laiSaviLayer = viewer.imageryLayers.addImageryProvider(laiSaviProvider);
+      laiSaviLayer.show = false;
+      copernicusDiagnostics.laiSaviProviderInitialised = true;
+      updateCopernicusStatus(copernicusStatus ? copernicusStatus.dataset.readyText : FIELD_TEXT.copernicus_vegetation_index);
+    } else {
+      updateCopernicusStatus(copernicusStatus ? copernicusStatus.dataset.requiredText : FIELD_TEXT.configuration_required);
+    }
 
     // Custom legend images
     var legendUrls = {
@@ -624,13 +703,32 @@ const sentinelWmsUrl = `https://sh.dataspace.copernicus.eu/ogc/wms/${COPERNICUS_
     var legendContainer = document.getElementById("legendContainer");
     var legendImage = document.getElementById("legendImage");
     var legendTitle = document.getElementById("legendTitle");
+    if (legendImage) {
+      legendImage.addEventListener("error", function() {
+        legendContainer.style.display = "block";
+        legendTitle.textContent = copernicusStatus ? copernicusStatus.dataset.legendUnavailableText : FIELD_TEXT.legend_unavailable;
+        legendImage.removeAttribute("src");
+      });
+    }
 
     radios.forEach(rb => {
       rb.addEventListener("change", () => {
-        newNdviLayer.show = false;
-        laiSaviLayer.show = false;
+        if (newNdviLayer) {
+          newNdviLayer.show = false;
+        }
+        if (laiSaviLayer) {
+          laiSaviLayer.show = false;
+        }
+        copernicusDiagnostics.selectedIndexLayer = rb.value;
 
         if (rb.value === "none") {
+          legendContainer.style.display = "none";
+          return;
+        }
+        if (!COPERNICUS_ID || !newNdviLayer || !laiSaviLayer) {
+          updateCopernicusStatus(copernicusStatus ? copernicusStatus.dataset.requiredText : FIELD_TEXT.configuration_required);
+          rb.checked = false;
+          document.querySelector('input[name="indexLayer"][value="none"]').checked = true;
           legendContainer.style.display = "none";
           return;
         }
@@ -639,6 +737,7 @@ const sentinelWmsUrl = `https://sh.dataspace.copernicus.eu/ogc/wms/${COPERNICUS_
         } else if (rb.value === "LAI_SAVI") {
           laiSaviLayer.show = true;
         }
+        updateCopernicusStatus(copernicusStatus ? copernicusStatus.dataset.readyText : FIELD_TEXT.copernicus_vegetation_index);
         legendContainer.style.display = "block";
         legendTitle.textContent = rb.value;
         legendImage.src = legendUrls[rb.value] || "";
