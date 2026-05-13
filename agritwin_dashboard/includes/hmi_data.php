@@ -267,7 +267,7 @@ function agritwin_weather_source(): array
     $public = agritwin_public_weather();
     if ($public['ok']) {
         return [
-            'label' => 'External weather service: Open-Meteo public forecast - live fallback',
+            'label' => 'External weather service: Open-Meteo public forecast',
             'source_name' => 'Open-Meteo public forecast',
             'mode' => 'fallback',
             'status' => 'live_fallback',
@@ -396,6 +396,55 @@ function agritwin_weather_from_station(): array
     ];
 }
 
+function agritwin_mandatory_openagri_keys(): array
+{
+    return ['gatekeeper', 'weather', 'irrigation', 'pest_disease'];
+}
+
+function agritwin_extension_openagri_keys(): array
+{
+    return ['farmcalendar', 'reporting'];
+}
+
+function agritwin_optional_openagri_keys(): array
+{
+    return ['geodatabase'];
+}
+
+function agritwin_openagri_service_groups(array $services): array
+{
+    return [
+        'mandatory' => array_intersect_key($services, array_flip(agritwin_mandatory_openagri_keys())),
+        'extensions' => array_intersect_key($services, array_flip(agritwin_extension_openagri_keys())),
+        'optional' => array_intersect_key($services, array_flip(agritwin_optional_openagri_keys())),
+    ];
+}
+
+function agritwin_openagri_service_role(string $key): string
+{
+    return match ($key) {
+        'gatekeeper' => agritwin_t('role_gatekeeper'),
+        'weather' => agritwin_t('role_weather'),
+        'irrigation' => agritwin_t('role_irrigation'),
+        'pest_disease' => agritwin_t('role_pest_disease'),
+        'farmcalendar' => agritwin_t('role_farmcalendar'),
+        'reporting' => agritwin_t('role_reporting'),
+        'geodatabase' => agritwin_t('role_geodatabase'),
+        default => agritwin_t('role_unknown'),
+    };
+}
+
+function agritwin_openagri_service_relevance(string $key): string
+{
+    if (in_array($key, agritwin_mandatory_openagri_keys(), true)) {
+        return agritwin_t('mandatory_relevance');
+    }
+    if (in_array($key, agritwin_extension_openagri_keys(), true)) {
+        return agritwin_t('extension_relevance');
+    }
+    return agritwin_t('optional_relevance');
+}
+
 function agritwin_service_cards(): array
 {
     agritwin_load_local_env();
@@ -435,14 +484,20 @@ function agritwin_check_openagri_service(string $key, array $service): array
         'source_repository' => $service['source_repository'] ?? '',
         'auth_type' => $token !== '' ? 'Bearer token / secret from environment' : 'Configuration required',
         'configured' => $endpoint !== '',
+        'required_for_d1' => in_array($key, agritwin_mandatory_openagri_keys(), true),
+        'required_for_proposal' => in_array($key, agritwin_mandatory_openagri_keys(), true),
+        'service_group' => in_array($key, agritwin_mandatory_openagri_keys(), true) ? 'mandatory' : (in_array($key, agritwin_extension_openagri_keys(), true) ? 'extensions' : 'optional'),
+        'role' => agritwin_openagri_service_role($key),
+        'proposal_d1_relevance' => agritwin_openagri_service_relevance($key),
         'mode' => 'not_configured',
-        'status' => 'not_configured',
+        'status' => $key === 'geodatabase' ? 'optional_not_configured' : 'not_configured',
         'http_status' => null,
         'latency_ms' => null,
         'last_successful_live_check' => null,
         'last_fallback_generation' => null,
         'last_check' => $ts,
         'error_summary' => agritwin_t('endpoint_not_configured'),
+        'diagnostics' => agritwin_t('endpoint_not_configured'),
     ];
 
     if ($endpoint === '') {
@@ -464,6 +519,7 @@ function agritwin_check_openagri_service(string $key, array $service): array
             },
             'last_fallback_generation' => $ts,
             'error_summary' => agritwin_t('awaiting_live_configuration_error'),
+            'diagnostics' => agritwin_t('awaiting_live_configuration_error'),
         ]);
     }
 
@@ -474,6 +530,7 @@ function agritwin_check_openagri_service(string $key, array $service): array
             'latency_ms' => 45,
             'last_fallback_generation' => $ts,
             'error_summary' => agritwin_t('local_endpoint_fallback_error'),
+            'diagnostics' => agritwin_t('local_endpoint_fallback_error'),
         ]);
     }
 
@@ -502,6 +559,7 @@ function agritwin_check_openagri_service(string $key, array $service): array
             'http_status' => $status,
             'latency_ms' => $latency,
             'error_summary' => agritwin_t('endpoint_auth_error'),
+            'diagnostics' => agritwin_t('endpoint_auth_error'),
         ]);
     }
 
@@ -514,6 +572,7 @@ function agritwin_check_openagri_service(string $key, array $service): array
             'latency_ms' => $latency,
             'last_successful_live_check' => gmdate(DateTimeInterface::ATOM),
             'error_summary' => agritwin_t('endpoint_success'),
+            'diagnostics' => agritwin_t('endpoint_success'),
         ]);
     }
 
@@ -524,6 +583,7 @@ function agritwin_check_openagri_service(string $key, array $service): array
         'latency_ms' => $latency,
         'last_fallback_generation' => $ts,
         'error_summary' => $status > 0 ? 'HTTP ' . $status . '; ' . agritwin_t('local_fallback') : agritwin_t('endpoint_unreachable_error'),
+        'diagnostics' => $status > 0 ? 'HTTP ' . $status : agritwin_t('endpoint_unreachable_error'),
     ]);
 }
 

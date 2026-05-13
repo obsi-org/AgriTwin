@@ -98,7 +98,7 @@ function agritwin_badge(string $mode): string
     $class = match ($mode) {
         'normal', 'healthy', 'completed', 'live_healthy' => 'confidence-normal',
         'reduced', 'planned', 'local_fallback_active', 'live_fallback' => 'confidence-reduced',
-        'stale', 'fallback' => 'confidence-stale',
+        'stale', 'fallback', 'optional_not_configured' => 'confidence-stale',
         default => 'confidence-unavailable',
     };
     return '<span class="confidence-pill ' . $class . '">' . agritwin_h(agritwin_status_label($mode)) . '</span>';

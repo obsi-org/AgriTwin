@@ -266,6 +266,23 @@ pre:focus-visible {
     border-radius: 8px;
 }
 
+.mandatory-service-card {
+    border-color: rgba(47, 111, 78, 0.5);
+    border-left: 5px solid var(--green);
+}
+
+.mandatory-service-table {
+    border: 2px solid rgba(47, 111, 78, 0.35);
+}
+
+.mandatory-row td:first-child {
+    border-left: 5px solid var(--green);
+}
+
+.compact-section {
+    box-shadow: 0 4px 14px rgba(31, 47, 39, 0.06);
+}
+
 .priority-card .metric {
     margin: 8px 0;
     font-size: 22px;

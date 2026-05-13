@@ -58,6 +58,7 @@ Optional deeper checks:
 
 ```bash
 scripts/openagri/check_openagri_services.sh
+scripts/openagri/check_openagri_services.sh --mandatory-only
 make test
 find . -path './external' -prune -o -path './vendor' -prune -o -name '*.php' -print | xargs -n1 php -l
 curl -s -L http://localhost/agritwin3/index.php
@@ -67,6 +68,24 @@ curl -s -L http://localhost/agritwin3/agritwin_dashboard/openagri_services.php
 ```
 
 Live OpenAgri Weather observations require real external credentials and provider configuration outside git.
+
+## Mandatory OpenAgri Services
+
+Proposal/D1 compliance is assessed first against four mandatory OpenAgri services:
+
+- Gatekeeper / Access Control
+- Weather Data Service
+- Irrigation Management Service
+- Pest & Disease Management Service
+
+FarmCalendar and Reporting Service are operational extensions. Geodatabase / OCSM is optional for the local D1 readiness check unless a real endpoint is configured.
+
+Use the mandatory-only check when validating the core service set:
+
+```bash
+scripts/openagri/check_openagri_services.sh --mandatory-only
+curl -fsS http://localhost/agritwin3/api/openagri/mandatory-services
+```
 
 ## Reproducible Mock Demo
 
@@ -106,6 +125,7 @@ The checkouts live under ignored path `external/openagri/`. Use `docker-compose.
 - `docs/integration/openagri_connectors.md`: OpenAgri connector configuration, APIs, cache/offline behavior, and tests.
 - `docs/integration/openagri_services_configuration.md`: OpenAgri live/demo/auto service-health configuration and weather verification.
 - `docs/integration/openagri_endpoint_configuration.md`: OpenAgri endpoint, documentation URL and credential configuration.
+- `docs/integration/openagri_mandatory_services.md`: mandatory Proposal/D1 OpenAgri service set and health-check method.
 - `docs/edge/edge_gateway_runbook.md`: mixed edge-cloud gateway installation, storage, sync, and troubleshooting.
 - `docs/edge/sensor_payload_spec.md`: canonical sensor packet schema and examples.
 - `docs/evidence/kpi_methodology.md`: D1 KPI metric definitions, formulas, collection method, and comparison approach.

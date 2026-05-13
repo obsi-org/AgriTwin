@@ -21,6 +21,32 @@
         "responses": { "200": { "description": "Connector health records", "content": { "application/json": { "schema": { "type": "object", "properties": { "services": { "type": "array", "items": { "$ref": "#/components/schemas/OpenAgriServiceHealth" } }, "weather_source": { "$ref": "#/components/schemas/WeatherSource" } } } } } } }
       }
     },
+    "/api/openagri/mandatory-services": {
+      "get": {
+        "summary": "Mandatory OpenAgri services for Proposal/D1 compliance",
+        "description": "Returns only Gatekeeper, Weather Data, Irrigation Management and Pest & Disease Management service records.",
+        "responses": {
+          "200": {
+            "description": "Mandatory OpenAgri service health records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "group": { "type": "string", "example": "mandatory" },
+                    "proposal_d1_compliance_basis": { "type": "boolean", "example": true },
+                    "services": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/OpenAgriServiceHealth" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/openagri/services/test": {
       "post": {
         "summary": "Test one configured OpenAgri service connection",
@@ -127,10 +153,14 @@
           "endpoint": { "type": "string" },
           "configured": { "type": "boolean" },
           "mode": { "type": "string", "enum": ["live", "auto", "fallback", "not_configured"] },
-          "status": { "type": "string", "enum": ["live_healthy", "local_fallback_active", "degraded", "unavailable", "unauthenticated", "not_configured"] },
+          "status": { "type": "string", "enum": ["live_healthy", "local_fallback_active", "degraded", "unavailable", "unauthenticated", "not_configured", "optional_not_configured"] },
+          "required_for_d1": { "type": "boolean", "example": true },
+          "required_for_proposal": { "type": "boolean", "example": true },
+          "role": { "type": "string", "example": "Weather forecasts and agrometeorological indicators for DSS inputs." },
           "http_status": { "type": "integer", "nullable": true },
           "latency_ms": { "type": "integer", "nullable": true },
-          "error_summary": { "type": "string" }
+          "error_summary": { "type": "string" },
+          "diagnostics": { "type": "string" }
         }
       },
       "SensorStation": {
@@ -170,7 +200,7 @@
       "WeatherSource": {
         "type": "object",
         "properties": {
-          "label": { "type": "string", "example": "External weather service: Open-Meteo public forecast - live fallback" },
+          "label": { "type": "string", "example": "External weather service: Open-Meteo public forecast" },
           "mode": { "type": "string", "example": "fallback" },
           "temperature_c": { "type": "number", "example": 13.8 },
           "humidity_pct": { "type": "integer", "example": 75 },

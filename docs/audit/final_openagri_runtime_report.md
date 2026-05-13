@@ -14,7 +14,7 @@ Date: 2026-05-12
 - Rechecked AgriTwin pages and API endpoints against the locally running service URLs.
 - Removed a rendered SQLSTATE failure path by making the login and settings pages degrade to a professional database-unavailable state when the host MySQL credentials are not accepted.
 
-## Runtime Result
+## Mandatory Services - Proposal/D1
 
 | Service | Local URL | Result |
 | --- | --- | --- |
@@ -22,9 +22,23 @@ Date: 2026-05-12
 | Weather Service | `http://127.0.0.1:18092` | Service available; weather data endpoint requires authentication/provider configuration |
 | Irrigation Management | `http://127.0.0.1:18093` | Available |
 | Pest and Disease Management | `http://127.0.0.1:18094` | Available |
+
+These four services form the mandatory AgriTwin/OpenAgri integration evidence for Proposal/D1: access control, weather inputs, irrigation advisory support, and pest/disease risk support.
+
+## Operational Extensions
+
+| Service | Local URL | Result |
+| --- | --- | --- |
 | FarmCalendar | `http://127.0.0.1:18095` | Available through `/api/v1/` |
 | Reporting Service | `http://127.0.0.1:18096` | Available |
+
+## Optional Services
+
+| Service | Local URL | Result |
+| --- | --- | --- |
 | Geodatabase / OCSM | Not configured | Configuration required |
+
+Geodatabase / OCSM is optional for the current local D1 readiness check. Its missing configuration is not interpreted as a failure of the mandatory service set.
 
 ## Weather Source
 
@@ -36,8 +50,10 @@ The local OpenAgri Weather Service process and documentation endpoint are availa
 scripts/openagri/setup_openagri_services.sh
 OPENAGRI_RUN_CONTAINERS=1 scripts/openagri/start_openagri_services.sh
 scripts/openagri/check_openagri_services.sh
+scripts/openagri/check_openagri_services.sh --mandatory-only
 docker compose -f external/openagri/runtime/docker-compose.generated.yml ps -a
 docker compose -f external/openagri/runtime/docker-compose.generated.yml config
+curl -fsS http://localhost/agritwin3/api/openagri/mandatory-services
 ```
 
 ## Remaining Requirements
@@ -46,3 +62,26 @@ docker compose -f external/openagri/runtime/docker-compose.generated.yml config
 - Provide a real Geodatabase / OCSM endpoint if that service is in scope for the local validation run.
 - Keep generated local `.env` files untracked.
 - Repair or expose the local AgriTwin MySQL user if login/user management should be exercised against the host database rather than the existing graceful unavailable state.
+
+## 2026-05-13 Mandatory-Service Reprioritisation
+
+The HMI, settings page, JSON API and health-check script now present Gatekeeper, Weather Data, Irrigation Management and Pest & Disease Management as the primary Proposal/D1 service group. FarmCalendar and Reporting are shown as operational extensions. Geodatabase / OCSM is shown as optional and not required for D1 when no endpoint is configured.
+
+Verification commands run:
+
+```bash
+scripts/openagri/check_openagri_services.sh --mandatory-only
+scripts/openagri/check_openagri_services.sh
+scripts/check_local_stack.sh
+make test
+docker compose config
+curl -fsS http://localhost/agritwin3/api/openagri/mandatory-services
+curl -fsS http://localhost/agritwin3/api/openagri/services
+```
+
+Observed status:
+
+- Mandatory services: Gatekeeper, Weather, Irrigation and Pest & Disease endpoints all returned HTTP 200 on their configured local health/docs paths.
+- Extensions: FarmCalendar and Reporting endpoints returned HTTP 200.
+- Optional services: Geodatabase / OCSM remains optional and not configured.
+- Weather observations: the Weather service endpoint is reachable; live weather observations still require external provider credentials when using the OpenAgri data endpoint.

@@ -9,8 +9,12 @@ $weatherSource = agritwin_weather_source();
 $stations = agritwin_sensor_stations();
 
 agritwin_render_page('dashboard', agritwin_t('dashboard'), function () use ($sensors, $recommendations, $context, $services, $weatherSource, $stations): void {
-    $liveServices = count(array_filter($services, static fn ($service): bool => $service['mode'] === 'live' && $service['status'] === 'live_healthy'));
-    $fallbackServices = count(array_filter($services, static fn ($service): bool => $service['mode'] === 'fallback'));
+    $groups = agritwin_openagri_service_groups($services);
+    $mandatoryServices = $groups['mandatory'];
+    $mandatoryAvailable = count(array_filter($mandatoryServices, static fn ($service): bool => $service['mode'] === 'live' && $service['status'] === 'live_healthy'));
+    $weatherService = $mandatoryServices['weather'] ?? null;
+    $weatherServiceReachable = $weatherService !== null && $weatherService['status'] === 'live_healthy';
+    $weatherObservationsAvailable = ($weatherSource['source_name'] ?? '') === 'OpenAgri Weather Data Service';
     ?>
     <section class="view-section">
         <div class="section-heading">
@@ -44,16 +48,17 @@ agritwin_render_page('dashboard', agritwin_t('dashboard'), function () use ($sen
                 <p><?= agritwin_h($recommendations['nitrogen']['label']) ?></p>
             </article>
             <article class="priority-card">
-                <?= agritwin_badge($liveServices > 0 ? 'healthy' : 'reduced') ?>
-                <h3><?= agritwin_h(agritwin_t('openagri_status')) ?></h3>
-                <p class="metric"><?= $liveServices ?> <?= agritwin_h(agritwin_t('live_service')) ?> / <?= $fallbackServices ?> <?= agritwin_h(agritwin_t('fallback_data')) ?></p>
-                <p><?= agritwin_h(agritwin_t('service_status_explanation')) ?></p>
+                <?= agritwin_badge($mandatoryAvailable === count($mandatoryServices) ? 'healthy' : 'reduced') ?>
+                <h3><?= agritwin_h(agritwin_t('mandatory_openagri_services')) ?></h3>
+                <p class="metric"><?= $mandatoryAvailable ?> / <?= count($mandatoryServices) ?></p>
+                <p><?= agritwin_h(agritwin_t('mandatory_service_explanation')) ?></p>
             </article>
             <article class="priority-card">
                 <?= agritwin_badge(in_array($weatherSource['mode'], ['live', 'fallback'], true) ? 'healthy' : 'reduced') ?>
                 <h3><?= agritwin_h(agritwin_t('external_weather')) ?></h3>
                 <p class="metric"><?= agritwin_h(agritwin_mode_label($weatherSource['mode'])) ?></p>
                 <p><?= agritwin_h($weatherSource['source_name'] ?? $weatherSource['label']) ?>: <?= agritwin_h((string) $weatherSource['temperature_c']) ?> degC, <?= agritwin_h((string) $weatherSource['humidity_pct']) ?>% RH, wind <?= agritwin_h((string) $weatherSource['wind_kmh']) ?> km/h, rain <?= agritwin_h((string) $weatherSource['rainfall_mm']) ?> mm.</p>
+                <p><?= agritwin_h(agritwin_t('weather_service_reachable')) ?>: <?= agritwin_h($weatherServiceReachable ? agritwin_t('connected') : agritwin_t('connection_unavailable')) ?>. <?= agritwin_h(agritwin_t('weather_observations')) ?>: <?= agritwin_h($weatherObservationsAvailable ? agritwin_t('weather_observations_available') : agritwin_t('external_provider_configuration_required')) ?>.</p>
             </article>
         </div>
     </section>

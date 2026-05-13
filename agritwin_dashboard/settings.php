@@ -16,6 +16,22 @@ $dbDiagnostics = $agritwin_db_diagnostics ?? [
 ];
 
 agritwin_render_page('settings', agritwin_t('settings'), function () use ($context, $services, $weatherSource, $dbOk, $dbDiagnostics): void {
+    $groups = agritwin_openagri_service_groups($services);
+    $renderServiceCards = static function (array $group): void {
+        ?>
+        <div class="service-grid">
+            <?php foreach ($group as $service): ?>
+                <article class="service-card <?= $service['required_for_d1'] ? 'mandatory-service-card' : '' ?>">
+                    <?= agritwin_badge($service['status']) ?>
+                    <h3><?= agritwin_h($service['name']) ?></h3>
+                    <p><strong><?= agritwin_h(agritwin_t('integration_role')) ?>:</strong> <?= agritwin_h($service['role']) ?></p>
+                    <p><?= agritwin_h(agritwin_t('endpoint')) ?>: <?= $service['configured'] ? '<a href="' . agritwin_h($service['endpoint']) . '">' . agritwin_h($service['endpoint']) . '</a>' : agritwin_h(agritwin_t('configuration_required')) ?></p>
+                    <p><?= agritwin_h($service['diagnostics'] ?? $service['error_summary']) ?></p>
+                </article>
+            <?php endforeach; ?>
+        </div>
+        <?php
+    };
     ?>
     <section class="view-section">
         <div class="section-heading">
@@ -47,18 +63,29 @@ agritwin_render_page('settings', agritwin_t('settings'), function () use ($conte
     </section>
 
     <section class="view-section">
-        <h2><?= agritwin_h(agritwin_t('openagri')) ?></h2>
-        <div class="service-grid">
-            <?php foreach ($services as $service): ?>
-                <article class="service-card">
-                    <?= agritwin_badge($service['status']) ?>
-                    <h3><?= agritwin_h($service['name']) ?></h3>
-                    <p>Mode: <?= agritwin_h(agritwin_mode_label($service['mode'])) ?></p>
-                    <p><?= agritwin_h(agritwin_t('endpoint')) ?>: <?= $service['configured'] ? '<a href="' . agritwin_h($service['endpoint']) . '">' . agritwin_h($service['endpoint']) . '</a>' : agritwin_h(agritwin_t('configuration_required')) ?></p>
-                    <p><?= agritwin_h($service['error_summary']) ?></p>
-                </article>
-            <?php endforeach; ?>
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow"><?= agritwin_h(agritwin_t('proposal_d1_compliance')) ?></p>
+                <h2><?= agritwin_h(agritwin_t('mandatory_openagri_services')) ?></h2>
+            </div>
+            <?= agritwin_badge('normal') ?>
         </div>
+        <p class="source-note"><?= agritwin_h(agritwin_t('mandatory_service_explanation')) ?></p>
+        <?php $renderServiceCards($groups['mandatory']); ?>
+    </section>
+
+    <section class="view-section compact-section">
+        <h2><?= agritwin_h(agritwin_t('operational_extensions')) ?></h2>
+        <?php $renderServiceCards($groups['extensions']); ?>
+    </section>
+
+    <section class="view-section compact-section">
+        <div class="section-heading">
+            <h2><?= agritwin_h(agritwin_t('optional_services')) ?></h2>
+            <?= agritwin_badge('optional_not_configured') ?>
+        </div>
+        <p class="source-note"><?= agritwin_h(agritwin_t('optional_not_required_for_d1')) ?></p>
+        <?php $renderServiceCards($groups['optional']); ?>
     </section>
 
     <section class="view-section">
@@ -104,9 +131,31 @@ agritwin_render_page('settings', agritwin_t('settings'), function () use ($conte
                 <input type="text" value="AgriTwin, Fotovoltaica Macotera SL, OBSIDIAN" readonly>
             </label>
         </form>
-        <h3><?= agritwin_h(agritwin_t('openagri')) ?></h3>
+        <h3><?= agritwin_h(agritwin_t('mandatory_openagri_services')) ?></h3>
         <div class="settings-form">
-            <?php foreach ($services as $service): ?>
+            <?php foreach ($groups['mandatory'] as $service): ?>
+                <label><?= agritwin_h($service['name']) ?> URL
+                    <input value="<?= $service['configured'] ? agritwin_h($service['endpoint']) : agritwin_h(agritwin_t('configuration_required')) ?>" readonly>
+                </label>
+                <label><?= agritwin_h($service['name']) ?> <?= agritwin_h(agritwin_t('api_docs')) ?>
+                    <input value="<?= agritwin_h($service['docs_url'] ?: $service['source_repository']) ?>" readonly>
+                </label>
+            <?php endforeach; ?>
+        </div>
+        <h3><?= agritwin_h(agritwin_t('operational_extensions')) ?></h3>
+        <div class="settings-form">
+            <?php foreach ($groups['extensions'] as $service): ?>
+                <label><?= agritwin_h($service['name']) ?> URL
+                    <input value="<?= $service['configured'] ? agritwin_h($service['endpoint']) : agritwin_h(agritwin_t('configuration_required')) ?>" readonly>
+                </label>
+                <label><?= agritwin_h($service['name']) ?> <?= agritwin_h(agritwin_t('api_docs')) ?>
+                    <input value="<?= agritwin_h($service['docs_url'] ?: $service['source_repository']) ?>" readonly>
+                </label>
+            <?php endforeach; ?>
+        </div>
+        <h3><?= agritwin_h(agritwin_t('optional_services')) ?></h3>
+        <div class="settings-form">
+            <?php foreach ($groups['optional'] as $service): ?>
                 <label><?= agritwin_h($service['name']) ?> URL
                     <input value="<?= $service['configured'] ? agritwin_h($service['endpoint']) : agritwin_h(agritwin_t('configuration_required')) ?>" readonly>
                 </label>
