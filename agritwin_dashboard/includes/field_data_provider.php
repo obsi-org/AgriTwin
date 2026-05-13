@@ -109,13 +109,17 @@ function agritwin_field_current_data(?PDO $pdo = null): array
 
     return [
         'generated_at' => $now->format(DateTimeInterface::ATOM),
+        'local_date' => $now->format('Y-m-d'),
+        'local_time' => $now->format('H:i'),
         'timezone' => 'Europe/Madrid',
         'location_label' => 'Nava de Sotrobal / Macotera, Salamanca, Castilla y Leon, Spain',
+        'weather_source' => $weather['source_label'],
         'local_weather_station' => $weather,
         'external_weather' => [
             'source_label' => $weather['source_label'],
             'status' => $weather['source_status'],
         ],
+        'sensor_stations' => $sensors,
         'sensor_markers' => $sensors,
         'weather_stations' => [
             [
