@@ -31,6 +31,10 @@ Date: 2026-05-12
 - `GET /agritwin3/api/pest-disease/alerts`
 - `GET /agritwin3/api/farm-calendar/operations`
 - `GET /agritwin3/api/kpis`
+- `GET /agritwin3/api/reports/types`
+- `GET /agritwin3/api/reports`
+- `POST /agritwin3/api/reports/generate`
+- `GET /agritwin3/api/reports/download`
 - `GET /agritwin3/api/users`
 - `POST /agritwin3/api/openagri/services/test`
 - `POST /agritwin3/api/openagri/services/check-all`
@@ -48,3 +52,5 @@ curl -fsS http://localhost/agritwin3/agritwin_dashboard/api_swagger.php
 Add new API endpoints to `api/openapi.json` when adding backend routes. Keep examples synthetic, omit tokens and credentials, and document whether each endpoint returns live or fallback data.
 
 Weather API key write endpoints require a settings-authorized session and CSRF token. The OpenAPI schema marks the submitted key as `writeOnly`; status and diagnostics responses never return the raw value.
+
+Report endpoints generate and list professional PDF reports. JSON responses are metadata only; the report deliverable is served as `application/pdf`.

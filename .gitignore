@@ -71,6 +71,7 @@ var/edge/queue/*
 var/cloud_dss/*
 var/backups/*
 var/runtime/*
+var/reports/*
 exports/kpi/*
 !var/cache/openagri/.gitkeep
 !var/queue/openagri/.gitkeep
@@ -80,6 +81,7 @@ exports/kpi/*
 !var/cloud_dss/.gitkeep
 !var/backups/.gitkeep
 !var/runtime/.gitkeep
+!var/reports/.gitkeep
 !exports/kpi/.gitkeep
 
 # OS/editor files

@@ -1006,6 +1006,24 @@ tbody tr:hover {
     white-space: pre-wrap;
 }
 
+.report-preview-section {
+    margin-top: 18px;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.report-preview-section h3 {
+    margin: 0 0 12px;
+    color: var(--forest);
+}
+
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
 .footer {
     display: flex;
     flex-direction: column;

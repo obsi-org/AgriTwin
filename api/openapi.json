@@ -196,6 +196,52 @@
         "responses": { "200": { "description": "KPI records", "content": { "application/json": { "schema": { "type": "object" } } } } }
       }
     },
+    "/api/reports/types": {
+      "get": {
+        "summary": "Report types",
+        "description": "Returns the professional report types supported by AgriTwin.",
+        "responses": { "200": { "description": "Report type list", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/api/reports": {
+      "get": {
+        "summary": "Generated reports",
+        "description": "Lists locally generated PDF reports without exposing report payload internals. Requires an authenticated session.",
+        "responses": { "200": { "description": "Generated report metadata", "content": { "application/json": { "schema": { "type": "object" } } } }, "401": { "description": "Unauthenticated" } }
+      }
+    },
+    "/api/reports/generate": {
+      "post": {
+        "summary": "Generate PDF report",
+        "description": "Generates a professional human-readable PDF report. JSON returned here is metadata only; the report deliverable is application/pdf. Requires an authenticated session.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": { "type": "string", "example": "field-operational" },
+                  "lang": { "type": "string", "example": "en" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Generated report metadata", "content": { "application/json": { "schema": { "type": "object" } } } }, "401": { "description": "Unauthenticated" } }
+      }
+    },
+    "/api/reports/download": {
+      "get": {
+        "summary": "Download generated PDF report",
+        "parameters": [{ "name": "id", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Generated PDF report", "content": { "application/pdf": { "schema": { "type": "string", "format": "binary" } } } },
+          "401": { "description": "Unauthenticated" },
+          "404": { "description": "Report not found" }
+        }
+      }
+    },
     "/api/users": {
       "get": {
         "summary": "List users for administrators",
