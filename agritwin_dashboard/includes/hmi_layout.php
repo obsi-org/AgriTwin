@@ -96,7 +96,7 @@ function agritwin_render_page(string $active, string $title, callable $content):
 function agritwin_badge(string $mode): string
 {
     $class = match ($mode) {
-        'normal', 'healthy', 'completed', 'live_healthy' => 'confidence-normal',
+        'normal', 'healthy', 'completed', 'live_healthy', 'configured', 'live_observations_available' => 'confidence-normal',
         'reduced', 'planned', 'local_fallback_active', 'live_fallback' => 'confidence-reduced',
         'stale', 'fallback', 'optional_not_configured' => 'confidence-stale',
         default => 'confidence-unavailable',

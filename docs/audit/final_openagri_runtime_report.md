@@ -85,3 +85,20 @@ Observed status:
 - Extensions: FarmCalendar and Reporting endpoints returned HTTP 200.
 - Optional services: Geodatabase / OCSM remains optional and not configured.
 - Weather observations: the Weather service endpoint is reachable; live weather observations still require external provider credentials when using the OpenAgri data endpoint.
+
+## 2026-05-13 Weather API Key Settings
+
+AgriTwin Settings now supports controlled insertion, validation and removal of the Weather provider API key for live OpenAgri Weather observations.
+
+- Storage: encrypted local file under ignored `storage/secrets/`.
+- Access: Administrator or Technical Manager Settings permission.
+- Protection: CSRF for browser POSTs; key is never rendered, returned by APIs or committed.
+- Connector precedence: environment token first, Settings-stored key second.
+- Safe endpoints:
+  - `GET /agritwin3/api/weather/configuration/status`
+  - `GET /agritwin3/api/weather/diagnostics`
+  - `POST /agritwin3/api/weather/api-key`
+  - `POST /agritwin3/api/weather/api-key/validate`
+  - `POST /agritwin3/api/weather/api-key/remove`
+
+Live weather observations still require a valid provider key and successful OpenAgri Weather observation response.

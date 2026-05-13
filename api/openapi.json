@@ -83,6 +83,41 @@
         "responses": { "200": { "description": "Weather source and values", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WeatherStatus" } } } } }
       }
     },
+    "/api/weather/configuration/status": {
+      "get": {
+        "summary": "Weather provider API key configuration status",
+        "description": "Returns only safe metadata. The stored API key is never returned.",
+        "responses": { "200": { "description": "Weather provider key status", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WeatherKeyStatusResponse" } } } } }
+      }
+    },
+    "/api/weather/diagnostics": {
+      "get": {
+        "summary": "Weather service diagnostics",
+        "responses": { "200": { "description": "Safe weather diagnostics without secret values", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/api/weather/api-key": {
+      "post": {
+        "summary": "Save or update Weather provider API key",
+        "description": "Requires a settings-authorized session and CSRF token. The API key is write-only and is never returned.",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WeatherApiKeyWrite" } } } },
+        "responses": { "200": { "description": "API key saved" }, "403": { "description": "Settings permission required" }, "422": { "description": "Invalid API key" } }
+      }
+    },
+    "/api/weather/api-key/validate": {
+      "post": {
+        "summary": "Validate stored Weather provider API key",
+        "description": "Requires a settings-authorized session and CSRF token.",
+        "responses": { "200": { "description": "Live observations available" }, "403": { "description": "Settings permission required" }, "422": { "description": "Validation failed" } }
+      }
+    },
+    "/api/weather/api-key/remove": {
+      "post": {
+        "summary": "Remove stored Weather provider API key",
+        "description": "Requires a settings-authorized session and CSRF token.",
+        "responses": { "200": { "description": "API key removed" }, "403": { "description": "Settings permission required" } }
+      }
+    },
     "/api/sensor-stations": {
       "get": {
         "summary": "Sensor station inventory",
@@ -213,6 +248,32 @@
         "properties": {
           "source": { "$ref": "#/components/schemas/WeatherSource" },
           "on_farm_station_readings": { "type": "array", "items": { "$ref": "#/components/schemas/SensorReading" } }
+        }
+      },
+      "WeatherKeyStatusResponse": {
+        "type": "object",
+        "properties": {
+          "weather_api_key": {
+            "type": "object",
+            "properties": {
+              "configured": { "type": "boolean" },
+              "source": { "type": "string", "enum": ["environment", "settings", "not_configured"] },
+              "masked": { "type": "string", "nullable": true, "example": "************ABCD" },
+              "last_updated_at": { "type": "string", "nullable": true },
+              "last_validated_at": { "type": "string", "nullable": true },
+              "last_validation_status": { "type": "string" }
+            }
+          }
+        }
+      },
+      "WeatherApiKeyWrite": {
+        "type": "object",
+        "required": ["api_key"],
+        "properties": {
+          "api_key": { "type": "string", "writeOnly": true, "example": "REDACTED" },
+          "transport": { "type": "string", "enum": ["bearer", "header", "query"], "example": "bearer" },
+          "header_name": { "type": "string", "example": "X-API-Key" },
+          "query_parameter_name": { "type": "string", "example": "api_key" }
         }
       },
       "SensorPacket": {

@@ -20,4 +20,4 @@ User Management is available to Administrators only. Settings and OpenAgri confi
 
 ## Security Limitations
 
-This is a local prototype. Secrets are not stored through the UI; real OpenAgri credentials must be supplied through environment variables or a deployment secret store.
+This is a local prototype. The Weather provider API key can be managed by Administrators and Technical Managers through Settings using encrypted local storage. Other production secrets should be supplied through environment variables or a deployment secret store. See `docs/security/secrets_handling.md`.

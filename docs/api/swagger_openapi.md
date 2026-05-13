@@ -11,7 +11,13 @@ Date: 2026-05-12
 
 - `GET /agritwin3/api/health`
 - `GET /agritwin3/api/openagri/services`
+- `GET /agritwin3/api/openagri/mandatory-services`
 - `GET /agritwin3/api/weather/current`
+- `GET /agritwin3/api/weather/configuration/status`
+- `GET /agritwin3/api/weather/diagnostics`
+- `POST /agritwin3/api/weather/api-key`
+- `POST /agritwin3/api/weather/api-key/validate`
+- `POST /agritwin3/api/weather/api-key/remove`
 - `GET /agritwin3/api/sensor-stations`
 - `GET /agritwin3/api/sensors/readings`
 - `GET /agritwin3/api/irrigation/recommendations`
@@ -33,3 +39,5 @@ curl -fsS http://localhost/agritwin3/agritwin_dashboard/api_swagger.php
 ## Extension Notes
 
 Add new API endpoints to `api/openapi.json` when adding backend routes. Keep examples synthetic, omit tokens and credentials, and document whether each endpoint returns live or fallback data.
+
+Weather API key write endpoints require a settings-authorized session and CSRF token. The OpenAPI schema marks the submitted key as `writeOnly`; status and diagnostics responses never return the raw value.

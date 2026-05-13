@@ -5,6 +5,8 @@ require_once __DIR__ . '/db_config.php';
 $context = agritwin_farm_context();
 $services = agritwin_service_cards();
 $weatherSource = agritwin_weather_source();
+$weatherKeyStatus = agritwin_weather_api_key_status();
+$weatherDiagnostics = agritwin_weather_diagnostics();
 $dbOk = isset($pdo) && $pdo instanceof PDO;
 $dbDiagnostics = $agritwin_db_diagnostics ?? [
     'host' => 'not configured',
@@ -14,8 +16,37 @@ $dbDiagnostics = $agritwin_db_diagnostics ?? [
     'reason' => 'unknown',
     'last_successful_connection' => null,
 ];
+$settingsMessage = '';
 
-agritwin_render_page('settings', agritwin_t('settings'), function () use ($context, $services, $weatherSource, $dbOk, $dbDiagnostics): void {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['weather_api_key_action'])) {
+    if (!agritwin_role_allows('settings')) {
+        http_response_code(403);
+        $settingsMessage = agritwin_t('credentials_required');
+    } else {
+        agritwin_require_csrf();
+        $action = (string) $_POST['weather_api_key_action'];
+        if ($action === 'save') {
+            $result = agritwin_save_weather_api_key(
+                (string) ($_POST['weather_provider_api_key'] ?? ''),
+                (string) ($_POST['weather_key_transport'] ?? 'bearer'),
+                (string) ($_POST['weather_key_header_name'] ?? 'X-API-Key'),
+                (string) ($_POST['weather_key_query_parameter_name'] ?? 'api_key')
+            );
+            $settingsMessage = $result['message'];
+        } elseif ($action === 'validate') {
+            $result = agritwin_validate_weather_api_key();
+            $settingsMessage = $result['message'];
+        } elseif ($action === 'remove') {
+            $result = agritwin_remove_weather_api_key();
+            $settingsMessage = $result['message'];
+        }
+        $weatherSource = agritwin_weather_source();
+        $weatherKeyStatus = agritwin_weather_api_key_status();
+        $weatherDiagnostics = agritwin_weather_diagnostics();
+    }
+}
+
+agritwin_render_page('settings', agritwin_t('settings'), function () use ($context, $services, $weatherSource, $weatherKeyStatus, $weatherDiagnostics, $dbOk, $dbDiagnostics, $settingsMessage): void {
     $groups = agritwin_openagri_service_groups($services);
     $renderServiceCards = static function (array $group): void {
         ?>
@@ -36,7 +67,7 @@ agritwin_render_page('settings', agritwin_t('settings'), function () use ($conte
     <section class="view-section">
         <div class="section-heading">
             <h2><?= agritwin_h(agritwin_t('platform_settings')) ?></h2>
-            <?= agritwin_badge($dbOk ? 'healthy' : 'unavailable') ?>
+            <div><?= $settingsMessage !== '' ? '<span class="confidence-pill confidence-normal">' . agritwin_h($settingsMessage) . '</span>' : '' ?> <?= agritwin_badge($dbOk ? 'healthy' : 'unavailable') ?></div>
         </div>
         <div class="telemetry-grid">
             <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('api_base_path')) ?></span><strong><?= agritwin_h($context['base_path']) ?></strong></article>
@@ -45,6 +76,56 @@ agritwin_render_page('settings', agritwin_t('settings'), function () use ($conte
             <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('weather_preference')) ?></span><strong><?= agritwin_h(agritwin_mode_label($weatherSource['mode'])) ?></strong></article>
             <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('api_docs')) ?></span><strong>/agritwin3/api/openapi.json</strong></article>
         </div>
+    </section>
+
+    <section class="view-section">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow"><?= agritwin_h(agritwin_t('openagri')) ?></p>
+                <h2><?= agritwin_h(agritwin_t('weather_provider_api_key')) ?></h2>
+            </div>
+            <?= agritwin_badge($weatherKeyStatus['configured'] ? 'configured' : 'not_configured') ?>
+        </div>
+        <p class="source-note"><?= agritwin_h(agritwin_t('api_key_storage_notice')) ?> <?= agritwin_h(agritwin_t('untrusted_machine_warning')) ?></p>
+        <div class="telemetry-grid">
+            <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('api_key_status')) ?></span><strong><?= agritwin_h($weatherKeyStatus['configured'] ? agritwin_t('api_key_configured') : agritwin_t('api_key_not_configured')) ?></strong></article>
+            <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('api_key_source')) ?></span><strong><?= agritwin_h(agritwin_t('api_key_source_' . $weatherKeyStatus['source'])) ?></strong></article>
+            <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('masked_value')) ?></span><strong><?= agritwin_h($weatherKeyStatus['masked'] ?? ($weatherKeyStatus['configured'] ? agritwin_t('configured') : agritwin_t('not_available'))) ?></strong></article>
+            <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('last_updated')) ?></span><strong><?= agritwin_h((string) ($weatherKeyStatus['last_updated_at'] ?? agritwin_t('not_available'))) ?></strong></article>
+            <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('last_validation')) ?></span><strong><?= agritwin_h((string) ($weatherKeyStatus['last_validated_at'] ?? agritwin_t('not_available'))) ?></strong></article>
+            <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('last_validation_result')) ?></span><strong><?= agritwin_h(agritwin_t((string) $weatherKeyStatus['last_validation_status'])) ?></strong></article>
+            <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('live_observations_available')) ?></span><strong><?= agritwin_h($weatherDiagnostics['live_observations_available'] ? agritwin_t('connected') : agritwin_t('unavailable')) ?></strong></article>
+            <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('connection_reason')) ?></span><strong><?= agritwin_h($weatherDiagnostics['reason']) ?></strong></article>
+        </div>
+        <?php if (agritwin_role_allows('settings')): ?>
+            <form class="settings-form" method="post" autocomplete="off">
+                <input type="hidden" name="csrf_token" value="<?= agritwin_h(agritwin_csrf_token()) ?>">
+                <label><?= agritwin_h(agritwin_t('new_weather_provider_api_key')) ?>
+                    <input id="weather-provider-api-key" name="weather_provider_api_key" type="password" autocomplete="new-password">
+                </label>
+                <label><?= agritwin_h(agritwin_t('provider_key_transport')) ?>
+                    <select name="weather_key_transport">
+                        <?php foreach (['bearer', 'header', 'query'] as $transport): ?>
+                            <option value="<?= agritwin_h($transport) ?>" <?= $weatherKeyStatus['transport'] === $transport ? 'selected' : '' ?>><?= agritwin_h(agritwin_t('transport_' . $transport)) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+                <label><?= agritwin_h(agritwin_t('header_name')) ?>
+                    <input name="weather_key_header_name" value="<?= agritwin_h($weatherKeyStatus['header_name']) ?>">
+                </label>
+                <label><?= agritwin_h(agritwin_t('query_parameter_name')) ?>
+                    <input name="weather_key_query_parameter_name" value="<?= agritwin_h($weatherKeyStatus['query_parameter_name']) ?>">
+                </label>
+                <div class="action-row">
+                    <button class="secondary-action" type="button" onclick="const i=document.getElementById('weather-provider-api-key'); i.type = i.type === 'password' ? 'text' : 'password';"><?= agritwin_h(agritwin_t('show_hide_key')) ?></button>
+                    <button class="primary-action" type="submit" name="weather_api_key_action" value="save"><?= agritwin_h(agritwin_t('save_api_key')) ?></button>
+                    <button class="secondary-action" type="submit" name="weather_api_key_action" value="validate"><?= agritwin_h(agritwin_t('validate_api_key')) ?></button>
+                    <button class="secondary-action danger-action" type="submit" name="weather_api_key_action" value="remove"><?= agritwin_h(agritwin_t('remove_api_key')) ?></button>
+                </div>
+            </form>
+        <?php else: ?>
+            <p><?= agritwin_h(agritwin_t('administrator_or_technical_manager_required')) ?></p>
+        <?php endif; ?>
     </section>
 
     <section class="view-section">

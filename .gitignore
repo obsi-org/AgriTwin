@@ -11,6 +11,7 @@
 *secret*
 credentials.json
 secrets/
+storage/secrets/
 
 # Local databases, dumps, and private pilot-farm data
 *.sqlite

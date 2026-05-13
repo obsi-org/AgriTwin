@@ -301,7 +301,230 @@ function agritwin_weather_source(): array
     ];
 }
 
-function agritwin_openagri_weather_data(array $weather): array
+function agritwin_secret_storage_dir(): string
+{
+    return dirname(__DIR__, 2) . '/storage/secrets';
+}
+
+function agritwin_secret_key_path(): string
+{
+    return agritwin_secret_storage_dir() . '/agritwin_secret.key';
+}
+
+function agritwin_weather_secret_path(): string
+{
+    return agritwin_secret_storage_dir() . '/weather_provider.local.json';
+}
+
+function agritwin_secret_key(): string
+{
+    $envKey = (string) (agritwin_hmi_env('AGRITWIN_SECRET_KEY', 'APP_KEY', '') ?: '');
+    if ($envKey !== '') {
+        return hash('sha256', $envKey, true);
+    }
+    $dir = agritwin_secret_storage_dir();
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0700, true);
+    }
+    $path = agritwin_secret_key_path();
+    if (!is_file($path)) {
+        @file_put_contents($path, bin2hex(random_bytes(32)), LOCK_EX);
+        @chmod($path, 0600);
+    }
+    $raw = trim((string) @file_get_contents($path));
+    return hash('sha256', $raw, true);
+}
+
+function agritwin_encrypt_secret(string $plain): array
+{
+    $iv = random_bytes(12);
+    $tag = '';
+    $cipher = openssl_encrypt($plain, 'aes-256-gcm', agritwin_secret_key(), OPENSSL_RAW_DATA, $iv, $tag);
+    if ($cipher === false) {
+        throw new RuntimeException('Secret encryption failed.');
+    }
+    return [
+        'ciphertext' => base64_encode($cipher),
+        'iv' => base64_encode($iv),
+        'tag' => base64_encode($tag),
+        'algorithm' => 'AES-256-GCM',
+    ];
+}
+
+function agritwin_decrypt_secret(array $record): ?string
+{
+    $cipher = base64_decode((string) ($record['ciphertext'] ?? ''), true);
+    $iv = base64_decode((string) ($record['iv'] ?? ''), true);
+    $tag = base64_decode((string) ($record['tag'] ?? ''), true);
+    if ($cipher === false || $iv === false || $tag === false) {
+        return null;
+    }
+    $plain = openssl_decrypt($cipher, 'aes-256-gcm', agritwin_secret_key(), OPENSSL_RAW_DATA, $iv, $tag);
+    return is_string($plain) ? $plain : null;
+}
+
+function agritwin_weather_api_key_record(): array
+{
+    $path = agritwin_weather_secret_path();
+    if (!is_file($path)) {
+        return [];
+    }
+    $data = json_decode((string) @file_get_contents($path), true);
+    return is_array($data) ? $data : [];
+}
+
+function agritwin_weather_api_key_value(): ?string
+{
+    $envKey = (string) (agritwin_hmi_env('OPENAGRI_WEATHER_TOKEN', 'AGRITWIN_OPENAGRI_WEATHER_TOKEN', '') ?: '');
+    if ($envKey !== '') {
+        return $envKey;
+    }
+    $record = agritwin_weather_api_key_record();
+    if (($record['configured'] ?? false) !== true || !isset($record['secret'])) {
+        return null;
+    }
+    return agritwin_decrypt_secret((array) $record['secret']);
+}
+
+function agritwin_weather_api_key_transport(): array
+{
+    $record = agritwin_weather_api_key_record();
+    $transport = (string) ($record['transport'] ?? agritwin_hmi_env('OPENAGRI_WEATHER_KEY_TRANSPORT', null, 'bearer'));
+    $transport = in_array($transport, ['bearer', 'header', 'query'], true) ? $transport : 'bearer';
+    return [
+        'transport' => $transport,
+        'header_name' => (string) ($record['header_name'] ?? agritwin_hmi_env('OPENAGRI_WEATHER_KEY_HEADER', null, 'X-API-Key')),
+        'query_parameter_name' => (string) ($record['query_parameter_name'] ?? agritwin_hmi_env('OPENAGRI_WEATHER_KEY_QUERY_PARAM', null, 'api_key')),
+    ];
+}
+
+function agritwin_weather_api_key_status(): array
+{
+    $record = agritwin_weather_api_key_record();
+    $envConfigured = (string) (agritwin_hmi_env('OPENAGRI_WEATHER_TOKEN', 'AGRITWIN_OPENAGRI_WEATHER_TOKEN', '') ?: '') !== '';
+    $localConfigured = ($record['configured'] ?? false) === true;
+    $transport = agritwin_weather_api_key_transport();
+    return [
+        'configured' => $envConfigured || $localConfigured,
+        'source' => $envConfigured ? 'environment' : ($localConfigured ? 'settings' : 'not_configured'),
+        'masked' => $localConfigured && isset($record['last4']) ? '************' . (string) $record['last4'] : null,
+        'provider' => (string) ($record['provider'] ?? 'OpenAgri Weather Data Service'),
+        'transport' => $transport['transport'],
+        'header_name' => $transport['header_name'],
+        'query_parameter_name' => $transport['query_parameter_name'],
+        'last_updated_at' => $record['last_updated_at'] ?? null,
+        'last_validated_at' => $record['last_validated_at'] ?? null,
+        'last_validation_status' => $record['last_validation_status'] ?? 'not_configured',
+        'last_validation_message' => $record['last_validation_message'] ?? agritwin_t('credentials_required'),
+    ];
+}
+
+function agritwin_reject_placeholder_api_key(string $key): bool
+{
+    $normalized = strtoupper(str_replace(['-', '_', ' '], '', $key));
+    return in_array($normalized, ['CHANGEME', 'YOURAPIKEY', 'APIKEYHERE', 'REDACTED', 'PLACEHOLDER'], true);
+}
+
+function agritwin_save_weather_api_key(string $key, string $transport, string $headerName, string $queryName): array
+{
+    $key = trim($key);
+    if ($key === '' || strlen($key) < 12 || agritwin_reject_placeholder_api_key($key)) {
+        return ['ok' => false, 'message' => agritwin_t('api_key_validation_failed')];
+    }
+    $transport = in_array($transport, ['bearer', 'header', 'query'], true) ? $transport : 'bearer';
+    $dir = agritwin_secret_storage_dir();
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0700, true);
+    }
+    $record = agritwin_weather_api_key_record();
+    $record = array_merge($record, [
+        'configured' => true,
+        'provider' => 'OpenAgri Weather Data Service',
+        'last4' => substr($key, -4),
+        'transport' => $transport,
+        'header_name' => trim($headerName) !== '' ? trim($headerName) : 'X-API-Key',
+        'query_parameter_name' => trim($queryName) !== '' ? trim($queryName) : 'api_key',
+        'last_updated_at' => gmdate(DateTimeInterface::ATOM),
+        'last_validation_status' => $record['last_validation_status'] ?? 'unknown',
+        'last_validation_message' => $record['last_validation_message'] ?? agritwin_t('not_available'),
+        'secret' => agritwin_encrypt_secret($key),
+    ]);
+    @file_put_contents(agritwin_weather_secret_path(), json_encode($record, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOCK_EX);
+    @chmod(agritwin_weather_secret_path(), 0600);
+    return ['ok' => true, 'message' => agritwin_t('api_key_saved')];
+}
+
+function agritwin_remove_weather_api_key(): array
+{
+    if (is_file(agritwin_weather_secret_path())) {
+        @unlink(agritwin_weather_secret_path());
+    }
+    return ['ok' => true, 'message' => agritwin_t('api_key_removed')];
+}
+
+function agritwin_apply_weather_auth(string $url, string $headers, ?string $key): array
+{
+    if ($key === null || $key === '') {
+        return [$url, $headers];
+    }
+    $transport = agritwin_weather_api_key_transport();
+    if ($transport['transport'] === 'query') {
+        $param = $transport['query_parameter_name'] !== '' ? $transport['query_parameter_name'] : 'api_key';
+        $url .= (str_contains($url, '?') ? '&' : '?') . rawurlencode($param) . '=' . rawurlencode($key);
+    } elseif ($transport['transport'] === 'header') {
+        $header = $transport['header_name'] !== '' ? $transport['header_name'] : 'X-API-Key';
+        $headers .= $header . ': ' . $key . "\r\n";
+    } else {
+        $headers .= 'Authorization: Bearer ' . $key . "\r\n";
+    }
+    return [$url, $headers];
+}
+
+function agritwin_validate_weather_api_key(): array
+{
+    $key = agritwin_weather_api_key_value();
+    if ($key === null || $key === '') {
+        return ['ok' => false, 'status' => 'credentials_required', 'message' => agritwin_t('credentials_required')];
+    }
+    $service = agritwin_service_cards()['weather'] ?? null;
+    if ($service === null || !$service['configured']) {
+        return ['ok' => false, 'status' => 'configuration_required', 'message' => agritwin_t('configuration_required')];
+    }
+    $result = agritwin_openagri_weather_data($service, $key);
+    $status = $result['ok'] ? 'live_observations_available' : (($result['error'] ?? '') === 'Credentials required' ? 'authentication_failed' : 'connection_unavailable');
+    $message = $result['ok'] ? agritwin_t('live_observations_available') : agritwin_t($status);
+    $record = agritwin_weather_api_key_record();
+    if (($record['configured'] ?? false) === true) {
+        $record['last_validated_at'] = gmdate(DateTimeInterface::ATOM);
+        $record['last_validation_status'] = $status;
+        $record['last_validation_message'] = $message;
+        @file_put_contents(agritwin_weather_secret_path(), json_encode($record, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOCK_EX);
+        @chmod(agritwin_weather_secret_path(), 0600);
+    }
+    return ['ok' => $result['ok'], 'status' => $status, 'message' => $message];
+}
+
+function agritwin_weather_diagnostics(): array
+{
+    $services = agritwin_service_cards();
+    $weather = $services['weather'] ?? null;
+    $keyStatus = agritwin_weather_api_key_status();
+    $source = agritwin_weather_source();
+    return [
+        'service_status' => $weather['status'] ?? 'unknown',
+        'service_endpoint' => $weather['endpoint'] ?? 'not configured',
+        'api_key_configured' => $keyStatus['configured'],
+        'api_key_source' => $keyStatus['source'],
+        'api_key_masked' => $keyStatus['masked'],
+        'transport' => $keyStatus['transport'],
+        'last_validation_status' => $keyStatus['last_validation_status'],
+        'last_validation_message' => $keyStatus['last_validation_message'],
+        'live_observations_available' => ($source['source_name'] ?? '') === 'OpenAgri Weather Data Service',
+        'reason' => ($source['source_name'] ?? '') === 'OpenAgri Weather Data Service' ? agritwin_t('live_observations_available') : ($keyStatus['configured'] ? agritwin_t('external_provider_configuration_required') : agritwin_t('credentials_required')),
+    ];
+}
+
+function agritwin_openagri_weather_data(array $weather, ?string $overrideKey = null): array
 {
     agritwin_load_local_env();
     $context = agritwin_farm_context();
@@ -313,11 +536,9 @@ function agritwin_openagri_weather_data(array $weather): array
     if (!str_contains($url, 'lat=')) {
         $url .= (str_contains($url, '?') ? '&' : '?') . sprintf('lat=%.4F&lon=%.4F', $context['lat'], $context['lon']);
     }
-    $token = (string) (agritwin_hmi_env('OPENAGRI_WEATHER_TOKEN', 'AGRITWIN_OPENAGRI_WEATHER_TOKEN', '') ?: '');
+    $token = $overrideKey ?? agritwin_weather_api_key_value();
     $headers = "Accept: application/json\r\n";
-    if ($token !== '') {
-        $headers .= "Authorization: Bearer " . $token . "\r\n";
-    }
+    [$url, $headers] = agritwin_apply_weather_auth($url, $headers, $token);
     $started = microtime(true);
     $raw = @file_get_contents($url, false, stream_context_create(['http' => ['timeout' => 5, 'ignore_errors' => true, 'header' => $headers]]));
     $latency = (int) round((microtime(true) - $started) * 1000);
@@ -697,7 +918,10 @@ function agritwin_require_csrf(): void
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         return;
     }
-    $token = $_POST['csrf_token'] ?? '';
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        @session_start();
+    }
+    $token = $_POST['csrf_token'] ?? ($_SERVER['HTTP_X_CSRF_TOKEN'] ?? '');
     if (!is_string($token) || !hash_equals($_SESSION['csrf_token'] ?? '', $token)) {
         http_response_code(400);
         exit('Invalid request token');

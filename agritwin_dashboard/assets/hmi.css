@@ -372,6 +372,12 @@ pre:focus-visible {
     border-color: var(--line);
 }
 
+.danger-action {
+    color: #fff;
+    background: var(--red);
+    border-color: var(--red);
+}
+
 .action-row {
     display: flex;
     flex-wrap: wrap;
