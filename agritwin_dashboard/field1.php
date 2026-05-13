@@ -14,11 +14,8 @@ require_once __DIR__ . "/includes/field_data_provider.php";
 // The Spanish farm is farm_id=1
 $spainFarmId = 1;
 
-$supportedLangs = ['en', 'pt-PT', 'es-ES'];
-$fieldLang = $_GET['lang'] ?? ($_SESSION['preferred_language'] ?? 'en');
-if (!in_array($fieldLang, $supportedLangs, true)) {
-    $fieldLang = 'en';
-}
+$fieldLang = agritwin_current_language();
+$fieldLangQuery = '?lang=' . rawurlencode($fieldLang);
 
 $fieldText = [
     'en' => [
@@ -59,6 +56,11 @@ $fieldText = [
         'weather_forecast_unavailable' => 'Weather forecast unavailable.',
         'no_forecast_days' => 'No forecast day data found.',
         'no_valid_forecast' => 'No valid forecast data available.',
+        'property_boundary' => 'Property Boundary',
+        'solar_panel' => 'Solar Panel',
+        'irrigation_pivot' => 'Irrigation pivot',
+        'tractor' => 'Tractor',
+        'harvester' => 'Harvester',
         'sensor' => 'Sensor',
         'weather_station' => 'Weather station',
         'machinery' => 'Machinery',
@@ -126,6 +128,11 @@ $fieldText = [
         'weather_forecast_unavailable' => 'Previsão meteorológica indisponível.',
         'no_forecast_days' => 'Não foram encontrados dados diários de previsão.',
         'no_valid_forecast' => 'Não existem dados de previsão válidos disponíveis.',
+        'property_boundary' => 'Limite da propriedade',
+        'solar_panel' => 'Painel solar',
+        'irrigation_pivot' => 'Pivot de rega',
+        'tractor' => 'Trator',
+        'harvester' => 'Ceifeira',
         'sensor' => 'Sensor',
         'weather_station' => 'Estação meteorológica',
         'machinery' => 'Máquina',
@@ -193,6 +200,11 @@ $fieldText = [
         'weather_forecast_unavailable' => 'Previsión meteorológica no disponible.',
         'no_forecast_days' => 'No se han encontrado datos diarios de previsión.',
         'no_valid_forecast' => 'No hay datos de previsión válidos disponibles.',
+        'property_boundary' => 'Límite de la propiedad',
+        'solar_panel' => 'Panel solar',
+        'irrigation_pivot' => 'Pivote de riego',
+        'tractor' => 'Tractor',
+        'harvester' => 'Cosechadora',
         'sensor' => 'Sensor',
         'weather_station' => 'Estación meteorológica',
         'machinery' => 'Maquinaria',
@@ -624,7 +636,7 @@ try {
     <!-- End of new weather forecast block -->
 
     <!-- Button for navigating back to AgriTwin Dashboard -->
-    <button class="dashboard-button" onclick="window.location.href='index.php'">
+    <button class="dashboard-button" onclick="window.location.href='index.php<?= htmlspecialchars($fieldLangQuery, ENT_QUOTES, 'UTF-8') ?>'">
         <?= htmlspecialchars($t('back_dashboard'), ENT_QUOTES, 'UTF-8') ?>
     </button>
 </div>
@@ -875,7 +887,7 @@ window.AgriTwinCopernicusDiagnostics = copernicusDiagnostics;
       Cesium.Cartesian3.fromDegrees(-5.262770243294276, 40.883388135762168)
     ];
     viewer.entities.add({
-        name: "Property Boundary",
+        name: FIELD_TEXT.property_boundary,
         polyline: {
             positions: boundaryCoordinates,
             width: 4,
@@ -895,13 +907,14 @@ window.AgriTwinCopernicusDiagnostics = copernicusDiagnostics;
     var sensorsData = FIELD_DATA.sensor_markers || [];
 
     var machineryData = [
-      { name: "Tractor 1",   lat: 40.8887, lon: -5.2608, status: FIELD_TEXT.active },
-      { name: "Harvester 1", lat: 40.8875, lon: -5.2612, status: FIELD_TEXT.idle }
+      { name: `${FIELD_TEXT.tractor} 1`,   lat: 40.8887, lon: -5.2608, status: FIELD_TEXT.active },
+      { name: `${FIELD_TEXT.harvester} 1`, lat: 40.8875, lon: -5.2612, status: FIELD_TEXT.idle }
     ];
 
     var weatherStationsData = (FIELD_DATA.weather_stations || []).map(function(ws) {
+      var stationNumber = String(ws.name || '').match(/\d+/);
       return {
-        name: ws.name,
+        name: stationNumber ? `${FIELD_TEXT.weather_station} ${stationNumber[0]}` : (ws.name || FIELD_TEXT.weather_station),
         lat: ws.lat,
         lon: ws.lon,
         status: FIELD_TEXT.online,
@@ -1207,7 +1220,7 @@ window.AgriTwinCopernicusDiagnostics = copernicusDiagnostics;
     var pivotRoll    = 0.0;
 
     var pivotEntity = viewer.entities.add({
-      name: "Pivot 13 Model",
+      name: `${FIELD_TEXT.irrigation_pivot} 13`,
       orientation: Cesium.Quaternion.IDENTITY,
       model: {
         uri: "result.gltf",
@@ -1295,7 +1308,7 @@ window.AgriTwinCopernicusDiagnostics = copernicusDiagnostics;
             );
 
             var solarEntity = viewer.entities.add({
-              name: "Solar Panel",
+              name: FIELD_TEXT.solar_panel,
               position: position,
               orientation: orientation,
               model: {
