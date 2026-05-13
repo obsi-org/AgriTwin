@@ -88,6 +88,9 @@ function agritwin_render_page(string $active, string $title, callable $content):
             </footer>
         </main>
     </div>
+    <script>
+        window.agritwinI18n = <?= json_encode(agritwin_js_translations(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
+    </script>
     <script src="assets/hmi.js" defer></script>
 </body>
 </html>

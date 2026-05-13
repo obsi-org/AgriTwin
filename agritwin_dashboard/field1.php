@@ -9,6 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 
 // Include DB connection
 require_once "db_config.php";
+require_once __DIR__ . '/includes/hmi_data.php';
 
 // The Spanish farm is farm_id=1
 $spainFarmId = 1;
@@ -70,10 +71,10 @@ try {
 // Everything else remains your original code structure
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= agritwin_h(agritwin_current_language()) ?>">
 <head>
     <meta charset="UTF-8">
-    <title>AgriTwin Synthetic Field Monitoring</title>
+    <title><?= agritwin_h(agritwin_t('digital_twin')) ?> - AgriTwin</title>
 
     <!-- Cesium JS + CSS -->
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.106/Build/Cesium/Cesium.js"></script>
@@ -264,78 +265,78 @@ try {
 </div>
 
 <!-- Button to toggle the right sidebar -->
-<button id="toggleSidebarBtn">Toggle Sidebar (R)</button>
+<button id="toggleSidebarBtn"><?= agritwin_h(agritwin_t('toggle_sidebar')) ?> (R)</button>
 
 <!-- Right sidebar for sensor data, AI insights, tasks, button -->
 <div id="sidebar">
-    <h2>Fotovoltaica Macotera SL - Field Monitoring</h2>
+    <h2>Fotovoltaica Macotera SL - <?= agritwin_h(agritwin_t('field_monitoring')) ?></h2>
 
 <div class="sensor-data">
-  <h3>Local Weather Station (Nava de Sotrobal) – 15 : 00&nbsp;Today</h3>
+  <h3><?= agritwin_h(agritwin_t('local_weather_station')) ?> (Nava de Sotrobal) – 15 : 00&nbsp;<?= agritwin_h(agritwin_t('today')) ?></h3>
 
-  <p><strong>Temperature:</strong> 29 °C</p>
-  <p><strong>Humidity:</strong>    33 %</p>
-  <p><strong>Wind&nbsp;Speed:</strong> 9 km h<sup>-1</sup> (NW)</p>
+  <p><strong><?= agritwin_h(agritwin_t('temperature')) ?>:</strong> 29 °C</p>
+  <p><strong><?= agritwin_h(agritwin_t('humidity')) ?>:</strong>    33 %</p>
+  <p><strong><?= agritwin_h(agritwin_t('wind_speed')) ?>:</strong> 9 km h<sup>-1</sup> (NW)</p>
 </div>
 
 <div class="sensor-data">
-  <h3>AI Insights - Synthetic Salamanca Orchard</h3>
+  <h3><?= agritwin_h(agritwin_t('ai_insights_orchard')) ?></h3>
 
-  <p><strong>Alert:</strong>  
-    • Orchard soil-moisture reading sits at 17 % VWC after a mid-afternoon high of 29 °C.<br/>
-    • Light westerly winds (≈ 12 km h⁻¹) are forecast through dusk, keeping evapotranspiration elevated.
+  <p><strong><?= agritwin_h(agritwin_t('alert')) ?>:</strong>
+    • <?= agritwin_h(agritwin_t('field_alert_soil_moisture')) ?><br/>
+    • <?= agritwin_h(agritwin_t('field_alert_wind')) ?>
   </p>
 
-  <p><strong>Targeted actions (3 randomly chosen orchard sectors)</strong></p>
+  <p><strong><?= agritwin_h(agritwin_t('targeted_actions')) ?></strong></p>
   <ul>
-    <li><em>Almond Block&nbsp;A-3</em> – Trigger the micro-sprinkler set for a 22 mm recharge before 18 : 30.</li>
-    <li><em>Pistachio Block&nbsp;P-1 (Kerman)</em> – Schedule an evening wettable-sulphur spray to curb mite pressure favoured by today’s warmth.</li>
-    <li><em>Almond Buffer&nbsp;Row&nbsp;B-7</em> – Inspect for early navel-orangeworm flight; deploy pheromone traps if > 2 moths/night are captured.</li>
+    <li><em><?= agritwin_h(agritwin_t('almond_block_a')) ?>&nbsp;A-3</em> – <?= agritwin_h(agritwin_t('field_action_irrigation')) ?></li>
+    <li><em><?= agritwin_h(agritwin_t('pistachio_block_a')) ?>&nbsp;P-1 (Kerman)</em> – <?= agritwin_h(agritwin_t('field_action_pistachio')) ?></li>
+    <li><em><?= agritwin_h(agritwin_t('almond_buffer_rows')) ?>&nbsp;B-7</em> – <?= agritwin_h(agritwin_t('field_action_traps')) ?></li>
   </ul>
 </div>
 
 <!-- ---------- Property work queue ---------- -->
 <!-- ---------- Property work queue ---------- -->
 <div class="task-list">
-  <h3>Task Scheduling - Synthetic Operational Orchard</h3>
+  <h3><?= agritwin_h(agritwin_t('task_scheduling_orchard')) ?></h3>
   <ul>
-    <li>✅ Irrigation (A-1 &amp; A-3) – Completed 04 / 08 / 2025 at 14 : 45</li>
-    <li>🔄 Drone Mission #27 – Canopy NDVI &amp; pest hot-spot mapping (<strong>In Progress</strong>)</li>
-    <li>🕒 Orchard-floor sweep (Pistachio P-2) – Queued for 05 / 08 / 2025 at 07 : 30</li>
-    <li>📅 Post-bloom N-K fertigation – Planned for 10 / 08 / 2025 <small>(pending weather &amp; leaf-analysis)</small></li>
+    <li>✅ <?= agritwin_h(agritwin_t('field_task_irrigation_completed')) ?></li>
+    <li>🔄 <?= agritwin_h(agritwin_t('field_task_drone')) ?> (<strong><?= agritwin_h(agritwin_t('in_progress')) ?></strong>)</li>
+    <li>🕒 <?= agritwin_h(agritwin_t('field_task_orchard_floor')) ?></li>
+    <li>📅 <?= agritwin_h(agritwin_t('field_task_fertigation')) ?></li>
   </ul>
 </div>
 
 
 <!-- ---------- Property-level work queue ---------- -->
 <div class="task-list">
-  <h3>Task Scheduling - Synthetic Operational Farm</h3>
+  <h3><?= agritwin_h(agritwin_t('task_scheduling_farm')) ?></h3>
   <ul>
-    <li>✅ Irrigation (blocks C-4 &amp; D-1) – Completed 14:45 today</li>
-    <li>🔄 Drone pass&nbsp;#27 (stand count &amp; NDVI) – <strong>In Progress</strong></li>
-    <li>🕒 Mower deployment (pasture B-1) – <strong>Queued for 08:00 tomorrow</strong></li>
-    <li>📅 Fertilisation (vine terrace A-sector) – Held for 10 May 2025 <small>(awaiting ≤ 10 km h⁻¹ winds)</small></li>
+    <li>✅ <?= agritwin_h(agritwin_t('field_task_irrigation_today')) ?></li>
+    <li>🔄 <?= agritwin_h(agritwin_t('field_task_drone_ndvi')) ?> – <strong><?= agritwin_h(agritwin_t('in_progress')) ?></strong></li>
+    <li>🕒 <?= agritwin_h(agritwin_t('field_task_mower')) ?> – <strong><?= agritwin_h(agritwin_t('queued_tomorrow')) ?></strong></li>
+    <li>📅 <?= agritwin_h(agritwin_t('field_task_fertilisation')) ?></li>
   </ul>
 </div>
     <!-- New DIV: AEMET Weather Forecast -->
     <div class="sensor-data">
-        <h3>AEMET Weather Forecast (Nava de Sotrobal)</h3>
-        <div id="aemetForecast">Loading forecast...</div>
+        <h3><?= agritwin_h(agritwin_t('aemet_weather_forecast')) ?> (Nava de Sotrobal)</h3>
+        <div id="aemetForecast"><?= agritwin_h(agritwin_t('loading_forecast')) ?></div>
     </div>
     <!-- End of new weather forecast block -->
 
     <!-- Button for navigating back to the AgriTwin Dashboard -->
     <button class="dashboard-button" onclick="window.location.href='index.php'">
-        Go to AgriTwin Dashboard
+        <?= agritwin_h(agritwin_t('go_to_dashboard')) ?>
     </button>
 </div>
 
 <!-- Panel for NDVI / LAI_SAVI toggles via radio buttons -->
 <div class="layerTogglePanel">
-    <p><strong>Select Index</strong></p>
+    <p><strong><?= agritwin_h(agritwin_t('select_index')) ?></strong></p>
     <label>
       <input type="radio" name="indexLayer" value="none" checked/>
-      None (Default Imagery Only)
+      <?= agritwin_h(agritwin_t('default_imagery_only')) ?>
     </label>
     <br>
     <label>
@@ -345,13 +346,13 @@ try {
     <br>
     <label>
       <input type="radio" name="indexLayer" value="LAI_SAVI"/>
-      LAI_SAVI (Sentinel Hub)
+      <?= agritwin_h(agritwin_t('lai_savi_layer')) ?>
     </label>
 </div>
 
 <!-- Legend container for Sentinel NDVI/LAI_SAVI -->
 <div id="legendContainer">
-    <div id="legendTitle">Legend</div>
+    <div id="legendTitle"><?= agritwin_h(agritwin_t('legend')) ?></div>
     <img id="legendImage" src="" alt="Index Legend" />
 </div>
 
@@ -359,6 +360,17 @@ try {
 <!-------------------------------------------------------------------------->
 <!-- SINGLE, VALID <script> SECTION  (no PHP inside JS!) ------------------->
 <script>
+    const fieldLabels = <?= json_encode([
+        'temperature' => agritwin_t('temperature'),
+        'soilMoisture10' => agritwin_t('soil_moisture') . ' (10 cm)',
+        'soilMoisture30' => agritwin_t('soil_moisture') . ' (30 cm)',
+        'soilMoisture50' => agritwin_t('soil_moisture') . ' (50 cm)',
+        'coordinates' => agritwin_t('coordinates'),
+        'status' => agritwin_t('status'),
+        'rainfall' => agritwin_t('rainfall_today'),
+        'humidity' => agritwin_t('humidity'),
+        'windSpeed' => agritwin_t('wind_speed'),
+    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
 // -------------- 1) Cesium initialisation ---------------------------------
 const CESIUM_TOKEN = <?= json_encode($cesiumToken) ?>;
 Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
@@ -555,11 +567,11 @@ const sentinelWmsUrl = `https://sh.dataspace.copernicus.eu/ogc/wms/${COPERNICUS_
         <div>
           <i class="fa-solid fa-microchip" style="float:right; margin-left:8px; font-size:32px;"></i>
           <strong>${sensor.name}</strong><br/>
-          Temperature: ${sensor.temp}°C<br/>
-          Soil Moisture (10 cm): ${sensor.moist10}%<br/>
-          Soil Moisture (30 cm): ${sensor.moist30}%<br/>
-          Soil Moisture (50 cm): ${sensor.moist50}%<br/><br/>
-          <em>Coordinates:</em> ${sensor.lat.toFixed(5)}, ${sensor.lon.toFixed(5)}
+          ${fieldLabels.temperature}: ${sensor.temp}°C<br/>
+          ${fieldLabels.soilMoisture10}: ${sensor.moist10}%<br/>
+          ${fieldLabels.soilMoisture30}: ${sensor.moist30}%<br/>
+          ${fieldLabels.soilMoisture50}: ${sensor.moist50}%<br/><br/>
+          <em>${fieldLabels.coordinates}:</em> ${sensor.lat.toFixed(5)}, ${sensor.lon.toFixed(5)}
         </div>
       `;
     }
@@ -568,23 +580,23 @@ const sentinelWmsUrl = `https://sh.dataspace.copernicus.eu/ogc/wms/${COPERNICUS_
         <div>
           <i class="fa-solid fa-tractor" style="float:right; margin-left:8px; font-size:32px;"></i>
           <strong>${mach.name}</strong><br/>
-          Status: ${mach.status}<br/><br/>
-          <em>Coordinates:</em> ${mach.lat.toFixed(5)}, ${mach.lon.toFixed(5)}
+          ${fieldLabels.status}: ${mach.status}<br/><br/>
+          <em>${fieldLabels.coordinates}:</em> ${mach.lat.toFixed(5)}, ${mach.lon.toFixed(5)}
         </div>
       `;
     }
     function buildWeatherDescription(ws) {
-      let rainfallLine = ws.rainfall ? `Rainfall: ${ws.rainfall} mm/h<br/>` : "";
+      let rainfallLine = ws.rainfall ? `${fieldLabels.rainfall}: ${ws.rainfall} mm/h<br/>` : "";
       return `
         <div>
           <i class="fa-solid fa-cloud-sun" style="float:right; margin-left:8px; font-size:32px;"></i>
           <strong>${ws.name}</strong><br/>
-          Status: ${ws.status}<br/>
-          Temperature: ${ws.temperature}°C<br/>
-          Humidity: ${ws.humidity}%<br/>
-          Wind Speed: ${ws.windSpeed} m/s<br/>
+          ${fieldLabels.status}: ${ws.status}<br/>
+          ${fieldLabels.temperature}: ${ws.temperature}°C<br/>
+          ${fieldLabels.humidity}: ${ws.humidity}%<br/>
+          ${fieldLabels.windSpeed}: ${ws.windSpeed} m/s<br/>
           ${rainfallLine}<br/>
-          <em>Coordinates:</em> ${ws.lat.toFixed(5)}, ${ws.lon.toFixed(5)}
+          <em>${fieldLabels.coordinates}:</em> ${ws.lat.toFixed(5)}, ${ws.lon.toFixed(5)}
         </div>
       `;
     }

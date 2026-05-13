@@ -62,7 +62,7 @@ agritwin_render_page('users', agritwin_t('user_management'), function () use ($u
             <input type="hidden" name="action" value="create">
             <label><?= agritwin_h(agritwin_t('username')) ?><input name="username" required></label>
             <label><?= agritwin_h(agritwin_t('password')) ?><input name="password" type="password" minlength="10" required></label>
-            <label><?= agritwin_h(agritwin_t('role')) ?><select name="role"><?php foreach ($roles as $role): ?><option value="<?= agritwin_h($role) ?>"><?= agritwin_h(ucwords(str_replace('_', ' ', $role))) ?></option><?php endforeach; ?></select></label>
+            <label><?= agritwin_h(agritwin_t('role')) ?><select name="role"><?php foreach ($roles as $role): ?><option value="<?= agritwin_h($role) ?>"><?= agritwin_h(agritwin_role_label($role)) ?></option><?php endforeach; ?></select></label>
             <label><?= agritwin_h(agritwin_t('preferred_language')) ?><select name="preferred_language"><?php foreach (agritwin_supported_languages() as $code => $language): ?><option value="<?= agritwin_h($code) ?>"><?= agritwin_h($language['flag'] . ' ' . $language['label']) ?></option><?php endforeach; ?></select></label>
             <button class="primary-action" type="submit"><?= agritwin_h(agritwin_t('create_user')) ?></button>
         </form>
@@ -77,7 +77,7 @@ agritwin_render_page('users', agritwin_t('user_management'), function () use ($u
                     <tr>
                         <form method="post">
                             <td><?= agritwin_h($user['username']) ?><input type="hidden" name="csrf_token" value="<?= agritwin_h(agritwin_csrf_token()) ?>"><input type="hidden" name="action" value="update"><input type="hidden" name="id" value="<?= (int) $user['id'] ?>"></td>
-                            <td><select name="role"><?php foreach ($roles as $role): ?><option value="<?= agritwin_h($role) ?>" <?= $user['role'] === $role ? 'selected' : '' ?>><?= agritwin_h(ucwords(str_replace('_', ' ', $role))) ?></option><?php endforeach; ?></select></td>
+                            <td><select name="role"><?php foreach ($roles as $role): ?><option value="<?= agritwin_h($role) ?>" <?= $user['role'] === $role ? 'selected' : '' ?>><?= agritwin_h(agritwin_role_label($role)) ?></option><?php endforeach; ?></select></td>
                             <td><select name="preferred_language"><?php foreach (agritwin_supported_languages() as $code => $language): ?><option value="<?= agritwin_h($code) ?>" <?= $user['preferred_language'] === $code ? 'selected' : '' ?>><?= agritwin_h($language['flag'] . ' ' . $language['label']) ?></option><?php endforeach; ?></select></td>
                             <td><input type="checkbox" name="enabled" <?= (int) $user['enabled'] === 1 ? 'checked' : '' ?>></td>
                             <td><?= agritwin_h((string) ($user['last_login_at'] ?? '')) ?></td>

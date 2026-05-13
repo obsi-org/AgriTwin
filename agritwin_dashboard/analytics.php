@@ -272,7 +272,7 @@ agritwin_render_page('analytics', agritwin_t('analytics'), function () use ($ana
         <div class="section-heading"><div><h2><?= agritwin_h(agritwin_t('service_freshness')) ?></h2><p><?= agritwin_h(agritwin_t('service_freshness_note')) ?></p></div></div>
         <div class="table-wrap">
             <table class="status-table"><thead><tr><th>OpenAgri</th><th><?= agritwin_h(agritwin_t('status')) ?></th><th><?= agritwin_h(agritwin_t('last_check')) ?></th><th><?= agritwin_h(agritwin_t('latency')) ?></th><th><?= agritwin_h(agritwin_t('integration_priority')) ?></th></tr></thead><tbody>
-            <?php foreach ($analytics['service_freshness'] as $service): ?><tr><td><?= agritwin_h($service['service']) ?></td><td><?= agritwin_badge($service['status']) ?></td><td><?= agritwin_h($service['last_check']) ?></td><td><?= $service['latency_ms'] !== null ? agritwin_h((string) $service['latency_ms']) . ' ms' : agritwin_h(agritwin_t('not_available')) ?></td><td><?= $service['required_for_d1'] ? agritwin_h(agritwin_t('core_services')) : agritwin_h(agritwin_t('additional_operational_services')) ?></td></tr><?php endforeach; ?>
+            <?php foreach ($analytics['service_freshness'] as $service): ?><tr><td><?= agritwin_h($service['service']) ?></td><td><?= agritwin_badge($service['status']) ?></td><td><?= agritwin_h($service['last_check']) ?></td><td><?= $service['latency_ms'] !== null ? agritwin_h((string) $service['latency_ms']) . ' ms' : agritwin_h(agritwin_t('not_available')) ?></td><td><?= ($service['core_service'] ?? false) ? agritwin_h(agritwin_t('core_services')) : agritwin_h(agritwin_t('additional_operational_services')) ?></td></tr><?php endforeach; ?>
             </tbody></table>
         </div>
     </section>

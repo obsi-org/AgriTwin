@@ -12,8 +12,6 @@ $records = array_map(static function (array $service): array {
     return [
         'key' => $service['key'],
         'name' => $service['name'],
-        'required_for_d1' => true,
-        'required_for_proposal' => true,
         'core_service' => true,
         'integration_priority' => 'core',
         'role' => $service['role'],
@@ -31,7 +29,7 @@ $records = array_map(static function (array $service): array {
 }, array_values($mandatory));
 
 echo json_encode([
-    'group' => 'mandatory',
+    'group' => 'core',
     'integration_group' => 'core',
     'core_service_basis' => true,
     'services' => $records,

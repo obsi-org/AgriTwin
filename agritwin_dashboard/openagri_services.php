@@ -24,7 +24,7 @@ agritwin_render_page('openagri', agritwin_t('openagri'), function () use ($servi
                 </thead>
                 <tbody>
                 <?php foreach ($groupServices as $service): ?>
-                    <tr class="<?= $service['required_for_d1'] ? 'mandatory-row' : '' ?>">
+                    <tr class="<?= $service['core_service'] ? 'mandatory-row' : '' ?>">
                         <td><strong><?= agritwin_h($service['name']) ?></strong><br><small><?= agritwin_h(agritwin_mode_label($service['mode'])) ?></small></td>
                         <td><?= agritwin_badge($service['status']) ?><br><small><?= agritwin_h($service['error_summary']) ?></small></td>
                         <td><?= $service['configured'] ? '<a href="' . agritwin_h($service['endpoint']) . '" target="_blank" rel="noopener">' . agritwin_h($service['endpoint']) . '</a>' : agritwin_h(agritwin_t('configuration_required')) ?></td>

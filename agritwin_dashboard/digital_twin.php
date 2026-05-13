@@ -17,7 +17,12 @@ agritwin_render_page('digital_twin', agritwin_t('digital_twin'), function () use
         </div>
         <div class="map-placeholder">
             <span><?= agritwin_h(agritwin_t('digital_twin_marker_title')) ?></span>
-            <ul><li>Almond block A/B</li><li>Pump house</li><li>Weather mast</li><li>Pistachio reference row</li></ul>
+            <ul>
+                <li><?= agritwin_h(agritwin_t('almond_blocks_ab')) ?></li>
+                <li><?= agritwin_h(agritwin_t('pump_house')) ?></li>
+                <li><?= agritwin_h(agritwin_t('weather_mast')) ?></li>
+                <li><?= agritwin_h(agritwin_t('pistachio_reference_row')) ?></li>
+            </ul>
         </div>
     </section>
     <section class="view-section">

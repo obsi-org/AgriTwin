@@ -321,7 +321,8 @@ function agritwin_service_freshness_analytics(): array
             'status' => $service['status'],
             'last_check' => $service['last_check'],
             'latency_ms' => $service['latency_ms'],
-            'required_for_d1' => $service['required_for_d1'],
+            'core_service' => $service['core_service'],
+            'integration_priority' => $service['integration_priority'],
         ];
     }
     return $rows;

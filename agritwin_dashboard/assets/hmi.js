@@ -9,6 +9,8 @@
     const queuedOperations = document.getElementById("queuedOperations");
     const payloadPreview = document.getElementById("reportPayloadPreview");
     const reportButton = document.getElementById("requestReportBtn");
+    const translations = window.agritwinI18n || {};
+    const t = (key, fallback) => translations[key] || fallback;
 
     function saveDashboardState() {
         const payload = {
@@ -29,7 +31,7 @@
             const cached = JSON.parse(raw);
             updateSyncText(cached);
         } catch (error) {
-            console.warn("Could not restore AgriTwin dashboard cache", error);
+            console.warn(t("cache_restore_warning", "Could not restore AgriTwin dashboard cache"), error);
         }
     }
 
@@ -39,7 +41,7 @@
             offlineBanner.hidden = online;
         }
         if (onlineStateText) {
-            onlineStateText.textContent = online ? "Online" : "Offline";
+            onlineStateText.textContent = online ? t("online", "Online") : t("offline", "Offline");
         }
         document.body.dataset.connectivity = online ? "online" : "offline";
     }
@@ -47,7 +49,7 @@
     function updateSyncText(state) {
         const lastSyncText = document.getElementById("lastSyncText");
         if (lastSyncText && state.savedAt) {
-            lastSyncText.textContent = "Saved offline: " + new Date(state.savedAt).toLocaleString();
+            lastSyncText.textContent = t("saved_offline", "Saved offline") + ": " + new Date(state.savedAt).toLocaleString();
         }
     }
 
@@ -55,7 +57,7 @@
         return {
             "@context": ["https://w3id.org/ocsm/main-context.jsonld"],
             "@type": "AgriTwinAdvisoryReportRequest",
-            "title": "AgriTwin advisory report",
+            "title": t("advisory_report_title", "AgriTwin advisory report"),
             "createdAt": new Date().toISOString(),
             "farm": dashboardState.farm || {},
             "lastSyncTime": dashboardState.lastSyncTime || null,
@@ -80,7 +82,7 @@
         });
         localStorage.setItem("agritwin:queued-operations", JSON.stringify(queue));
         if (queueCountText) {
-            queueCountText.textContent = "Queue: " + queue.length;
+            queueCountText.textContent = t("queue", "Queue") + ": " + queue.length;
         }
         if (queuedOperations) {
             queuedOperations.textContent = String(queue.length);
@@ -163,7 +165,7 @@
         localStorage.removeItem("agritwin:last-dashboard-state");
         localStorage.removeItem("agritwin:queued-operations");
         if (queueCountText) {
-            queueCountText.textContent = "Queue: 0";
+            queueCountText.textContent = t("queue", "Queue") + ": 0";
         }
         if (queuedOperations) {
             queuedOperations.textContent = "0";
@@ -173,7 +175,7 @@
 
     if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("sw.js").catch((error) => {
-            console.warn("AgriTwin service worker registration failed", error);
+            console.warn(t("service_worker_warning", "AgriTwin service worker registration failed"), error);
         });
     }
 

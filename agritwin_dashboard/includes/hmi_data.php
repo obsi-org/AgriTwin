@@ -85,13 +85,13 @@ function agritwin_demo_date(): DateTimeImmutable
 function agritwin_farm_context(): array
 {
     return [
-        'site' => 'Fotovoltaica Macotera SL Macotera pilot farm',
+        'site' => agritwin_t('fotovoltaica_macotera_site'),
         'operator' => 'Fotovoltaica Macotera SL',
         'location' => 'Macotera, Salamanca, Castilla y Leon, Spain',
         'lat' => 40.9492,
         'lon' => -5.6958,
-        'primary_crop' => 'Almonds',
-        'secondary_crops' => ['Pistachios', 'Maize'],
+        'primary_crop' => agritwin_t('almonds'),
+        'secondary_crops' => [agritwin_t('pistachios'), agritwin_t('maize')],
         'timezone' => 'Europe/Madrid',
         'base_path' => '/agritwin3/',
         'data_mode' => agritwin_t('local_fallback'),
@@ -177,14 +177,14 @@ function agritwin_sensor_stations(): array
         'timestamp' => $ts,
         'status' => 'healthy',
         'confidence' => 'normal',
-        'source' => 'Sample operational dataset',
+        'source' => agritwin_t('local_operational_dataset'),
     ];
     $stations = [
         [
             'id' => 'MAC-ALM-A',
             'name' => 'Station MAC-ALM-A',
-            'block' => 'Almond block A',
-            'crop' => 'Almonds',
+            'block' => agritwin_t('almond_block_a'),
+            'crop' => agritwin_t('almonds'),
             'lat' => 40.9492,
             'lon' => -5.6958,
             'readings' => agritwin_station_readings(28.4, 18.7, 21.6, 56, 18, 1.2, 14.0, 690, 34.0, 6.1),
@@ -192,8 +192,8 @@ function agritwin_sensor_stations(): array
         [
             'id' => 'MAC-ALM-B',
             'name' => 'Station MAC-ALM-B',
-            'block' => 'Almond block B',
-            'crop' => 'Almonds',
+            'block' => agritwin_t('almond_block_b'),
+            'crop' => agritwin_t('almonds'),
             'confidence' => 'reduced',
             'lat' => 40.9474,
             'lon' => -5.6931,
@@ -202,8 +202,8 @@ function agritwin_sensor_stations(): array
         [
             'id' => 'MAC-ALM-C',
             'name' => 'Station MAC-ALM-C',
-            'block' => 'Almond block C',
-            'crop' => 'Almonds',
+            'block' => agritwin_t('almond_block_c'),
+            'crop' => agritwin_t('almonds'),
             'lat' => 40.9468,
             'lon' => -5.6967,
             'readings' => agritwin_station_readings(25.6, 18.3, 21.9, 58, 21, 1.0, 13.2, 675, null, null),
@@ -211,8 +211,8 @@ function agritwin_sensor_stations(): array
         [
             'id' => 'MAC-PIST-A',
             'name' => 'Station MAC-PIST-A',
-            'block' => 'Pistachio block A',
-            'crop' => 'Pistachios',
+            'block' => agritwin_t('pistachio_block_a'),
+            'crop' => agritwin_t('pistachios'),
             'lat' => 40.9469,
             'lon' => -5.6924,
             'readings' => agritwin_station_readings(24.8, 19.0, 22.1, 54, 12, 0.6, 15.0, 705, 22.0, 3.6),
@@ -220,8 +220,8 @@ function agritwin_sensor_stations(): array
         [
             'id' => 'MAC-MAIZE-A',
             'name' => 'Station MAC-MAIZE-A',
-            'block' => 'Maize block A',
-            'crop' => 'Maize',
+            'block' => agritwin_t('maize_block_a'),
+            'crop' => agritwin_t('maize'),
             'lat' => 40.9457,
             'lon' => -5.6918,
             'readings' => agritwin_station_readings(31.2, 20.1, 23.4, 49, 9, 0.4, 18.4, 735, 38.0, 5.4),
@@ -259,7 +259,7 @@ function agritwin_weather_source(): array
         $openAgriWeather = agritwin_openagri_weather_data($weather);
         if ($openAgriWeather['ok']) {
             return [
-                'label' => 'OpenAgri Weather Data Service - live',
+                'label' => agritwin_t('openagri_weather_live_label'),
                 'source_name' => 'OpenAgri Weather Data Service',
                 'mode' => 'live',
                 'status' => 'healthy',
@@ -279,8 +279,8 @@ function agritwin_weather_source(): array
     $public = agritwin_public_weather();
     if ($public['ok']) {
         return [
-            'label' => 'External weather service: Open-Meteo public forecast',
-            'source_name' => 'Open-Meteo public forecast',
+            'label' => agritwin_t('external_weather_open_meteo_label'),
+            'source_name' => agritwin_t('open_meteo_public_forecast'),
             'mode' => 'fallback',
             'status' => 'live_fallback',
             'timestamp' => $public['timestamp'],
@@ -297,12 +297,12 @@ function agritwin_weather_source(): array
 
     $stationValues = agritwin_weather_from_station();
     return [
-        'label' => 'Weather source: Local fallback',
-        'source_name' => 'Local fallback',
+        'label' => agritwin_t('weather_source_local_fallback'),
+        'source_name' => agritwin_t('local_fallback_label'),
         'mode' => 'local_fallback',
         'status' => 'fallback',
         'timestamp' => $ts,
-        'endpoint' => $weather['endpoint'] ?? 'not configured',
+        'endpoint' => $weather['endpoint'] ?? agritwin_t('not_configured'),
         'latency_ms' => null,
         'reason' => ($weather['error_summary'] ?? agritwin_t('local_weather_reason')),
         'temperature_c' => $stationValues['temperature_c'],
@@ -524,7 +524,7 @@ function agritwin_weather_diagnostics(): array
     $source = agritwin_weather_source();
     return [
         'service_status' => $weather['status'] ?? 'unknown',
-        'service_endpoint' => $weather['endpoint'] ?? 'not configured',
+        'service_endpoint' => $weather['endpoint'] ?? agritwin_t('not_configured'),
         'api_key_configured' => $keyStatus['configured'],
         'api_key_source' => $keyStatus['source'],
         'api_key_masked' => $keyStatus['masked'],
@@ -712,14 +712,12 @@ function agritwin_check_openagri_service(string $key, array $service): array
     $base = [
         'key' => $key,
         'name' => $service['name'],
-        'endpoint' => $endpoint !== '' ? $endpoint : 'not configured',
+        'endpoint' => $endpoint !== '' ? $endpoint : agritwin_t('not_configured'),
         'health_path' => $healthPath,
         'docs_url' => $docsUrl,
         'source_repository' => $service['source_repository'] ?? '',
-        'auth_type' => $token !== '' ? 'Bearer token / secret from environment' : 'Configuration required',
+        'auth_type' => $token !== '' ? agritwin_t('auth_secret_environment') : agritwin_t('configuration_required'),
         'configured' => $endpoint !== '',
-        'required_for_d1' => in_array($key, agritwin_mandatory_openagri_keys(), true),
-        'required_for_proposal' => in_array($key, agritwin_mandatory_openagri_keys(), true),
         'core_service' => in_array($key, agritwin_mandatory_openagri_keys(), true),
         'integration_priority' => in_array($key, agritwin_mandatory_openagri_keys(), true) ? 'core' : (in_array($key, agritwin_extension_openagri_keys(), true) ? 'additional' : 'optional'),
         'service_group' => in_array($key, agritwin_mandatory_openagri_keys(), true) ? 'mandatory' : (in_array($key, agritwin_extension_openagri_keys(), true) ? 'extensions' : 'optional'),
@@ -836,10 +834,10 @@ function agritwin_http_status(array $headers): int
 function agritwin_operations(): array
 {
     return [
-        ['time' => '2026-05-12T07:30:00+02:00', 'operation' => agritwin_t('op_pump_inspection'), 'block' => 'Pump house', 'status' => 'completed'],
-        ['time' => '2026-05-12T09:00:00+02:00', 'operation' => agritwin_t('op_sensor_check'), 'block' => 'Almond block A', 'status' => 'completed'],
-        ['time' => '2026-05-12T12:30:00+02:00', 'operation' => agritwin_t('op_irrigation_review'), 'block' => 'Almond block B', 'status' => 'planned'],
-        ['time' => '2026-05-12T17:00:00+02:00', 'operation' => agritwin_t('op_pest_scouting'), 'block' => 'Almond buffer rows', 'status' => 'planned'],
+        ['time' => '2026-05-12T07:30:00+02:00', 'operation' => agritwin_t('op_pump_inspection'), 'block' => agritwin_t('pump_house'), 'status' => 'completed'],
+        ['time' => '2026-05-12T09:00:00+02:00', 'operation' => agritwin_t('op_sensor_check'), 'block' => agritwin_t('almond_block_a'), 'status' => 'completed'],
+        ['time' => '2026-05-12T12:30:00+02:00', 'operation' => agritwin_t('op_irrigation_review'), 'block' => agritwin_t('almond_block_b'), 'status' => 'planned'],
+        ['time' => '2026-05-12T17:00:00+02:00', 'operation' => agritwin_t('op_pest_scouting'), 'block' => agritwin_t('almond_buffer_rows'), 'status' => 'planned'],
     ];
 }
 
@@ -881,6 +879,31 @@ function agritwin_mode_label(string $mode): string
         'auto' => agritwin_t('auto'),
         default => ucfirst(str_replace('_', ' ', $mode)),
     };
+}
+
+function agritwin_role_label(string $role): string
+{
+    return match ($role) {
+        'administrator' => agritwin_t('role_administrator'),
+        'technical_manager' => agritwin_t('role_technical_manager'),
+        'farm_manager' => agritwin_t('role_farm_manager'),
+        'advisor_researcher' => agritwin_t('role_advisor_researcher'),
+        'viewer' => agritwin_t('role_viewer'),
+        default => ucfirst(str_replace('_', ' ', $role)),
+    };
+}
+
+function agritwin_js_translations(): array
+{
+    return [
+        'online' => agritwin_t('online'),
+        'offline' => agritwin_t('offline'),
+        'saved_offline' => agritwin_t('saved_offline'),
+        'queue' => agritwin_t('queue'),
+        'advisory_report_title' => agritwin_t('advisory_report_title'),
+        'cache_restore_warning' => agritwin_t('cache_restore_warning'),
+        'service_worker_warning' => agritwin_t('service_worker_warning'),
+    ];
 }
 
 function agritwin_status_label(string $status): string

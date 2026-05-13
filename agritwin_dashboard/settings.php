@@ -52,7 +52,7 @@ agritwin_render_page('settings', agritwin_t('settings'), function () use ($conte
         ?>
         <div class="service-grid">
             <?php foreach ($group as $service): ?>
-                <article class="service-card <?= $service['required_for_d1'] ? 'mandatory-service-card' : '' ?>">
+                <article class="service-card <?= $service['core_service'] ? 'mandatory-service-card' : '' ?>">
                     <?= agritwin_badge($service['status']) ?>
                     <h3><?= agritwin_h($service['name']) ?></h3>
                     <p><strong><?= agritwin_h(agritwin_t('integration_role')) ?>:</strong> <?= agritwin_h($service['role']) ?></p>

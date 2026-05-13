@@ -1,0 +1,34 @@
+{
+    "generated_at": "2026-05-13T10:33:51+00:00",
+    "locales": [
+        "en",
+        "pt-PT",
+        "es-ES"
+    ],
+    "summary": {
+        "en": {
+            "key_count": 399
+        },
+        "pt-PT": {
+            "key_count": 399
+        },
+        "es-ES": {
+            "key_count": 399
+        }
+    },
+    "missing_keys": {
+        "en": [],
+        "pt-PT": [],
+        "es-ES": []
+    },
+    "extra_keys": {
+        "en": [],
+        "pt-PT": [],
+        "es-ES": []
+    },
+    "empty_values": [],
+    "identical_to_english": [],
+    "forbidden_terms": [],
+    "used_keys_missing_from_english": [],
+    "suspicious_template_strings": []
+}

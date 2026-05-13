@@ -31,7 +31,7 @@ agritwin_render_page('dashboard', agritwin_t('dashboard'), function () use ($sen
                 <?= agritwin_badge($recommendations['water_stress']['confidence']) ?>
                 <h3><?= agritwin_h(agritwin_t('water_stress')) ?></h3>
                 <p class="metric"><?= agritwin_h($recommendations['water_stress']['value']) ?></p>
-                <p><?= agritwin_h($recommendations['water_stress']['label']) ?>. <?= agritwin_h(agritwin_t('inputs')) ?>: almond block A/B probes and local weather station.</p>
+                <p><?= agritwin_h($recommendations['water_stress']['label']) ?>. <?= agritwin_h(agritwin_t('inputs')) ?>: <?= agritwin_h(agritwin_t('water_stress_input_sources')) ?>.</p>
             </article>
             <article class="priority-card">
                 <?= agritwin_badge($recommendations['irrigation']['confidence']) ?>
@@ -59,7 +59,7 @@ agritwin_render_page('dashboard', agritwin_t('dashboard'), function () use ($sen
                 <?= agritwin_badge(in_array($weatherSource['mode'], ['live', 'fallback'], true) ? 'healthy' : 'reduced') ?>
                 <h3><?= agritwin_h(agritwin_t('external_weather')) ?></h3>
                 <p class="metric"><?= agritwin_h(agritwin_mode_label($weatherSource['mode'])) ?></p>
-                <p><?= agritwin_h($weatherSource['source_name'] ?? $weatherSource['label']) ?>: <?= agritwin_h((string) $weatherSource['temperature_c']) ?> degC, <?= agritwin_h((string) $weatherSource['humidity_pct']) ?>% RH, wind <?= agritwin_h((string) $weatherSource['wind_kmh']) ?> km/h, rain <?= agritwin_h((string) $weatherSource['rainfall_mm']) ?> mm.</p>
+                <p><?= agritwin_h($weatherSource['source_name'] ?? $weatherSource['label']) ?>: <?= agritwin_h((string) $weatherSource['temperature_c']) ?> degC, <?= agritwin_h((string) $weatherSource['humidity_pct']) ?>% RH, <?= agritwin_h(agritwin_t('wind')) ?> <?= agritwin_h((string) $weatherSource['wind_kmh']) ?> km/h, <?= agritwin_h(agritwin_t('precipitation')) ?> <?= agritwin_h((string) $weatherSource['rainfall_mm']) ?> mm.</p>
                 <p><?= agritwin_h(agritwin_t('weather_service_reachable')) ?>: <?= agritwin_h($weatherServiceReachable ? agritwin_t('connected') : agritwin_t('connection_unavailable')) ?>. <?= agritwin_h(agritwin_t('weather_observations')) ?>: <?= agritwin_h($weatherObservationsAvailable ? agritwin_t('weather_observations_available') : agritwin_t('external_provider_configuration_required')) ?>.</p>
             </article>
             <article class="priority-card">
