@@ -65,8 +65,10 @@ function agritwin_render_page(string $active, string $title, callable $content):
     </header>
     <div class="app-shell">
         <nav class="side-nav" aria-label="AgriTwin pages">
-            <div class="brand-card">
-                <img src="AgriTwin_logo.png" alt="AgriTwin logo">
+            <div class="brand-card" aria-label="<?= agritwin_h(agritwin_t('platform_branding')) ?>">
+                <img class="brand-logo-primary" src="AgriTwin_logo.png" alt="<?= agritwin_h(agritwin_t('agritwin_logo_alt')) ?>">
+                <span class="brand-divider" aria-hidden="true"></span>
+                <img class="brand-logo-secondary" src="OpenAgri.png" alt="<?= agritwin_h(agritwin_t('openagri_logo_alt')) ?>">
             </div>
             <?php foreach (agritwin_nav_items() as $key => $item): ?>
                 <a href="<?= agritwin_h($item['href']) ?>" class="<?= $key === $active ? 'active' : '' ?>">

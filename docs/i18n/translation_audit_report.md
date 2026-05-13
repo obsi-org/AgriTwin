@@ -1,12 +1,12 @@
 # Translation Audit Report
 
-Generated: 2026-05-13T10:45:39+00:00
+Generated: 2026-05-13T11:13:22+00:00
 
 ## Summary
 
-- en: 409 keys
-- pt-PT: 409 keys
-- es-ES: 409 keys
+- en: 412 keys
+- pt-PT: 412 keys
+- es-ES: 412 keys
 
 ## Missing Keys
 ### en
