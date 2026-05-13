@@ -10,6 +10,8 @@ This update improves the Reports module preview and generated PDFs so they read 
 - OpenAgri and Obsidian Innovation Institute - Associação appear in the secondary branding row.
 - The footer includes the European Union funding logo, `© 2026 AgriTwin`, and the required funding acknowledgement.
 - Generated PDFs embed logo assets using the local PHP GD conversion path and do not depend on external rendering services.
+- Report preview sections use operational icons for weather, sensors, irrigation, tasks, service health and analytics.
+- Generated PDFs repeat the header/footer on each page and use compact section markers with readable tables instead of raw JSON.
 
 ## Required Funding Text
 

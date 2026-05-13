@@ -28,10 +28,11 @@ Reports are assembled from the existing AgriTwin HMI providers:
 
 1. `agritwin_dashboard/reports.php` builds a human-readable preview using `agritwin_dashboard/includes/reporting.php`.
 2. The preview uses the same report model as the PDF and includes a branded header with AgriTwin and Fotovoltaica Macotera SL first, followed by OpenAgri and Obsidian Innovation Institute - Associação.
-3. When the operator generates a report, the local report service writes a valid PDF file under `var/reports/`.
-4. The PDF embeds the existing logo assets in the header/footer and includes `© 2026 AgriTwin` plus the required OpenAgri funding acknowledgement.
-5. The page exposes Open PDF and Download PDF actions.
-6. API endpoints return metadata or the generated PDF. Report listing, generation and download require an authenticated session and do not expose secrets.
+3. Preview sections use clear operational icons and the generated PDF uses compact section markers with human-readable tables.
+4. When the operator generates a report, the local report service writes a valid PDF file under `var/reports/`.
+5. The PDF embeds the existing logo assets in the header/footer and includes `© 2026 AgriTwin` plus the required OpenAgri funding acknowledgement on each page.
+6. The page exposes Open PDF and Download PDF actions.
+7. API endpoints return metadata or the generated PDF. Report listing, generation and download require an authenticated session and do not expose secrets.
 
 ## Storage
 

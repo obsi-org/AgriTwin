@@ -1015,8 +1015,23 @@ tbody tr:hover {
 }
 
 .report-preview-section h3 {
+    display: flex;
+    gap: 10px;
+    align-items: center;
     margin: 0 0 12px;
-    color: var(--forest);
+    color: var(--green-dark);
+}
+
+.report-preview-section h3 i {
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--green);
+    background: #e7f2eb;
+    border-radius: 999px;
+    font-size: 12px;
 }
 
 .report-branding-panel {

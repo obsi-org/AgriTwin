@@ -111,7 +111,12 @@ agritwin_render_page('reports', $labels['report_centre'], function () use ($labe
 
         <?php foreach ($previewReport['sections'] as $section): ?>
             <article class="report-preview-section">
-                <h3><?= agritwin_h((string) $section['heading']) ?></h3>
+                <h3>
+                    <?php if (!empty($section['icon'])): ?>
+                        <i class="<?= agritwin_h((string) $section['icon']) ?>" aria-hidden="true"></i>
+                    <?php endif; ?>
+                    <span><?= agritwin_h((string) $section['heading']) ?></span>
+                </h3>
                 <?php foreach (($section['paragraphs'] ?? []) as $paragraph): ?>
                     <p><?= agritwin_h((string) $paragraph) ?></p>
                 <?php endforeach; ?>

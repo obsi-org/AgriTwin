@@ -69,6 +69,10 @@ function agritwin_report_labels(?string $lang = null): array
             'rainfall_today' => 'Rainfall today',
             'soil_moisture' => 'Soil moisture',
             'irrigation_recommendation' => 'Irrigation recommendation',
+            'confidence' => 'Confidence',
+            'irrigation_deficit_estimate' => 'Irrigation deficit estimate',
+            'water_balance_score' => 'Water balance score',
+            'growing_degree_days' => 'Growing degree days',
             'pest_disease_risk' => 'Pest and disease risk',
             'service_available' => 'Service available',
             'service_unavailable' => 'Service unavailable',
@@ -78,6 +82,12 @@ function agritwin_report_labels(?string $lang = null): array
             'no_reports' => 'No generated reports found yet.',
             'select_type' => 'Select report type',
             'source_summary' => 'Source summary',
+            'executive_summary' => 'Executive Summary',
+            'weather_conditions' => 'Weather Conditions',
+            'sensor_readings' => 'Sensor Readings',
+            'irrigation_status' => 'Irrigation Status',
+            'operational_tasks' => 'Operational Tasks',
+            'additional_detail_note' => 'Additional rows are available in the on-screen report preview and source data tables.',
             'operational_interpretation' => 'Operational interpretation',
             'metric' => 'Metric',
             'value' => 'Value',
@@ -123,6 +133,10 @@ function agritwin_report_labels(?string $lang = null): array
             'rainfall_today' => 'Precipitação hoje',
             'soil_moisture' => 'Humidade do solo',
             'irrigation_recommendation' => 'Recomendação de rega',
+            'confidence' => 'Confiança',
+            'irrigation_deficit_estimate' => 'Estimativa de défice de rega',
+            'water_balance_score' => 'Indicador de balanço hídrico',
+            'growing_degree_days' => 'Graus-dia acumulados',
             'pest_disease_risk' => 'Risco de pragas e doenças',
             'service_available' => 'Serviço disponível',
             'service_unavailable' => 'Serviço indisponível',
@@ -132,6 +146,12 @@ function agritwin_report_labels(?string $lang = null): array
             'no_reports' => 'Ainda não existem relatórios gerados.',
             'select_type' => 'Selecionar tipo de relatório',
             'source_summary' => 'Resumo das fontes',
+            'executive_summary' => 'Resumo executivo',
+            'weather_conditions' => 'Condições meteorológicas',
+            'sensor_readings' => 'Leituras dos sensores',
+            'irrigation_status' => 'Estado da rega',
+            'operational_tasks' => 'Tarefas operacionais',
+            'additional_detail_note' => 'Estão disponíveis linhas adicionais na pré-visualização do relatório e nas tabelas de dados de origem.',
             'operational_interpretation' => 'Interpretação operacional',
             'metric' => 'Métrica',
             'value' => 'Valor',
@@ -177,6 +197,10 @@ function agritwin_report_labels(?string $lang = null): array
             'rainfall_today' => 'Precipitación hoy',
             'soil_moisture' => 'Humedad del suelo',
             'irrigation_recommendation' => 'Recomendación de riego',
+            'confidence' => 'Confianza',
+            'irrigation_deficit_estimate' => 'Estimación del déficit de riego',
+            'water_balance_score' => 'Indicador de balance hídrico',
+            'growing_degree_days' => 'Grados-día acumulados',
             'pest_disease_risk' => 'Riesgo de plagas y enfermedades',
             'service_available' => 'Servicio disponible',
             'service_unavailable' => 'Servicio no disponible',
@@ -186,6 +210,12 @@ function agritwin_report_labels(?string $lang = null): array
             'no_reports' => 'Aún no hay informes generados.',
             'select_type' => 'Seleccionar tipo de informe',
             'source_summary' => 'Resumen de fuentes',
+            'executive_summary' => 'Resumen ejecutivo',
+            'weather_conditions' => 'Condiciones meteorológicas',
+            'sensor_readings' => 'Lecturas de sensores',
+            'irrigation_status' => 'Estado del riego',
+            'operational_tasks' => 'Tareas operativas',
+            'additional_detail_note' => 'Hay filas adicionales disponibles en la vista previa del informe y en las tablas de datos de origen.',
             'operational_interpretation' => 'Interpretación operativa',
             'metric' => 'Métrica',
             'value' => 'Valor',
@@ -234,7 +264,9 @@ function agritwin_report_build(string $type, ?string $lang = null): array
 
     $sections = [
         [
-            'heading' => $l['source_summary'],
+            'heading' => $l['executive_summary'],
+            'icon' => 'fas fa-clipboard-check',
+            'pdf_icon' => 'EXEC',
             'rows' => [
                 [$l['generated_at'], $generatedAt],
                 [$l['location'], 'Nava de Sotrobal / Macotera, Salamanca, Castilla y Leon, Spain'],
@@ -246,7 +278,9 @@ function agritwin_report_build(string $type, ?string $lang = null): array
 
     if (in_array($type, ['field-operational', 'weather-sensor'], true)) {
         $sections[] = [
-            'heading' => $l['weather_sensor_report'],
+            'heading' => $l['weather_conditions'],
+            'icon' => 'fas fa-cloud-sun',
+            'pdf_icon' => 'WEATHER',
             'rows' => [
                 [$l['temperature'], $weather['latest']['temperature_c'] . ' degC'],
                 [$l['humidity'], $weather['latest']['humidity_pct'] . ' %'],
@@ -266,29 +300,56 @@ function agritwin_report_build(string $type, ?string $lang = null): array
                 $station['water_stress_status'],
             ];
         }
-        $sections[] = ['heading' => $l['sensor_stations'], 'headers' => [$l['station'], $l['block'], $l['soil_moisture'], $l['temperature'], $l['status']], 'rows' => $stationRows];
+        $sections[] = [
+            'heading' => $l['sensor_readings'],
+            'icon' => 'fas fa-microchip',
+            'pdf_icon' => 'SENSOR',
+            'headers' => [$l['station'], $l['block'], $l['soil_moisture'], $l['temperature'], $l['status']],
+            'rows' => $stationRows,
+        ];
     }
 
     if (in_array($type, ['field-operational', 'irrigation'], true)) {
         $sections[] = [
-            'heading' => $l['irrigation_report'],
+            'heading' => $l['irrigation_status'],
+            'icon' => 'fas fa-droplet',
+            'pdf_icon' => 'IRRIGATION',
             'rows' => [
                 [$l['irrigation_recommendation'], (string) ($irrigation['recommendation']['text'] ?? $irrigation['recommendation']['label'] ?? '')],
-                ['Confidence', (string) $irrigation['recommendation']['confidence']],
+                [$l['confidence'], (string) $irrigation['recommendation']['confidence']],
                 [$l['soil_moisture'], ($irrigation['soil_moisture']['avg'] ?? 'n/a') . ' % VWC'],
-                ['Irrigation deficit estimate', ($irrigation['estimated_irrigation_deficit_pct_vwc'] ?? 'n/a') . ' % VWC'],
-                ['Water balance score', ($irrigation['water_balance_score'] ?? 'n/a')],
+                [$l['irrigation_deficit_estimate'], ($irrigation['estimated_irrigation_deficit_pct_vwc'] ?? 'n/a') . ' % VWC'],
+                [$l['water_balance_score'], ($irrigation['water_balance_score'] ?? 'n/a')],
             ],
         ];
+        $taskRows = [];
+        foreach (($irrigation['timeline']['recommendation_timeline'] ?? []) as $task) {
+            $taskRows[] = [
+                (string) ($task['time'] ?? ''),
+                (string) ($task['label'] ?? ''),
+                agritwin_status_label((string) ($task['status'] ?? 'planned')),
+            ];
+        }
+        if ($taskRows !== []) {
+            $sections[] = [
+                'heading' => $l['operational_tasks'],
+                'icon' => 'fas fa-list-check',
+                'pdf_icon' => 'TASKS',
+                'headers' => [$l['generated_at'], $l['observations'], $l['status']],
+                'rows' => $taskRows,
+            ];
+        }
     }
 
     if (in_array($type, ['field-operational', 'pest-disease'], true)) {
         $sections[] = [
             'heading' => $l['pest_disease_report'],
+            'icon' => 'fas fa-bug',
+            'pdf_icon' => 'RISK',
             'rows' => [
                 [$l['pest_disease_risk'], (string) $pest['risk']['risk']],
                 [$l['recommendation'], (string) ($pest['risk']['text'] ?? $pest['risk']['label'] ?? '')],
-                ['Growing degree days', (string) $pest['timeseries']['gdd_accumulation']],
+                [$l['growing_degree_days'], (string) $pest['timeseries']['gdd_accumulation']],
                 [$l['status'], (string) $pest['timeseries']['category']],
             ],
         ];
@@ -304,7 +365,13 @@ function agritwin_report_build(string $type, ?string $lang = null): array
                 ($service['latency_ms'] === null ? '-' : $service['latency_ms'] . ' ms'),
             ];
         }
-        $sections[] = ['heading' => $l['openagri_services_report'], 'headers' => [$l['service'], $l['status'], $l['last_check'], $l['latency']], 'rows' => $serviceRows];
+        $sections[] = [
+            'heading' => $l['openagri_services_report'],
+            'icon' => 'fas fa-network-wired',
+            'pdf_icon' => 'SERVICE',
+            'headers' => [$l['service'], $l['status'], $l['last_check'], $l['latency']],
+            'rows' => $serviceRows,
+        ];
     }
 
     if (in_array($type, ['field-operational', 'kpi-analytics'], true)) {
@@ -312,11 +379,19 @@ function agritwin_report_build(string $type, ?string $lang = null): array
         foreach (agritwin_kpis() as $kpi) {
             $kpiRows[] = [$kpi['label'] ?? $kpi['metric'] ?? '', $kpi['value'], $kpi['unit'] ?? '', $kpi['status']];
         }
-        $sections[] = ['heading' => $l['kpi_analytics_report'], 'headers' => [$l['metric'], $l['value'], $l['unit'], $l['status']], 'rows' => $kpiRows];
+        $sections[] = [
+            'heading' => $l['kpi_analytics_report'],
+            'icon' => 'fas fa-chart-line',
+            'pdf_icon' => 'KPI',
+            'headers' => [$l['metric'], $l['value'], $l['unit'], $l['status']],
+            'rows' => $kpiRows,
+        ];
     }
 
     $sections[] = [
         'heading' => $l['operational_interpretation'],
+        'icon' => 'fas fa-lightbulb',
+        'pdf_icon' => 'INSIGHT',
         'paragraphs' => [
             implode(' ', array_slice($summary['insights'], 0, 3)),
             $l['reporting_service_note'],
@@ -436,7 +511,8 @@ function agritwin_report_pdf_content(array $report): string
     $lines[] = ['text' => 'Nava de Sotrobal / Macotera, Salamanca, Castilla y Leon, Spain', 'size' => 10];
     $lines[] = ['text' => '', 'size' => 10];
     foreach ($report['sections'] as $section) {
-        $lines[] = ['text' => (string) $section['heading'], 'size' => 13];
+        $headingPrefix = isset($section['pdf_icon']) ? '[' . (string) $section['pdf_icon'] . '] ' : '';
+        $lines[] = ['text' => $headingPrefix . (string) $section['heading'], 'size' => 13];
         if (isset($section['paragraphs'])) {
             foreach ($section['paragraphs'] as $paragraph) {
                 foreach (agritwin_report_wrap_text((string) $paragraph, 86) as $wrapped) {
@@ -458,58 +534,79 @@ function agritwin_report_pdf_content(array $report): string
         }
         $lines[] = ['text' => '', 'size' => 8];
     }
-    $lines[] = ['text' => (string) ($report['copyright'] ?? '© 2026 AgriTwin'), 'size' => 8];
-    foreach (agritwin_report_wrap_text((string) ($report['funding_acknowledgement'] ?? agritwin_funding_acknowledgement()), 96) as $wrapped) {
-        $lines[] = ['text' => $wrapped, 'size' => 8];
-    }
 
-    $content = "";
-    foreach ($images as $name => $image) {
-        $content .= sprintf(
-            "q %.2F 0 0 %.2F %.2F %.2F cm /%s Do Q\n",
-            $image['draw_width'],
-            $image['draw_height'],
-            (float) $image['x'],
-            (float) $image['y'],
-            $name
-        );
+    $pages = array_chunk($lines, 42);
+    if ($pages === []) {
+        $pages = [[]];
     }
-    $content .= "BT\n/F1 10 Tf\n50 728 Td\n";
-    $currentSize = 10;
-    $lineNo = 0;
-    foreach ($lines as $line) {
-        $size = (int) $line['size'];
-        if ($size !== $currentSize) {
-            $content .= "/F1 {$size} Tf\n";
-            $currentSize = $size;
+    $buildPageContent = static function (array $pageLines, int $pageNumber, int $pageCount) use ($images, $report): string {
+        $content = "";
+        foreach ($images as $name => $image) {
+            $content .= sprintf(
+                "q %.2F 0 0 %.2F %.2F %.2F cm /%s Do Q\n",
+                $image['draw_width'],
+                $image['draw_height'],
+                (float) $image['x'],
+                (float) $image['y'],
+                $name
+            );
         }
-        if ($lineNo > 0) {
-            $content .= "0 -" . max(11, $size + 4) . " Td\n";
+        $content .= "BT\n/F1 10 Tf\n50 728 Td\n";
+        $currentSize = 10;
+        $lineNo = 0;
+        foreach ($pageLines as $line) {
+            $size = (int) $line['size'];
+            if ($size !== $currentSize) {
+                $content .= "/F1 {$size} Tf\n";
+                $currentSize = $size;
+            }
+            if ($lineNo > 0) {
+                $content .= "0 -" . max(11, $size + 4) . " Td\n";
+            }
+            $content .= agritwin_report_pdf_string((string) $line['text']) . " Tj\n";
+            $lineNo++;
         }
-        $content .= agritwin_report_pdf_string((string) $line['text']) . " Tj\n";
-        $lineNo++;
+        $content .= "ET\n";
+        $content .= "BT\n/F1 8 Tf\n150 48 Td\n" . agritwin_report_pdf_string((string) ($report['copyright'] ?? '© 2026 AgriTwin')) . " Tj\n";
+        foreach (agritwin_report_wrap_text((string) ($report['funding_acknowledgement'] ?? agritwin_funding_acknowledgement()), 86) as $idx => $wrapped) {
+            $content .= "0 -" . ($idx === 0 ? 10 : 9) . " Td\n" . agritwin_report_pdf_string($wrapped) . " Tj\n";
+        }
+        $content .= "370 0 Td\n" . agritwin_report_pdf_string('p. ' . $pageNumber . '/' . $pageCount) . " Tj\n";
+        $content .= "ET\n";
+        return $content;
+    };
+    $pageContents = [];
+    $pageCount = count($pages);
+    foreach ($pages as $idx => $pageLines) {
+        $pageContents[] = $buildPageContent($pageLines, $idx + 1, $pageCount);
     }
-    $content .= "ET\n";
-    $content .= "BT\n/F1 8 Tf\n150 48 Td\n" . agritwin_report_pdf_string((string) ($report['copyright'] ?? '© 2026 AgriTwin')) . " Tj\n";
-    foreach (agritwin_report_wrap_text((string) ($report['funding_acknowledgement'] ?? agritwin_funding_acknowledgement()), 86) as $idx => $wrapped) {
-        $content .= "0 -" . ($idx === 0 ? 10 : 9) . " Td\n" . agritwin_report_pdf_string($wrapped) . " Tj\n";
-    }
-    $content .= "ET\n";
 
     $xobjectEntries = [];
     $objects = [];
+    $contentStart = 4;
+    $imageStart = $contentStart + count($pageContents);
+    $pageStart = $imageStart + count($images);
+    $pageRefs = [];
+    for ($i = 0; $i < count($pageContents); $i++) {
+        $pageRefs[] = ($pageStart + $i) . ' 0 R';
+    }
     $objects[] = "<< /Type /Catalog /Pages 2 0 R >>";
-    $objects[] = "<< /Type /Pages /Kids [3 0 R] /Count 1 >>";
-    $objects[] = "__PAGE_OBJECT__";
+    $objects[] = "<< /Type /Pages /Kids [" . implode(' ', $pageRefs) . "] /Count " . count($pageContents) . " >>";
     $objects[] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>";
-    $objects[] = "<< /Length " . strlen($content) . " >>\nstream\n{$content}endstream";
+    foreach ($pageContents as $content) {
+        $objects[] = "<< /Length " . strlen($content) . " >>\nstream\n{$content}endstream";
+    }
+    $imageIndex = 0;
     foreach ($images as $name => $image) {
-        $objectNumber = count($objects) + 1;
+        $objectNumber = $imageStart + $imageIndex;
         $xobjectEntries[] = "/{$name} {$objectNumber} 0 R";
         $objects[] = "<< /Type /XObject /Subtype /Image /Width {$image['width_px']} /Height {$image['height_px']} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length " . strlen($image['stream']) . " >>\nstream\n{$image['stream']}\nendstream";
+        $imageIndex++;
     }
     $xobjectResource = $xobjectEntries === [] ? '' : ' /XObject << ' . implode(' ', $xobjectEntries) . ' >>';
-    $objects[2] = "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >>{$xobjectResource} >> /Contents 5 0 R >>";
+    for ($i = 0; $i < count($pageContents); $i++) {
+        $objects[] = "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >>{$xobjectResource} >> /Contents " . ($contentStart + $i) . " 0 R >>";
+    }
 
     $pdf = "%PDF-1.4\n";
     $offsets = [0];
