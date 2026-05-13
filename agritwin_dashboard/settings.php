@@ -211,6 +211,15 @@ agritwin_render_page('settings', agritwin_t('settings'), function () use ($conte
             <label><?= agritwin_h(agritwin_t('report_branding')) ?>
                 <input type="text" value="AgriTwin, Fotovoltaica Macotera SL, OBSIDIAN" readonly>
             </label>
+            <label><?= agritwin_h(agritwin_t('analytics_refresh_interval')) ?>
+                <input type="text" value="<?= agritwin_h(agritwin_t('fifteen_minutes')) ?>" readonly>
+            </label>
+            <label><?= agritwin_h(agritwin_t('default_analytics_window')) ?>
+                <input type="text" value="24 h / 7 d" readonly>
+            </label>
+            <label><?= agritwin_h(agritwin_t('chart_aggregation_interval')) ?>
+                <input type="text" value="<?= agritwin_h(agritwin_t('fifteen_minutes')) ?>" readonly>
+            </label>
         </form>
         <h3><?= agritwin_h(agritwin_t('mandatory_openagri_services')) ?></h3>
         <div class="settings-form">

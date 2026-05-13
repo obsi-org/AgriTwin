@@ -348,6 +348,37 @@ pre:focus-visible {
     font-size: 20px;
 }
 
+.analytics-chart {
+    width: 100%;
+    min-height: 190px;
+    background: #f5f8f2;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+}
+
+.analytics-chart rect {
+    fill: var(--green);
+}
+
+.analytics-chart polyline {
+    fill: none;
+    stroke: var(--blue);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.analytics-chart circle {
+    fill: #fff;
+    stroke: var(--blue);
+    stroke-width: 3;
+}
+
+.analytics-chart text {
+    fill: var(--muted);
+    font-size: 10px;
+}
+
 .primary-action,
 .secondary-action {
     display: inline-flex;

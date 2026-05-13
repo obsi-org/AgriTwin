@@ -33,6 +33,7 @@ Dashboard URLs under the Apache deployment path are:
 http://localhost/agritwin3/
 http://localhost/agritwin3/agritwin_dashboard/index.php
 http://localhost/agritwin3/agritwin_dashboard/api_swagger.php
+http://localhost/agritwin3/agritwin_dashboard/analytics.php
 http://localhost/agritwin3/api/openapi.json
 ```
 
@@ -122,6 +123,7 @@ The checkouts live under ignored path `external/openagri/`. Use `docker-compose.
 - `docs/architecture/agritwin_system_architecture.md`: cloud-only and mixed edge-cloud ADS architecture.
 - `docs/architecture/openagri_integration_architecture.md`: Gatekeeper, OpenAgri services, FarmCalendar, reporting, and fallback behavior.
 - `docs/architecture/data_model.md`: canonical AgriTwin data records and JSON examples.
+- `docs/analytics/statistics_engine.md`: analytics calculations, graphical page and API endpoints.
 - `docs/integration/openagri_connectors.md`: OpenAgri connector configuration, APIs, cache/offline behavior, and tests.
 - `docs/integration/openagri_services_configuration.md`: OpenAgri live/demo/auto service-health configuration and weather verification.
 - `docs/integration/openagri_endpoint_configuration.md`: OpenAgri endpoint, documentation URL and credential configuration.

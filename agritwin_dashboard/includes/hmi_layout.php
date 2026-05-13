@@ -15,6 +15,7 @@ function agritwin_nav_items(): array
         'calendar' => ['href' => 'farm_calendar.php', 'label' => agritwin_t('calendar'), 'icon' => 'fas fa-calendar-days'],
         'reports' => ['href' => 'reports.php', 'label' => agritwin_t('reports'), 'icon' => 'fas fa-file-pdf'],
         'kpis' => ['href' => 'kpis.php', 'label' => agritwin_t('kpis'), 'icon' => 'fas fa-gauge-high'],
+        'analytics' => ['href' => 'analytics.php', 'label' => agritwin_t('analytics'), 'icon' => 'fas fa-chart-line'],
         'api' => ['href' => 'api_swagger.php', 'label' => agritwin_t('api'), 'icon' => 'fas fa-code'],
         'settings' => ['href' => 'settings.php', 'label' => agritwin_t('settings'), 'icon' => 'fas fa-gear'],
     ];

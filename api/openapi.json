@@ -118,6 +118,48 @@
         "responses": { "200": { "description": "API key removed" }, "403": { "description": "Settings permission required" } }
       }
     },
+    "/api/analytics/summary": {
+      "get": {
+        "summary": "Analytics summary",
+        "responses": { "200": { "description": "Operational analytics summary", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AnalyticsSummary" } } } } }
+      }
+    },
+    "/api/analytics/weather": {
+      "get": {
+        "summary": "Weather analytics",
+        "responses": { "200": { "description": "Weather statistics and source state", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/api/analytics/sensor-stations": {
+      "get": {
+        "summary": "Sensor station analytics",
+        "responses": { "200": { "description": "Station comparison and sensor statistics", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/api/analytics/irrigation": {
+      "get": {
+        "summary": "Irrigation analytics",
+        "responses": { "200": { "description": "Irrigation deficit, flow and energy statistics", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/api/analytics/pest-disease": {
+      "get": {
+        "summary": "Pest and disease analytics",
+        "responses": { "200": { "description": "Risk and weather-input analytics", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/api/analytics/kpis": {
+      "get": {
+        "summary": "KPI analytics",
+        "responses": { "200": { "description": "D1 KPI and operational performance records", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/api/analytics/service-freshness": {
+      "get": {
+        "summary": "OpenAgri service freshness analytics",
+        "responses": { "200": { "description": "Service availability, freshness and latency records", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
     "/api/sensor-stations": {
       "get": {
         "summary": "Sensor station inventory",
@@ -274,6 +316,19 @@
           "transport": { "type": "string", "enum": ["bearer", "header", "query"], "example": "bearer" },
           "header_name": { "type": "string", "example": "X-API-Key" },
           "query_parameter_name": { "type": "string", "example": "api_key" }
+        }
+      },
+      "AnalyticsSummary": {
+        "type": "object",
+        "properties": {
+          "generated_at": { "type": "string", "format": "date-time" },
+          "data_source": { "type": "string", "example": "Local operational dataset" },
+          "location": { "type": "string", "example": "Macotera, Salamanca, Castilla y Leon, Spain" },
+          "timezone": { "type": "string", "example": "Europe/Madrid" },
+          "station_count": { "type": "integer", "example": 5 },
+          "average_soil_moisture_pct": { "type": "number", "example": 26.42 },
+          "latest_weather_source": { "type": "string", "example": "Open-Meteo public forecast" },
+          "service_status_summary": { "type": "object" }
         }
       },
       "SensorPacket": {

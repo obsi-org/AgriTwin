@@ -44,6 +44,9 @@ function ensureSchemaAndSeed_min(PDO $pdo): void
         "ALTER TABLE users ADD COLUMN enabled TINYINT(1) NOT NULL DEFAULT 1",
         "ALTER TABLE users ADD COLUMN last_login_at DATETIME DEFAULT NULL",
         "ALTER TABLE users ADD COLUMN password_change_required TINYINT(1) NOT NULL DEFAULT 0",
+        "ALTER TABLE users ADD COLUMN must_change_password TINYINT(1) NOT NULL DEFAULT 0",
+        "ALTER TABLE users ADD COLUMN full_name VARCHAR(255) DEFAULT NULL",
+        "ALTER TABLE users ADD COLUMN organisation VARCHAR(255) DEFAULT NULL",
         "ALTER TABLE users ADD COLUMN created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
     ] as $sql) {
         try {

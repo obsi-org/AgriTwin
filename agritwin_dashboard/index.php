@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/hmi_layout.php';
+require_once __DIR__ . '/includes/statistics_engine.php';
 
 $sensors = agritwin_sensors();
 $recommendations = agritwin_recommendations();
@@ -7,8 +8,9 @@ $context = agritwin_farm_context();
 $services = agritwin_service_cards();
 $weatherSource = agritwin_weather_source();
 $stations = agritwin_sensor_stations();
+$analyticsSummary = agritwin_analytics_summary();
 
-agritwin_render_page('dashboard', agritwin_t('dashboard'), function () use ($sensors, $recommendations, $context, $services, $weatherSource, $stations): void {
+agritwin_render_page('dashboard', agritwin_t('dashboard'), function () use ($sensors, $recommendations, $context, $services, $weatherSource, $stations, $analyticsSummary): void {
     $groups = agritwin_openagri_service_groups($services);
     $mandatoryServices = $groups['mandatory'];
     $mandatoryAvailable = count(array_filter($mandatoryServices, static fn ($service): bool => $service['mode'] === 'live' && $service['status'] === 'live_healthy'));
@@ -59,6 +61,13 @@ agritwin_render_page('dashboard', agritwin_t('dashboard'), function () use ($sen
                 <p class="metric"><?= agritwin_h(agritwin_mode_label($weatherSource['mode'])) ?></p>
                 <p><?= agritwin_h($weatherSource['source_name'] ?? $weatherSource['label']) ?>: <?= agritwin_h((string) $weatherSource['temperature_c']) ?> degC, <?= agritwin_h((string) $weatherSource['humidity_pct']) ?>% RH, wind <?= agritwin_h((string) $weatherSource['wind_kmh']) ?> km/h, rain <?= agritwin_h((string) $weatherSource['rainfall_mm']) ?> mm.</p>
                 <p><?= agritwin_h(agritwin_t('weather_service_reachable')) ?>: <?= agritwin_h($weatherServiceReachable ? agritwin_t('connected') : agritwin_t('connection_unavailable')) ?>. <?= agritwin_h(agritwin_t('weather_observations')) ?>: <?= agritwin_h($weatherObservationsAvailable ? agritwin_t('weather_observations_available') : agritwin_t('external_provider_configuration_required')) ?>.</p>
+            </article>
+            <article class="priority-card">
+                <?= agritwin_badge('normal') ?>
+                <h3><?= agritwin_h(agritwin_t('analytics_summary')) ?></h3>
+                <p class="metric"><?= (int) $analyticsSummary['station_count'] ?> <?= agritwin_h(agritwin_t('active_sensor_stations')) ?></p>
+                <p><?= agritwin_h(agritwin_t('average_soil_moisture')) ?>: <?= agritwin_h((string) $analyticsSummary['average_soil_moisture_pct']) ?>% VWC. <?= agritwin_h(agritwin_t('pest_risk')) ?>: <?= agritwin_h($analyticsSummary['pest_risk_level']) ?>.</p>
+                <a class="secondary-action" href="analytics.php"><?= agritwin_h(agritwin_t('open_analytics')) ?></a>
             </article>
         </div>
     </section>

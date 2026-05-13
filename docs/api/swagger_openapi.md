@@ -18,6 +18,13 @@ Date: 2026-05-12
 - `POST /agritwin3/api/weather/api-key`
 - `POST /agritwin3/api/weather/api-key/validate`
 - `POST /agritwin3/api/weather/api-key/remove`
+- `GET /agritwin3/api/analytics/summary`
+- `GET /agritwin3/api/analytics/weather`
+- `GET /agritwin3/api/analytics/sensor-stations`
+- `GET /agritwin3/api/analytics/irrigation`
+- `GET /agritwin3/api/analytics/pest-disease`
+- `GET /agritwin3/api/analytics/kpis`
+- `GET /agritwin3/api/analytics/service-freshness`
 - `GET /agritwin3/api/sensor-stations`
 - `GET /agritwin3/api/sensors/readings`
 - `GET /agritwin3/api/irrigation/recommendations`

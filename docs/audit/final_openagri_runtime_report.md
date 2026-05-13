@@ -102,3 +102,20 @@ AgriTwin Settings now supports controlled insertion, validation and removal of t
   - `POST /agritwin3/api/weather/api-key/remove`
 
 Live weather observations still require a valid provider key and successful OpenAgri Weather observation response.
+
+## 2026-05-13 Operational Users and Analytics
+
+Operational user accounts were created/updated in the local database through `scripts/users/create_operational_users.php`. Passwords were generated at runtime, hashed with PHP `password_hash`, and not written to tracked files or documentation.
+
+The analytics module adds:
+
+- `/agritwin3/agritwin_dashboard/analytics.php`
+- `/agritwin3/api/analytics/summary`
+- `/agritwin3/api/analytics/weather`
+- `/agritwin3/api/analytics/sensor-stations`
+- `/agritwin3/api/analytics/irrigation`
+- `/agritwin3/api/analytics/pest-disease`
+- `/agritwin3/api/analytics/kpis`
+- `/agritwin3/api/analytics/service-freshness`
+
+The module uses the local operational dataset and current OpenAgri service-health records. It does not change the live-weather limitation: live OpenAgri Weather observations still require valid provider credentials.

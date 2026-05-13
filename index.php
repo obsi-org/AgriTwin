@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = agritwin_t('db_status') . ': ' . agritwin_t('unavailable');
     } elseif (!empty($username) && !empty($password)) {
         // Prepare statement to select user
-        $stmt = $pdo->prepare("SELECT id, username, password, role, preferred_language, enabled FROM users WHERE username = :username");
+        $stmt = $pdo->prepare("SELECT id, username, password, role, preferred_language, enabled, password_change_required, must_change_password FROM users WHERE username = :username");
         $stmt->bindParam(":username", $username);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -51,6 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'] ?? 'viewer';
                 $_SESSION['agritwin_lang'] = $user['preferred_language'] ?? agritwin_current_language();
+                $_SESSION['must_change_password'] = ((int) ($user['password_change_required'] ?? 0) === 1 || (int) ($user['must_change_password'] ?? 0) === 1);
                 $pdo->prepare("UPDATE users SET last_login_at = NOW() WHERE id = :id")->execute(['id' => $user['id']]);
 
                 // Store the chosen farm in session
@@ -68,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
 
                 // Redirect to dashboard
-                header("Location: agritwin_dashboard/index.php");
+                header("Location: " . ($_SESSION['must_change_password'] ? "agritwin_dashboard/user_profile.php" : "agritwin_dashboard/index.php"));
                 exit();
             } else {
                 $error = agritwin_t('invalid_password');

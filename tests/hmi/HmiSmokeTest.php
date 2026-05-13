@@ -14,6 +14,7 @@ $checks = [
             'farm_calendar.php',
             'reports.php',
             'kpis.php',
+            'analytics.php',
             'api_swagger.php',
             'settings.php',
         ] as $page) {
