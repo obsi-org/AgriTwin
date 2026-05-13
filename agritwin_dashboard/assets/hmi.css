@@ -350,25 +350,140 @@ pre:focus-visible {
 
 .analytics-chart {
     width: 100%;
-    min-height: 190px;
-    background: #f5f8f2;
+    min-height: 210px;
+    background: #f8faf6;
     border: 1px solid var(--line);
     border-radius: 8px;
 }
 
-.analytics-chart rect {
+.analytics-hero {
+    border-top: 5px solid var(--green);
+}
+
+.analytics-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: end;
+    padding: 14px;
+    margin: 14px 0;
+    background: #f2f6ef;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+}
+
+.analytics-controls label {
+    display: grid;
+    gap: 5px;
+    min-width: 160px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.analytics-controls select {
+    min-height: 38px;
+    padding: 8px;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+}
+
+.analytics-summary-grid,
+.analytics-card-row,
+.analytics-three-col {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+}
+
+.analytics-summary-grid article,
+.analytics-card-row article,
+.analytics-panel {
+    padding: 14px;
+    background: #f9fbf7;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+}
+
+.analytics-summary-grid span,
+.analytics-card-row span,
+.analytics-panel span {
+    display: block;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.analytics-summary-grid strong,
+.analytics-card-row strong,
+.analytics-panel strong {
+    display: block;
+    margin-top: 5px;
+    font-size: 22px;
+}
+
+.insight-strip {
+    display: grid;
+    gap: 8px;
+    margin-top: 14px;
+    padding: 12px;
+    background: #eef5ef;
+    border-left: 4px solid var(--green);
+    border-radius: 8px;
+}
+
+.insight-strip p {
+    margin: 0;
+}
+
+.analytics-section h2 {
+    margin-bottom: 4px;
+}
+
+.analytics-section .section-heading p {
+    max-width: 760px;
+    margin: 0;
+    color: var(--muted);
+}
+
+.analytics-two-col {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.9fr);
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.analytics-chart-large {
+    min-height: 260px;
+}
+
+.chart-bg {
+    fill: #f8faf6;
+}
+
+.chart-grid {
+    stroke: #dce5dc;
+    stroke-width: 1;
+}
+
+.chart-bar {
     fill: var(--green);
 }
 
-.analytics-chart polyline {
+.chart-line {
     fill: none;
     stroke: var(--blue);
-    stroke-width: 4;
+    stroke-width: 3.5;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
 
-.analytics-chart circle {
+.chart-line.accent,
+.legend-line {
+    stroke: var(--amber);
+}
+
+.chart-dot {
     fill: #fff;
     stroke: var(--blue);
     stroke-width: 3;
@@ -376,7 +491,59 @@ pre:focus-visible {
 
 .analytics-chart text {
     fill: var(--muted);
+    font-size: 12px;
+}
+
+.chart-legend text,
+.bar-label,
+.bar-value {
+    font-size: 12px;
+}
+
+.analytics-gauge {
+    width: 100%;
+    max-height: 150px;
+}
+
+.gauge-track {
+    fill: none;
+    stroke: #dce5dc;
+    stroke-width: 14;
+    stroke-linecap: round;
+}
+
+.gauge-value {
+    fill: none;
+    stroke: var(--green);
+    stroke-width: 14;
+    stroke-linecap: round;
+}
+
+.analytics-gauge text {
+    text-anchor: middle;
+    font-weight: 700;
+    fill: var(--ink);
+    font-size: 24px;
+}
+
+.analytics-gauge .gauge-label {
     font-size: 10px;
+    fill: var(--muted);
+}
+
+.timeline {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 10px;
+}
+
+.timeline div {
+    display: grid;
+    gap: 5px;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
 }
 
 .primary-action,
@@ -649,8 +816,14 @@ th {
     }
 
     .split-section,
+    .analytics-two-col,
     .section-heading {
         display: block;
+    }
+
+    .analytics-panel,
+    .analytics-two-col > div {
+        margin-bottom: 12px;
     }
 
     .section-heading .primary-action,

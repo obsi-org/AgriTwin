@@ -19,6 +19,8 @@ The analytics module is implemented in `agritwin_dashboard/includes/statistics_e
 
 The engine computes count, minimum, maximum, average, median, latest value and trend direction where applicable. It also reports irrigation deficit and simple anomaly flags when soil moisture is below target.
 
+The professionalised layer also provides deterministic operational time-series for `24h`, `7d` and `30d` views, station irrigation-need ranking, freshness score, water-balance score, pest-risk trend, growing-degree-day context and concise operational insights.
+
 ## UI and API
 
 - Analytics page: `/agritwin3/agritwin_dashboard/analytics.php`

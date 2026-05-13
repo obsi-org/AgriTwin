@@ -17,31 +17,43 @@ function agritwin_supported_languages(): array
 
 function agritwin_current_language(): string
 {
+    static $currentLanguage = null;
+    if ($currentLanguage !== null) {
+        return $currentLanguage;
+    }
     if (session_status() !== PHP_SESSION_ACTIVE) {
         @session_start();
     }
     $requested = $_GET['lang'] ?? null;
     if (is_string($requested) && isset(agritwin_supported_languages()[$requested])) {
         $_SESSION['agritwin_lang'] = $requested;
-        setcookie('agritwin_lang', $requested, ['expires' => time() + 31536000, 'path' => '/agritwin3/', 'samesite' => 'Lax']);
-        return $requested;
+        if (!headers_sent()) {
+            setcookie('agritwin_lang', $requested, ['expires' => time() + 31536000, 'path' => '/agritwin3/', 'samesite' => 'Lax']);
+        }
+        $currentLanguage = $requested;
+        return $currentLanguage;
     }
     $sessionLang = $_SESSION['agritwin_lang'] ?? null;
     if (is_string($sessionLang) && isset(agritwin_supported_languages()[$sessionLang])) {
-        return $sessionLang;
+        $currentLanguage = $sessionLang;
+        return $currentLanguage;
     }
     $cookieLang = $_COOKIE['agritwin_lang'] ?? null;
     if (is_string($cookieLang) && isset(agritwin_supported_languages()[$cookieLang])) {
-        return $cookieLang;
+        $currentLanguage = $cookieLang;
+        return $currentLanguage;
     }
     $accept = $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '';
     if (str_starts_with(strtolower($accept), 'pt')) {
-        return 'pt-PT';
+        $currentLanguage = 'pt-PT';
+        return $currentLanguage;
     }
     if (str_starts_with(strtolower($accept), 'es')) {
-        return 'es-ES';
+        $currentLanguage = 'es-ES';
+        return $currentLanguage;
     }
-    return 'en';
+    $currentLanguage = 'en';
+    return $currentLanguage;
 }
 
 function agritwin_translations(): array
