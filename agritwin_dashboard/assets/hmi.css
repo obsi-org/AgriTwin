@@ -1034,6 +1034,17 @@ tbody tr:hover {
     font-size: 12px;
 }
 
+.report-metadata-table th {
+    width: 190px;
+    color: var(--muted);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.report-metadata-table td {
+    font-weight: 700;
+}
+
 .report-branding-panel {
     display: grid;
     gap: 12px;

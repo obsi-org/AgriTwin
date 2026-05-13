@@ -79,6 +79,9 @@ function agritwin_report_labels(?string $lang = null): array
             'preview_note' => 'The preview below is a readable summary of the generated report. The PDF contains formatted sections and tables.',
             'storage_note' => 'Generated PDFs are stored locally in the ignored runtime reports directory.',
             'reporting_service_note' => 'PDFs are generated locally in AgriTwin; OpenAgri Reporting Service status remains visible in the service report.',
+            'local_operational_dataset' => 'Local operational dataset',
+            'local_fallback' => 'Local fallback',
+            'public_weather_source' => 'Public weather source',
             'no_reports' => 'No generated reports found yet.',
             'select_type' => 'Select report type',
             'source_summary' => 'Source summary',
@@ -143,6 +146,9 @@ function agritwin_report_labels(?string $lang = null): array
             'preview_note' => 'A pré-visualização abaixo é um resumo legível do relatório gerado. O PDF contém secções e tabelas formatadas.',
             'storage_note' => 'Os PDFs gerados são guardados localmente no diretório de relatórios de execução ignorado pelo Git.',
             'reporting_service_note' => 'Os PDFs são gerados localmente no AgriTwin; o estado do OpenAgri Reporting Service continua visível no relatório de serviços.',
+            'local_operational_dataset' => 'Conjunto de dados operacional local',
+            'local_fallback' => 'Modo local de contingência',
+            'public_weather_source' => 'Fonte meteorológica pública',
             'no_reports' => 'Ainda não existem relatórios gerados.',
             'select_type' => 'Selecionar tipo de relatório',
             'source_summary' => 'Resumo das fontes',
@@ -207,6 +213,9 @@ function agritwin_report_labels(?string $lang = null): array
             'preview_note' => 'La vista previa siguiente es un resumen legible del informe generado. El PDF contiene secciones y tablas formateadas.',
             'storage_note' => 'Los PDF generados se guardan localmente en el directorio de informes de ejecución ignorado por Git.',
             'reporting_service_note' => 'Los PDF se generan localmente en AgriTwin; el estado de OpenAgri Reporting Service permanece visible en el informe de servicios.',
+            'local_operational_dataset' => 'Conjunto de datos operativo local',
+            'local_fallback' => 'Modo local de contingencia',
+            'public_weather_source' => 'Fuente meteorológica pública',
             'no_reports' => 'Aún no hay informes generados.',
             'select_type' => 'Seleccionar tipo de informe',
             'source_summary' => 'Resumen de fuentes',
@@ -246,6 +255,26 @@ function agritwin_report_types(?string $lang = null): array
     ];
 }
 
+function agritwin_report_location(?string $lang = null): string
+{
+    return match ($lang ?? agritwin_current_language()) {
+        'pt-PT' => 'Nava de Sotrobal / Macotera, Salamanca, Castela e Leão, Espanha',
+        'es-ES' => 'Nava de Sotrobal / Macotera, Salamanca, Castilla y León, España',
+        default => 'Nava de Sotrobal / Macotera, Salamanca, Castile and León, Spain',
+    };
+}
+
+function agritwin_report_source_label(string $source, array $labels): string
+{
+    $normalized = strtolower(trim($source));
+    return match ($normalized) {
+        'local operational dataset' => $labels['local_operational_dataset'],
+        'local fallback' => $labels['local_fallback'],
+        'public weather source' => $labels['public_weather_source'],
+        default => $source,
+    };
+}
+
 function agritwin_report_build(string $type, ?string $lang = null): array
 {
     $lang ??= agritwin_current_language();
@@ -261,6 +290,8 @@ function agritwin_report_build(string $type, ?string $lang = null): array
     $pest = $analytics['pest_disease'];
     $summary = $analytics['summary'];
     $generatedAt = (new DateTimeImmutable('now', new DateTimeZone('Europe/Madrid')))->format('Y-m-d H:i T');
+    $location = agritwin_report_location($lang);
+    $sourceLabel = agritwin_report_source_label((string) $summary['data_source'], $l);
 
     $sections = [
         [
@@ -268,9 +299,10 @@ function agritwin_report_build(string $type, ?string $lang = null): array
             'icon' => 'fas fa-clipboard-check',
             'pdf_icon' => 'EXEC',
             'rows' => [
+                [$l['report_type'], $types[$type]['title']],
                 [$l['generated_at'], $generatedAt],
-                [$l['location'], 'Nava de Sotrobal / Macotera, Salamanca, Castilla y Leon, Spain'],
-                [$l['data_source'], (string) $summary['data_source']],
+                [$l['location'], $location],
+                [$l['data_source'], $sourceLabel],
                 ['AgriTwin', 'AgriTwin / Fotovoltaica Macotera SL / OpenAgri / Obsidian Innovation Institute - Associação'],
             ],
         ],
@@ -404,8 +436,8 @@ function agritwin_report_build(string $type, ?string $lang = null): array
         'title' => $types[$type]['title'],
         'language' => $lang,
         'generated_at' => $generatedAt,
-        'location' => 'Nava de Sotrobal / Macotera, Salamanca, Castilla y Leon, Spain',
-        'source' => (string) $summary['data_source'],
+        'location' => $location,
+        'source' => $sourceLabel,
         'branding' => agritwin_report_branding(),
         'copyright' => '© 2026 AgriTwin',
         'funding_acknowledgement' => agritwin_funding_acknowledgement(),
@@ -508,7 +540,7 @@ function agritwin_report_pdf_content(array $report): string
     $lines[] = ['text' => 'OpenAgri + Obsidian Innovation Institute - Associação', 'size' => 8];
     $lines[] = ['text' => '', 'size' => 7];
     $lines[] = ['text' => $report['title'], 'size' => 16];
-    $lines[] = ['text' => 'Nava de Sotrobal / Macotera, Salamanca, Castilla y Leon, Spain', 'size' => 10];
+    $lines[] = ['text' => (string) ($report['location'] ?? agritwin_report_location((string) ($report['language'] ?? 'en'))), 'size' => 10];
     $lines[] = ['text' => '', 'size' => 10];
     foreach ($report['sections'] as $section) {
         $headingPrefix = isset($section['pdf_icon']) ? '[' . (string) $section['pdf_icon'] . '] ' : '';
@@ -592,7 +624,7 @@ function agritwin_report_pdf_content(array $report): string
     }
     $objects[] = "<< /Type /Catalog /Pages 2 0 R >>";
     $objects[] = "<< /Type /Pages /Kids [" . implode(' ', $pageRefs) . "] /Count " . count($pageContents) . " >>";
-    $objects[] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>";
+    $objects[] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>";
     foreach ($pageContents as $content) {
         $objects[] = "<< /Length " . strlen($content) . " >>\nstream\n{$content}endstream";
     }

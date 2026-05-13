@@ -102,11 +102,15 @@ agritwin_render_page('reports', $labels['report_centre'], function () use ($labe
             <h2><?= agritwin_h($previewReport['title']) ?></h2>
             <span class="confidence-pill confidence-normal"><?= agritwin_h($labels['pdf_ready']) ?></span>
         </div>
-        <div class="metric-grid">
-            <div class="metric-card"><span><?= agritwin_h($labels['report_type']) ?></span><strong><?= agritwin_h($previewReport['title']) ?></strong></div>
-            <div class="metric-card"><span><?= agritwin_h($labels['generated_at']) ?></span><strong><?= agritwin_h($previewReport['generated_at']) ?></strong></div>
-            <div class="metric-card"><span><?= agritwin_h($labels['location']) ?></span><strong><?= agritwin_h($previewReport['location']) ?></strong></div>
-            <div class="metric-card"><span><?= agritwin_h($labels['data_source']) ?></span><strong><?= agritwin_h($previewReport['source']) ?></strong></div>
+        <div class="table-wrap">
+            <table class="status-table report-metadata-table">
+                <tbody>
+                <tr><th scope="row"><?= agritwin_h($labels['report_type']) ?>:</th><td><?= agritwin_h($previewReport['title']) ?></td></tr>
+                <tr><th scope="row"><?= agritwin_h($labels['generated_at']) ?>:</th><td><?= agritwin_h($previewReport['generated_at']) ?></td></tr>
+                <tr><th scope="row"><?= agritwin_h($labels['location']) ?>:</th><td><?= agritwin_h($previewReport['location']) ?></td></tr>
+                <tr><th scope="row"><?= agritwin_h($labels['data_source']) ?>:</th><td><?= agritwin_h($previewReport['source']) ?></td></tr>
+                </tbody>
+            </table>
         </div>
 
         <?php foreach ($previewReport['sections'] as $section): ?>
