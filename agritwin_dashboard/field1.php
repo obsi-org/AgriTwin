@@ -9,6 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 
 // Include DB connection
 require_once "db_config.php";
+require_once __DIR__ . "/includes/field_data_provider.php";
 
 // The Spanish farm is farm_id=1
 $spainFarmId = 1;
@@ -47,6 +48,9 @@ $fieldText = [
         'today' => 'Today',
         'tomorrow' => 'Tomorrow',
         'rain_probability' => 'Rain probability',
+        'rainfall_today' => 'Rainfall today',
+        'weather_source' => 'Weather source',
+        'last_updated' => 'Last updated',
         'wind' => 'Wind',
         'status' => 'Status',
         'coordinates' => 'Coordinates',
@@ -54,15 +58,15 @@ $fieldText = [
         'idle' => 'Idle',
         'online' => 'Online',
         'orchard_context' => 'Almond and pistachio orchard',
-        'insight_line_1' => 'Orchard soil-moisture reading sits at 17 % VWC after a mid-afternoon high of 29 °C.',
-        'insight_line_2' => 'Light westerly winds (around 12 km h⁻¹) are forecast through dusk, keeping evapotranspiration elevated.',
+        'insight_line_1' => 'Soil moisture and weather conditions are evaluated from the current field dataset.',
+        'insight_line_2' => 'Wind, rainfall and humidity are reviewed for irrigation and pest monitoring decisions.',
         'field_action_1' => 'Almond Block A-3 - Trigger the micro-sprinkler set for a 22 mm recharge before 18:30.',
         'field_action_2' => 'Pistachio Block P-1 (Kerman) - Schedule an evening wettable-sulphur spray to curb mite pressure favoured by today’s warmth.',
         'field_action_3' => 'Almond Buffer Row B-7 - Inspect for early navel-orangeworm flight; deploy pheromone traps if more than 2 moths/night are captured.',
-        'field_task_1' => 'Irrigation (A-1 and A-3) - Completed 04 / 08 / 2025 at 14:45',
-        'field_task_2' => 'Drone Mission #27 - Canopy NDVI and pest hot-spot mapping (in progress)',
-        'field_task_3' => 'Orchard-floor sweep (Pistachio P-2) - Queued for 05 / 08 / 2025 at 07:30',
-        'field_task_4' => 'Post-bloom N-K fertigation - Planned for 10 / 08 / 2025, pending weather and leaf analysis',
+        'field_task_1' => 'Inspect soil-moisture sensors today.',
+        'field_task_2' => 'Verify irrigation line pressure before the next watering window.',
+        'field_task_3' => 'Review almond block irrigation schedule tomorrow.',
+        'field_task_4' => 'Check pest and disease monitoring traps within the next 48 hours.',
     ],
     'pt-PT' => [
         'page_title' => 'Gémeo Digital de Campo AgriTwin',
@@ -91,6 +95,9 @@ $fieldText = [
         'today' => 'Hoje',
         'tomorrow' => 'Amanhã',
         'rain_probability' => 'Probabilidade de chuva',
+        'rainfall_today' => 'Chuva hoje',
+        'weather_source' => 'Fonte meteorológica',
+        'last_updated' => 'Última atualização',
         'wind' => 'Vento',
         'status' => 'Estado',
         'coordinates' => 'Coordenadas',
@@ -98,15 +105,15 @@ $fieldText = [
         'idle' => 'Inativo',
         'online' => 'Online',
         'orchard_context' => 'Pomar de amendoeiras e pistácios',
-        'insight_line_1' => 'A leitura de humidade do solo do pomar está em 17 % VWC após uma máxima de meio da tarde de 29 °C.',
-        'insight_line_2' => 'Prevêem-se ventos ligeiros de oeste (cerca de 12 km h⁻¹) até ao anoitecer, mantendo a evapotranspiração elevada.',
+        'insight_line_1' => 'A humidade do solo e as condições meteorológicas são avaliadas a partir do conjunto de dados atual do campo.',
+        'insight_line_2' => 'Vento, chuva e humidade são revistos para decisões de rega e monitorização fitossanitária.',
         'field_action_1' => 'Bloco de amendoeiras A-3 - Acionar o conjunto de microaspersores para uma recarga de 22 mm antes das 18:30.',
         'field_action_2' => 'Bloco de pistácios P-1 (Kerman) - Planear uma aplicação noturna de enxofre molhável para reduzir a pressão de ácaros favorecida pelo calor de hoje.',
         'field_action_3' => 'Linha tampão de amendoeiras B-7 - Inspecionar o voo inicial de traça-da-amendoeira; instalar armadilhas de feromona se forem capturadas mais de 2 traças/noite.',
-        'field_task_1' => 'Rega (A-1 e A-3) - Concluída em 04 / 08 / 2025 às 14:45',
-        'field_task_2' => 'Missão de drone #27 - NDVI da copa e mapeamento de focos de pragas (em curso)',
-        'field_task_3' => 'Limpeza do solo do pomar (Pistácio P-2) - Agendada para 05 / 08 / 2025 às 07:30',
-        'field_task_4' => 'Fertirrega N-K pós-floração - Planeada para 10 / 08 / 2025, dependente da meteorologia e da análise foliar',
+        'field_task_1' => 'Inspecionar os sensores de humidade do solo hoje.',
+        'field_task_2' => 'Verificar a pressão da linha de rega antes da próxima janela de rega.',
+        'field_task_3' => 'Rever amanhã o plano de rega dos blocos de amendoeiras.',
+        'field_task_4' => 'Verificar as armadilhas de monitorização de pragas e doenças nas próximas 48 horas.',
     ],
     'es-ES' => [
         'page_title' => 'Gemelo digital de campo AgriTwin',
@@ -135,6 +142,9 @@ $fieldText = [
         'today' => 'Hoy',
         'tomorrow' => 'Mañana',
         'rain_probability' => 'Probabilidad de lluvia',
+        'rainfall_today' => 'Lluvia hoy',
+        'weather_source' => 'Fuente meteorológica',
+        'last_updated' => 'Última actualización',
         'wind' => 'Viento',
         'status' => 'Estado',
         'coordinates' => 'Coordenadas',
@@ -142,19 +152,21 @@ $fieldText = [
         'idle' => 'Inactivo',
         'online' => 'Online',
         'orchard_context' => 'Huerto de almendros y pistachos',
-        'insight_line_1' => 'La lectura de humedad del suelo del huerto se sitúa en 17 % VWC tras una máxima de media tarde de 29 °C.',
-        'insight_line_2' => 'Se prevén vientos ligeros del oeste (alrededor de 12 km h⁻¹) hasta el anochecer, manteniendo elevada la evapotranspiración.',
+        'insight_line_1' => 'La humedad del suelo y las condiciones meteorológicas se evalúan a partir del conjunto de datos actual del campo.',
+        'insight_line_2' => 'El viento, la lluvia y la humedad se revisan para decisiones de riego y seguimiento fitosanitario.',
         'field_action_1' => 'Bloque de almendros A-3 - Activar el conjunto de microaspersores para una recarga de 22 mm antes de las 18:30.',
         'field_action_2' => 'Bloque de pistachos P-1 (Kerman) - Programar una aplicación vespertina de azufre mojable para contener la presión de ácaros favorecida por el calor de hoy.',
         'field_action_3' => 'Fila tampón de almendros B-7 - Inspeccionar el vuelo inicial de polilla del almendro; desplegar trampas de feromonas si se capturan más de 2 polillas/noche.',
-        'field_task_1' => 'Riego (A-1 y A-3) - Completado el 04 / 08 / 2025 a las 14:45',
-        'field_task_2' => 'Misión de dron #27 - NDVI de copa y mapeo de focos de plagas (en curso)',
-        'field_task_3' => 'Limpieza del suelo del huerto (Pistacho P-2) - Programada para el 05 / 08 / 2025 a las 07:30',
-        'field_task_4' => 'Fertirrigación N-K posfloración - Planificada para el 10 / 08 / 2025, pendiente de meteorología y análisis foliar',
+        'field_task_1' => 'Inspeccionar hoy los sensores de humedad del suelo.',
+        'field_task_2' => 'Verificar la presión de la línea de riego antes de la próxima ventana de riego.',
+        'field_task_3' => 'Revisar mañana la programación de riego de los bloques de almendros.',
+        'field_task_4' => 'Comprobar las trampas de seguimiento de plagas y enfermedades en las próximas 48 horas.',
     ],
 ];
 
 $t = static fn (string $key): string => $fieldText[$fieldLang][$key] ?? $fieldText['en'][$key] ?? $key;
+$fieldData = agritwin_field_current_data($pdo);
+$fieldWeather = $fieldData['local_weather_station'];
 
 
 // 2a) Cesium token (global setting) ---------------------------------------
@@ -414,26 +426,29 @@ try {
     <h2><?= htmlspecialchars($t('field_monitoring'), ENT_QUOTES, 'UTF-8') ?></h2>
 
 <div class="sensor-data">
-  <h3><?= htmlspecialchars($t('local_weather_station'), ENT_QUOTES, 'UTF-8') ?> - 15:00&nbsp;<?= htmlspecialchars($t('today'), ENT_QUOTES, 'UTF-8') ?></h3>
+  <h3><?= htmlspecialchars($t('local_weather_station'), ENT_QUOTES, 'UTF-8') ?> - <?= htmlspecialchars((string) $fieldWeather['last_updated_label'], ENT_QUOTES, 'UTF-8') ?>&nbsp;<?= htmlspecialchars($t('today'), ENT_QUOTES, 'UTF-8') ?></h3>
 
-  <p><strong><?= htmlspecialchars($t('temperature'), ENT_QUOTES, 'UTF-8') ?>:</strong> 29 °C</p>
-  <p><strong><?= htmlspecialchars($t('humidity'), ENT_QUOTES, 'UTF-8') ?>:</strong>    33 %</p>
-  <p><strong><?= htmlspecialchars($t('wind_speed'), ENT_QUOTES, 'UTF-8') ?>:</strong> 9 km h<sup>-1</sup> (NW)</p>
+  <p><strong><?= htmlspecialchars($t('temperature'), ENT_QUOTES, 'UTF-8') ?>:</strong> <?= htmlspecialchars((string) $fieldWeather['temperature_c'], ENT_QUOTES, 'UTF-8') ?> °C</p>
+  <p><strong><?= htmlspecialchars($t('humidity'), ENT_QUOTES, 'UTF-8') ?>:</strong> <?= htmlspecialchars((string) $fieldWeather['humidity_pct'], ENT_QUOTES, 'UTF-8') ?> %</p>
+  <p><strong><?= htmlspecialchars($t('wind_speed'), ENT_QUOTES, 'UTF-8') ?>:</strong> <?= htmlspecialchars((string) $fieldWeather['wind_kmh'], ENT_QUOTES, 'UTF-8') ?> km h<sup>-1</sup> (<?= htmlspecialchars((string) $fieldWeather['wind_direction'], ENT_QUOTES, 'UTF-8') ?>)</p>
+  <p><strong><?= htmlspecialchars($t('rainfall_today'), ENT_QUOTES, 'UTF-8') ?>:</strong> <?= htmlspecialchars((string) $fieldWeather['rainfall_mm'], ENT_QUOTES, 'UTF-8') ?> mm</p>
+  <p><strong><?= htmlspecialchars($t('weather_source'), ENT_QUOTES, 'UTF-8') ?>:</strong> <?= htmlspecialchars((string) $fieldWeather['source_label'], ENT_QUOTES, 'UTF-8') ?></p>
+  <p><strong><?= htmlspecialchars($t('last_updated'), ENT_QUOTES, 'UTF-8') ?>:</strong> <?= htmlspecialchars((string) $fieldWeather['timestamp'], ENT_QUOTES, 'UTF-8') ?></p>
 </div>
 
 <div class="sensor-data">
   <h3><?= htmlspecialchars($t('operational_insights'), ENT_QUOTES, 'UTF-8') ?> - Nava de Sotrobal • <?= htmlspecialchars($t('orchard_context'), ENT_QUOTES, 'UTF-8') ?></h3>
 
   <p><strong><?= htmlspecialchars($t('alert'), ENT_QUOTES, 'UTF-8') ?>:</strong>
-    • <?= htmlspecialchars($t('insight_line_1'), ENT_QUOTES, 'UTF-8') ?><br/>
-    • <?= htmlspecialchars($t('insight_line_2'), ENT_QUOTES, 'UTF-8') ?>
+    <?php foreach ($fieldData['operational_insights'] as $insight): ?>
+      • <?= htmlspecialchars((string) $insight, ENT_QUOTES, 'UTF-8') ?><br/>
+    <?php endforeach; ?>
   </p>
 
   <p><strong><?= htmlspecialchars($t('targeted_actions'), ENT_QUOTES, 'UTF-8') ?></strong></p>
   <ul>
-    <li><?= htmlspecialchars($t('field_action_1'), ENT_QUOTES, 'UTF-8') ?></li>
-    <li><?= htmlspecialchars($t('field_action_2'), ENT_QUOTES, 'UTF-8') ?></li>
-    <li><?= htmlspecialchars($t('field_action_3'), ENT_QUOTES, 'UTF-8') ?></li>
+    <li><?= htmlspecialchars((string) $fieldData['irrigation_status'], ENT_QUOTES, 'UTF-8') ?></li>
+    <li><?= htmlspecialchars((string) $fieldData['pest_disease_status'], ENT_QUOTES, 'UTF-8') ?></li>
   </ul>
 </div>
 
@@ -442,10 +457,9 @@ try {
 <div class="task-list">
   <h3><?= htmlspecialchars($t('task_scheduling'), ENT_QUOTES, 'UTF-8') ?></h3>
   <ul>
-    <li>✅ <?= htmlspecialchars($t('field_task_1'), ENT_QUOTES, 'UTF-8') ?></li>
-    <li>🔄 <?= htmlspecialchars($t('field_task_2'), ENT_QUOTES, 'UTF-8') ?></li>
-    <li>🕒 <?= htmlspecialchars($t('field_task_3'), ENT_QUOTES, 'UTF-8') ?></li>
-    <li>📅 <?= htmlspecialchars($t('field_task_4'), ENT_QUOTES, 'UTF-8') ?></li>
+    <?php foreach ($fieldData['task_queue'] as $task): ?>
+      <li>• <?= htmlspecialchars((string) $task, ENT_QUOTES, 'UTF-8') ?></li>
+    <?php endforeach; ?>
   </ul>
 </div>
 
@@ -492,6 +506,7 @@ try {
 <!-- SINGLE, VALID <script> SECTION  (no PHP inside JS!) ------------------->
 <script>
 const FIELD_TEXT = <?= json_encode($fieldText[$fieldLang], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+const FIELD_DATA = <?= json_encode($fieldData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
 // -------------- 1) Cesium initialisation ---------------------------------
 const CESIUM_TOKEN = <?= json_encode($cesiumToken) ?>;
 Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
@@ -641,47 +656,14 @@ const sentinelWmsUrl = `https://sh.dataspace.copernicus.eu/ogc/wms/${COPERNICUS_
     var WEATHER_ICON_URL  = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
     var SELECTED_ICON_URL = "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
 
-    var sensorsData = [
-      { name: "Sensor A", lat: 40.8860, lon: -5.2615, temp: 28, moist10: 22, moist30: 24, moist50: 26 },
-      { name: "Sensor B", lat: 40.8900, lon: -5.2590, temp: 27, moist10: 23, moist30: 25, moist50: 27 },
-      { name: "Sensor C", lat: 40.8860, lon: -5.2590, temp: 27, moist10: 23, moist30: 25, moist50: 27 },
-      { name: "Sensor D", lat: 40.8860, lon: -5.2580, temp: 27, moist10: 23, moist30: 25, moist50: 27 },
-      { name: "Sensor E", lat: 40.8920, lon: -5.2580, temp: 26, moist10: 23, moist30: 25, moist50: 28 },
-      { name: "Sensor F", lat: 40.8905, lon: -5.2559, temp: 27, moist10: 23, moist30: 25, moist50: 27 },
-      { name: "Sensor G", lat: 40.8915, lon: -5.2596, temp: 24, moist10: 23, moist30: 25, moist50: 24 },
-      { name: "Sensor H", lat: 40.8916, lon: -5.2559, temp: 27, moist10: 23, moist30: 25, moist50: 27 },
-      { name: "Sensor I", lat: 40.8846, lon: -5.2597, temp: 28, moist10: 22, moist30: 24, moist50: 26 },
-      { name: "Sensor J", lat: 40.8910, lon: -5.2609, temp: 28, moist10: 22, moist30: 24, moist50: 28 },
-      { name: "Sensor L", lat: 40.8871, lon: -5.2603, temp: 28, moist10: 22, moist30: 24, moist50: 28 },
-      { name: "Sensor M", lat: 40.8871, lon: -5.2568, temp: 28, moist10: 22, moist30: 24, moist50: 28 },
-    ];
+    var sensorsData = FIELD_DATA.sensor_markers || [];
 
     var machineryData = [
       { name: "Tractor 1",   lat: 40.8887, lon: -5.2608, status: FIELD_TEXT.active },
       { name: "Harvester 1", lat: 40.8875, lon: -5.2612, status: FIELD_TEXT.idle   }
     ];
 
-    var weatherStationsData = [
-      {
-        name: "Weather Station 1",
-        lat: 40.8865,
-        lon: -5.2620,
-        status: FIELD_TEXT.online,
-        temperature: 25,
-        humidity: 55,
-        windSpeed: 5
-      },
-      {
-        name: "Weather Station 2",
-        lat: 40.886275,
-        lon: -5.2579,
-        status: FIELD_TEXT.online,
-        temperature: 22,
-        humidity: 60,
-        windSpeed: 4,
-        rainfall: 1.0
-      }
-    ];
+    var weatherStationsData = FIELD_DATA.weather_stations || [];
 
     function buildSensorDescription(sensor) {
       return `
@@ -707,7 +689,8 @@ const sentinelWmsUrl = `https://sh.dataspace.copernicus.eu/ogc/wms/${COPERNICUS_
       `;
     }
     function buildWeatherDescription(ws) {
-      let rainfallLine = ws.rainfall ? `${FIELD_TEXT.rain_probability}: ${ws.rainfall} mm/h<br/>` : "";
+      let rainfallLine = ws.rainfall !== undefined ? `${FIELD_TEXT.rainfall_today}: ${ws.rainfall} mm<br/>` : "";
+      let windDirection = ws.windDirection ? ` (${ws.windDirection})` : "";
       return `
         <div>
           <i class="fa-solid fa-cloud-sun" style="float:right; margin-left:8px; font-size:32px;"></i>
@@ -715,7 +698,7 @@ const sentinelWmsUrl = `https://sh.dataspace.copernicus.eu/ogc/wms/${COPERNICUS_
           ${FIELD_TEXT.status}: ${ws.status}<br/>
           ${FIELD_TEXT.temperature}: ${ws.temperature}°C<br/>
           ${FIELD_TEXT.humidity}: ${ws.humidity}%<br/>
-          ${FIELD_TEXT.wind_speed}: ${ws.windSpeed} m/s<br/>
+          ${FIELD_TEXT.wind_speed}: ${ws.windSpeed} km h⁻¹${windDirection}<br/>
           ${rainfallLine}<br/>
           <em>${FIELD_TEXT.coordinates}:</em> ${ws.lat.toFixed(5)}, ${ws.lon.toFixed(5)}
         </div>
