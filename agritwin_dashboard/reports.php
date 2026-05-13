@@ -80,6 +80,24 @@ agritwin_render_page('reports', $labels['report_centre'], function () use ($labe
     </section>
 
     <section class="view-section">
+        <div class="report-branding-panel">
+            <div class="report-branding-row report-branding-primary">
+                <?php foreach (($previewReport['branding']['primary'] ?? []) as $brand): ?>
+                    <figure>
+                        <img src="../<?= agritwin_h(basename((string) $brand['path'])) ?>" alt="<?= agritwin_h((string) $brand['label']) ?>">
+                        <figcaption><?= agritwin_h((string) $brand['name']) ?></figcaption>
+                    </figure>
+                <?php endforeach; ?>
+            </div>
+            <div class="report-branding-row report-branding-secondary">
+                <?php foreach (($previewReport['branding']['secondary'] ?? []) as $brand): ?>
+                    <figure>
+                        <img src="../<?= agritwin_h(basename((string) $brand['path'])) ?>" alt="<?= agritwin_h((string) $brand['label']) ?>">
+                        <figcaption><?= agritwin_h((string) $brand['name']) ?></figcaption>
+                    </figure>
+                <?php endforeach; ?>
+            </div>
+        </div>
         <div class="section-heading">
             <h2><?= agritwin_h($previewReport['title']) ?></h2>
             <span class="confidence-pill confidence-normal"><?= agritwin_h($labels['pdf_ready']) ?></span>
@@ -117,6 +135,15 @@ agritwin_render_page('reports', $labels['report_centre'], function () use ($labe
                 <?php endif; ?>
             </article>
         <?php endforeach; ?>
+        <footer class="report-preview-footer">
+            <div class="report-footer-logos">
+                <?php foreach (($previewReport['branding']['footer'] ?? []) as $brand): ?>
+                    <img src="../<?= agritwin_h(basename((string) $brand['path'])) ?>" alt="<?= agritwin_h((string) $brand['label']) ?>">
+                <?php endforeach; ?>
+                <span><?= agritwin_h($previewReport['copyright']) ?></span>
+            </div>
+            <p><?= agritwin_h($previewReport['funding_acknowledgement']) ?></p>
+        </footer>
     </section>
 
     <section class="view-section">

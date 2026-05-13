@@ -15,6 +15,24 @@ function agritwin_reports_storage_dir(): string
     return $dir;
 }
 
+function agritwin_report_branding(): array
+{
+    $root = dirname(__DIR__, 2);
+    return [
+        'primary' => [
+            ['label' => 'AgriTwin logo', 'name' => 'AgriTwin', 'path' => $root . '/AgriTwin_logo.png'],
+            ['label' => 'Fotovoltaica Macotera SL logo', 'name' => 'Fotovoltaica Macotera SL', 'path' => $root . '/fotomaco.png'],
+        ],
+        'secondary' => [
+            ['label' => 'OpenAgri logo', 'name' => 'OpenAgri', 'path' => $root . '/OpenAgri.png'],
+            ['label' => 'Obsidian Innovation Institute - Associação logo', 'name' => 'Obsidian Innovation Institute - Associação', 'path' => $root . '/obsidian.png'],
+        ],
+        'footer' => [
+            ['label' => 'European Union funding logo', 'name' => 'European Union', 'path' => $root . '/eufunded.png'],
+        ],
+    ];
+}
+
 function agritwin_report_labels(?string $lang = null): array
 {
     $lang ??= agritwin_current_language();
@@ -71,6 +89,7 @@ function agritwin_report_labels(?string $lang = null): array
             'latency' => 'Latency',
             'last_check' => 'Last check',
             'pdf_ready' => 'PDF ready',
+            'copyright' => '© 2026 AgriTwin',
         ],
         'pt-PT' => [
             'report_centre' => 'Centro de Relatórios',
@@ -124,6 +143,7 @@ function agritwin_report_labels(?string $lang = null): array
             'latency' => 'Latência',
             'last_check' => 'Última verificação',
             'pdf_ready' => 'PDF pronto',
+            'copyright' => '© 2026 AgriTwin',
         ],
         'es-ES' => [
             'report_centre' => 'Centro de informes',
@@ -177,6 +197,7 @@ function agritwin_report_labels(?string $lang = null): array
             'latency' => 'Latencia',
             'last_check' => 'Última comprobación',
             'pdf_ready' => 'PDF listo',
+            'copyright' => '© 2026 AgriTwin',
         ],
     ];
     return $labels[$lang] ?? $labels['en'];
@@ -218,7 +239,7 @@ function agritwin_report_build(string $type, ?string $lang = null): array
                 [$l['generated_at'], $generatedAt],
                 [$l['location'], 'Nava de Sotrobal / Macotera, Salamanca, Castilla y Leon, Spain'],
                 [$l['data_source'], (string) $summary['data_source']],
-                ['AgriTwin', 'Fotovoltaica Macotera SL / OBSIDIAN / OpenAgri'],
+                ['AgriTwin', 'AgriTwin / Fotovoltaica Macotera SL / OpenAgri / Obsidian Innovation Institute - Associação'],
             ],
         ],
     ];
@@ -310,6 +331,9 @@ function agritwin_report_build(string $type, ?string $lang = null): array
         'generated_at' => $generatedAt,
         'location' => 'Nava de Sotrobal / Macotera, Salamanca, Castilla y Leon, Spain',
         'source' => (string) $summary['data_source'],
+        'branding' => agritwin_report_branding(),
+        'copyright' => '© 2026 AgriTwin',
+        'funding_acknowledgement' => agritwin_funding_acknowledgement(),
         'sections' => $sections,
     ];
 }
@@ -325,19 +349,91 @@ function agritwin_report_wrap_text(string $text, int $width = 88): array
 
 function agritwin_report_pdf_string(string $text): string
 {
-    $ascii = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $text);
-    if ($ascii === false) {
-        $ascii = preg_replace('/[^\x20-\x7E]/', '', $text) ?? '';
+    $encoded = iconv('UTF-8', 'Windows-1252//TRANSLIT//IGNORE', $text);
+    if ($encoded === false) {
+        $encoded = preg_replace('/[^\x20-\x7E]/', '', $text) ?? '';
     }
-    return '(' . str_replace(['\\', '(', ')'], ['\\\\', '\\(', '\\)'], $ascii) . ')';
+    $escaped = '';
+    $length = strlen($encoded);
+    for ($i = 0; $i < $length; $i++) {
+        $ord = ord($encoded[$i]);
+        if ($encoded[$i] === '\\' || $encoded[$i] === '(' || $encoded[$i] === ')') {
+            $escaped .= '\\' . $encoded[$i];
+        } elseif ($ord < 32 || $ord > 126) {
+            $escaped .= '\\' . str_pad(decoct($ord), 3, '0', STR_PAD_LEFT);
+        } else {
+            $escaped .= $encoded[$i];
+        }
+    }
+    return '(' . $escaped . ')';
+}
+
+function agritwin_report_pdf_image(string $path, float $maxWidth, float $maxHeight): ?array
+{
+    if (!is_file($path) || !function_exists('imagecreatefromstring')) {
+        return null;
+    }
+    $bytes = file_get_contents($path);
+    if ($bytes === false) {
+        return null;
+    }
+    $image = @imagecreatefromstring($bytes);
+    if (!$image) {
+        return null;
+    }
+    $width = imagesx($image);
+    $height = imagesy($image);
+    $scale = min($maxWidth / max(1, $width), $maxHeight / max(1, $height), 1.0);
+    $drawWidth = round($width * $scale, 2);
+    $drawHeight = round($height * $scale, 2);
+    $canvas = imagecreatetruecolor($width, $height);
+    $white = imagecolorallocate($canvas, 255, 255, 255);
+    imagefilledrectangle($canvas, 0, 0, $width, $height, $white);
+    imagecopy($canvas, $image, 0, 0, 0, 0, $width, $height);
+    ob_start();
+    imagejpeg($canvas, null, 86);
+    $jpeg = ob_get_clean();
+    imagedestroy($image);
+    imagedestroy($canvas);
+    if (!is_string($jpeg) || $jpeg === '') {
+        return null;
+    }
+    return [
+        'width_px' => $width,
+        'height_px' => $height,
+        'draw_width' => $drawWidth,
+        'draw_height' => $drawHeight,
+        'stream' => $jpeg,
+    ];
 }
 
 function agritwin_report_pdf_content(array $report): string
 {
+    $branding = $report['branding'] ?? agritwin_report_branding();
+    $imageSpecs = [
+        'Im1' => ['asset' => $branding['primary'][0] ?? null, 'max_width' => 150, 'max_height' => 42, 'x' => 50, 'y' => 772],
+        'Im2' => ['asset' => $branding['primary'][1] ?? null, 'max_width' => 80, 'max_height' => 58, 'x' => 232, 'y' => 758],
+        'Im3' => ['asset' => $branding['secondary'][0] ?? null, 'max_width' => 100, 'max_height' => 34, 'x' => 352, 'y' => 774],
+        'Im4' => ['asset' => $branding['secondary'][1] ?? null, 'max_width' => 58, 'max_height' => 50, 'x' => 485, 'y' => 762],
+        'Im5' => ['asset' => $branding['footer'][0] ?? null, 'max_width' => 92, 'max_height' => 22, 'x' => 50, 'y' => 28],
+    ];
+    $images = [];
+    foreach ($imageSpecs as $name => $spec) {
+        $asset = $spec['asset'];
+        if (is_array($asset)) {
+            $image = agritwin_report_pdf_image((string) $asset['path'], (float) $spec['max_width'], (float) $spec['max_height']);
+            if ($image !== null) {
+                $images[$name] = $image + ['x' => $spec['x'], 'y' => $spec['y']];
+            }
+        }
+    }
+
     $lines = [];
-    $lines[] = ['text' => 'AgriTwin', 'size' => 18];
+    $lines[] = ['text' => 'AgriTwin + Fotovoltaica Macotera SL', 'size' => 8];
+    $lines[] = ['text' => 'OpenAgri + Obsidian Innovation Institute - Associação', 'size' => 8];
+    $lines[] = ['text' => '', 'size' => 7];
     $lines[] = ['text' => $report['title'], 'size' => 16];
-    $lines[] = ['text' => 'Fotovoltaica Macotera SL | OBSIDIAN | OpenAgri', 'size' => 10];
+    $lines[] = ['text' => 'Nava de Sotrobal / Macotera, Salamanca, Castilla y Leon, Spain', 'size' => 10];
     $lines[] = ['text' => '', 'size' => 10];
     foreach ($report['sections'] as $section) {
         $lines[] = ['text' => (string) $section['heading'], 'size' => 13];
@@ -362,11 +458,23 @@ function agritwin_report_pdf_content(array $report): string
         }
         $lines[] = ['text' => '', 'size' => 8];
     }
-    foreach (agritwin_report_wrap_text(agritwin_funding_acknowledgement(), 96) as $wrapped) {
+    $lines[] = ['text' => (string) ($report['copyright'] ?? '© 2026 AgriTwin'), 'size' => 8];
+    foreach (agritwin_report_wrap_text((string) ($report['funding_acknowledgement'] ?? agritwin_funding_acknowledgement()), 96) as $wrapped) {
         $lines[] = ['text' => $wrapped, 'size' => 8];
     }
 
-    $content = "BT\n/F1 10 Tf\n50 792 Td\n";
+    $content = "";
+    foreach ($images as $name => $image) {
+        $content .= sprintf(
+            "q %.2F 0 0 %.2F %.2F %.2F cm /%s Do Q\n",
+            $image['draw_width'],
+            $image['draw_height'],
+            (float) $image['x'],
+            (float) $image['y'],
+            $name
+        );
+    }
+    $content .= "BT\n/F1 10 Tf\n50 728 Td\n";
     $currentSize = 10;
     $lineNo = 0;
     foreach ($lines as $line) {
@@ -382,13 +490,26 @@ function agritwin_report_pdf_content(array $report): string
         $lineNo++;
     }
     $content .= "ET\n";
+    $content .= "BT\n/F1 8 Tf\n150 48 Td\n" . agritwin_report_pdf_string((string) ($report['copyright'] ?? '© 2026 AgriTwin')) . " Tj\n";
+    foreach (agritwin_report_wrap_text((string) ($report['funding_acknowledgement'] ?? agritwin_funding_acknowledgement()), 86) as $idx => $wrapped) {
+        $content .= "0 -" . ($idx === 0 ? 10 : 9) . " Td\n" . agritwin_report_pdf_string($wrapped) . " Tj\n";
+    }
+    $content .= "ET\n";
 
+    $xobjectEntries = [];
     $objects = [];
     $objects[] = "<< /Type /Catalog /Pages 2 0 R >>";
     $objects[] = "<< /Type /Pages /Kids [3 0 R] /Count 1 >>";
-    $objects[] = "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>";
+    $objects[] = "__PAGE_OBJECT__";
     $objects[] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>";
     $objects[] = "<< /Length " . strlen($content) . " >>\nstream\n{$content}endstream";
+    foreach ($images as $name => $image) {
+        $objectNumber = count($objects) + 1;
+        $xobjectEntries[] = "/{$name} {$objectNumber} 0 R";
+        $objects[] = "<< /Type /XObject /Subtype /Image /Width {$image['width_px']} /Height {$image['height_px']} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length " . strlen($image['stream']) . " >>\nstream\n{$image['stream']}\nendstream";
+    }
+    $xobjectResource = $xobjectEntries === [] ? '' : ' /XObject << ' . implode(' ', $xobjectEntries) . ' >>';
+    $objects[2] = "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >>{$xobjectResource} >> /Contents 5 0 R >>";
 
     $pdf = "%PDF-1.4\n";
     $offsets = [0];

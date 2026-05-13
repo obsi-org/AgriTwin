@@ -4,8 +4,8 @@
 
 AgriTwin PDF reports are generated locally using a lightweight PHP PDF writer. Each report includes:
 
-- AgriTwin title block;
-- Fotovoltaica Macotera SL, OBSIDIAN and OpenAgri branding text;
+- top header logo row with AgriTwin first and Fotovoltaica Macotera SL second;
+- secondary branding row with OpenAgri and Obsidian Innovation Institute - Associação;
 - report title and type;
 - generation timestamp;
 - Nava de Sotrobal / Macotera / Salamanca location;
@@ -13,6 +13,7 @@ AgriTwin PDF reports are generated locally using a lightweight PHP PDF writer. E
 - formatted human-readable sections;
 - tables with labels, values and units;
 - the OpenAgri funding acknowledgement.
+- `© 2026 AgriTwin`.
 
 ## Main Sections
 
@@ -29,4 +30,4 @@ The template builder maps structured platform data into readable sections:
 
 Generated reports are stored in `var/reports/`, which is ignored by Git. Report downloads require an authenticated AgriTwin session. The PDF generator intentionally does not include raw JSON payloads, credentials or secret configuration values.
 
-The current local generator uses text-based PDF layout. It avoids external dependencies and produces valid `application/pdf` output for operational review and download.
+The current local generator uses a dependency-free PDF writer. Existing PNG logo assets are converted to JPEG streams through PHP GD and embedded as PDF image objects. This avoids external rendering tools while producing valid `application/pdf` output for operational review and download.
