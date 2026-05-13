@@ -557,8 +557,25 @@ const viewer = new Cesium.Viewer('cesiumContainer', {
         -5.255199073804725,  // East
         40.892776720220887   // North
     );
+    var initialFieldView = {
+      longitude: -5.259723,
+      latitude: 40.883642,
+      height: 950,
+      heading: 0,
+      pitch: -55,
+      roll: 0
+    };
     viewer.camera.flyTo({
-      destination: boundingRectangle,
+      destination: Cesium.Cartesian3.fromDegrees(
+        initialFieldView.longitude,
+        initialFieldView.latitude,
+        initialFieldView.height
+      ),
+      orientation: {
+        heading: Cesium.Math.toRadians(initialFieldView.heading),
+        pitch: Cesium.Math.toRadians(initialFieldView.pitch),
+        roll: initialFieldView.roll
+      },
       duration: 2
     });
 

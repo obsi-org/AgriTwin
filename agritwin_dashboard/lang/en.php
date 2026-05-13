@@ -76,7 +76,7 @@ return [
     'map_geometry' => 'Macotera public validation geometry',
     'sensor_overlays' => 'Sensor overlays',
     'map_context_note' => 'Map markers use publication-safe coordinates around Macotera for local HMI validation. Private parcel boundaries are not published.',
-    'open_legacy_cesium' => 'Open Cesium field view',
+    'open_legacy_cesium' => 'Open field view',
     'view_telemetry' => 'View telemetry',
     'digital_twin_marker_title' => 'Fotovoltaica Macotera SL Digital Twin',
     'map_context_weather' => 'Weather-driven map context uses the current weather source state unless a verified live OpenAgri request succeeds.',

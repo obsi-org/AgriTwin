@@ -76,7 +76,7 @@ return [
     'map_geometry' => 'Geometria pública de validação de Macotera',
     'sensor_overlays' => 'Camadas de sensores',
     'map_context_note' => 'Os marcadores usam coordenadas seguras para publicação em torno de Macotera para validação local da interface. Os limites privados das parcelas não são publicados.',
-    'open_legacy_cesium' => 'Abrir vista Cesium do campo',
+    'open_legacy_cesium' => 'Abrir vista de campo',
     'view_telemetry' => 'Ver telemetria',
     'digital_twin_marker_title' => 'Gémeo Digital da Fotovoltaica Macotera SL',
     'map_context_weather' => 'O contexto meteorológico do mapa usa o estado atual da fonte meteorológica, salvo quando existir um pedido OpenAgri live verificado.',

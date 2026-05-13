@@ -68,6 +68,16 @@ The update does not alter:
 - layer toggles;
 - entity selection and InfoBox behaviour.
 
+## Field View Camera and Link Label
+
+The initial field view camera now opens centred on latitude `40.883642` and longitude `-5.259723`, with a 950 m startup height and an oblique pitch suitable for inspecting the Macotera field assets. The farm bounding rectangle remains in place for overlays and field context.
+
+The Digital Twin page field-view action label was simplified from the previous Cesium-specific wording to final platform wording:
+
+- English: `Open field view`
+- Portuguese: `Abrir vista de campo`
+- Spanish: `Abrir vista de campo`
+
 ## Verification
 
 Commands run:
