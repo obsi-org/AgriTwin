@@ -81,14 +81,17 @@ function agritwin_render_page(string $active, string $title, callable $content):
         <main id="main" class="main-panel">
             <?php $content(); ?>
             <footer class="footer">
-                <div class="footer-logos">
-                    <img src="AgriTwin_logo.png" alt="AgriTwin logo">
-                    <img class="footer-logo-partner" src="fotomaco.png" alt="Fotovoltaica Macotera SL logo">
-                    <img src="obsidian.png" alt="Obsidian Innovation Institute / OBSIDIAN logo">
-                    <img src="OpenAgri.png" alt="OpenAgri logo">
-                    <img src="eufunded.png" alt="EU funded acknowledgement">
+                <div class="footer-main">
+                    <div class="footer-logos">
+                        <img src="AgriTwin_logo.png" alt="AgriTwin logo">
+                        <img class="footer-logo-partner" src="fotomaco.png" alt="Fotovoltaica Macotera SL logo">
+                        <img src="obsidian.png" alt="Obsidian Innovation Institute / OBSIDIAN logo">
+                        <img src="OpenAgri.png" alt="OpenAgri logo">
+                        <img src="eufunded.png" alt="EU funded acknowledgement">
+                    </div>
+                    <span title="© 2026 AgriTwin"><?= agritwin_h(agritwin_t('footer_rights')) ?></span>
                 </div>
-                <span title="© 2026 AgriTwin"><?= agritwin_h(agritwin_t('footer_rights')) ?></span>
+                <p class="funding-acknowledgement"><?= htmlspecialchars(agritwin_funding_acknowledgement(), ENT_NOQUOTES, 'UTF-8') ?></p>
             </footer>
         </main>
     </div>

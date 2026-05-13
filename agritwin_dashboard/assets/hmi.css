@@ -1008,9 +1008,10 @@ tbody tr:hover {
 
 .footer {
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center;
+    align-items: stretch;
     gap: 12px;
     max-width: 1180px;
     padding: 18px;
@@ -1019,6 +1020,15 @@ tbody tr:hover {
     background: #ffffff;
     border: 1px solid var(--line);
     border-radius: 10px;
+}
+
+.footer-main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
 }
 
 .footer img {
@@ -1038,6 +1048,15 @@ tbody tr:hover {
     flex-wrap: wrap;
     gap: 16px;
     align-items: center;
+}
+
+.funding-acknowledgement {
+    max-width: 920px;
+    margin: 0 auto;
+    color: #52645a;
+    font-size: 12px;
+    line-height: 1.45;
+    text-align: center;
 }
 
 .logo-strip {

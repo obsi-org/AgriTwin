@@ -6,6 +6,11 @@ function agritwin_base_path(): string
     return '/agritwin3/agritwin_dashboard/';
 }
 
+function agritwin_funding_acknowledgement(): string
+{
+    return "This software prototype is part of a sub-project that has received funding from the European Union's Horizon Europe research and innovation programme under project OpenAgri (grant agreement No 101134083)";
+}
+
 function agritwin_supported_languages(): array
 {
     return [

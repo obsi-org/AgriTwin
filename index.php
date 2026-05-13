@@ -203,6 +203,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             max-height: 112px;
             max-width: 260px;
         }
+        .funding-acknowledgement {
+            max-width: 900px;
+            margin: 8px auto 0;
+            color: #45564a;
+            font-size: 12px;
+            line-height: 1.45;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -275,6 +283,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <img src="OpenAgri.png" alt="OpenAgri Logo">
         <img src="eufunded.png" alt="EU Funded">
         </div>
+        <p class="funding-acknowledgement"><?= htmlspecialchars(agritwin_funding_acknowledgement(), ENT_NOQUOTES, 'UTF-8') ?></p>
         <p><?= htmlspecialchars(agritwin_t('footer_rights')) ?></p>
     </div>
 </body>

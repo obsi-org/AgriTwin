@@ -16,6 +16,7 @@ $spainFarmId = 1;
 
 $fieldLang = agritwin_current_language();
 $fieldLangQuery = '?lang=' . rawurlencode($fieldLang);
+$fundingAcknowledgement = agritwin_funding_acknowledgement();
 
 $fieldText = [
     'en' => [
@@ -458,16 +459,34 @@ try {
             left: 50%;
             transform: translateX(-50%);
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 15px;
+            gap: 8px;
             z-index: 1000;
             background: rgba(0, 0, 0, 0.7);
             padding: 10px;
             border-radius: 5px;
+            width: 760px;
+            max-width: calc(100vw - 340px);
+        }
+        .field-logo-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
         #logoContainer img {
             height: 40px;
+        }
+        .field-funding-acknowledgement {
+            max-width: 760px;
+            margin: 0;
+            color: rgba(255, 255, 255, 0.86);
+            font-size: 10.5px;
+            line-height: 1.35;
+            text-align: center;
         }
 
         /* Move Cesium toolbar to top-left */
@@ -573,6 +592,16 @@ try {
         #toggleSidebarBtn:hover {
             background-color: #4b4b4b;
         }
+        @media (max-width: 760px) {
+            #logoContainer {
+                left: 10px;
+                right: 10px;
+                bottom: 10px;
+                width: auto;
+                max-width: none;
+                transform: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -580,11 +609,14 @@ try {
 <!-- Main Cesium container -->
 <div id="cesiumContainer">
     <div id="logoContainer">
-        <img src="AgriTwin_logo.png" alt="AgriTwin logo">
-        <img src="obsidian.png" alt="OBSIDIAN logo">
-        <img src="fotomaco.png" alt="Fotovoltaica Macotera SL logo">
-        <img src="OpenAgri.png" alt="OpenAgri logo">
-        <img src="eufunded.png" alt="European Union funding logo">
+        <div class="field-logo-row">
+            <img src="AgriTwin_logo.png" alt="AgriTwin logo">
+            <img src="obsidian.png" alt="OBSIDIAN logo">
+            <img src="fotomaco.png" alt="Fotovoltaica Macotera SL logo">
+            <img src="OpenAgri.png" alt="OpenAgri logo">
+            <img src="eufunded.png" alt="European Union funding logo">
+        </div>
+        <p class="field-funding-acknowledgement"><?= htmlspecialchars($fundingAcknowledgement, ENT_NOQUOTES, 'UTF-8') ?></p>
     </div>
 </div>
 
