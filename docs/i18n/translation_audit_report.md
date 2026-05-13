@@ -1,12 +1,12 @@
 # Translation Audit Report
 
-Generated: 2026-05-13T11:41:31+00:00
+Generated: 2026-05-13T12:12:53+00:00
 
 ## Summary
 
-- en: 427 keys
-- pt-PT: 427 keys
-- es-ES: 427 keys
+- en: 452 keys
+- pt-PT: 452 keys
+- es-ES: 452 keys
 
 ## Missing Keys
 ### en
@@ -20,7 +20,10 @@ None.
 None.
 
 ## Potentially Untranslated Values
-None.
+### pt-PT
+- `{"key":"lai_savi","value":"LAI/SAVI"}`
+### es-ES
+- `{"key":"lai_savi","value":"LAI/SAVI"}`
 
 ## Forbidden Terms
 None.

@@ -1,5 +1,5 @@
 {
-    "generated_at": "2026-05-13T11:41:31+00:00",
+    "generated_at": "2026-05-13T12:12:53+00:00",
     "locales": [
         "en",
         "pt-PT",
@@ -7,13 +7,13 @@
     ],
     "summary": {
         "en": {
-            "key_count": 427
+            "key_count": 452
         },
         "pt-PT": {
-            "key_count": 427
+            "key_count": 452
         },
         "es-ES": {
-            "key_count": 427
+            "key_count": 452
         }
     },
     "missing_keys": {
@@ -27,7 +27,20 @@
         "es-ES": []
     },
     "empty_values": [],
-    "identical_to_english": [],
+    "identical_to_english": {
+        "pt-PT": [
+            {
+                "key": "lai_savi",
+                "value": "LAI/SAVI"
+            }
+        ],
+        "es-ES": [
+            {
+                "key": "lai_savi",
+                "value": "LAI/SAVI"
+            }
+        ]
+    },
     "forbidden_terms": [],
     "help_content": {
         "en": {

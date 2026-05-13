@@ -13,6 +13,7 @@ credentials.json
 LOCAL_CREDENTIALS.md
 secrets/
 storage/secrets/
+reference/
 
 # Local databases, dumps, and private pilot-farm data
 *.sqlite
