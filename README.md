@@ -1,13 +1,12 @@
-# AgriTwin Local Prototype
+# AgriTwin Platform
 
-AgriTwin is the OpenAgri Agricultural Digital Twin for Intelligent Decision-Making. The target ADS combines an AI-powered DSS, Cesium-based Environmental Digital Twin, IoT/edge ingestion, Copernicus/EO and weather data, OpenAgri reusable services, offline-capable operation, and KPI reporting for irrigation, fertilisation/nitrogen, pest management, and resource efficiency.
+AgriTwin is an operational OpenAgri agricultural digital twin for intelligent decision-making. The platform combines an AI-powered DSS, Cesium-based Environmental Digital Twin, IoT/edge ingestion, Copernicus/EO and weather data, OpenAgri reusable services, offline-capable operation, and KPI reporting for irrigation, fertilisation/nitrogen, pest management, and resource efficiency.
 
-This repository currently contains a local PHP/MySQL/Cesium prototype plus the engineering documentation needed to turn the Proposal and D1 into implementation tasks.
+This repository contains the local PHP/MySQL/Cesium platform implementation, OpenAgri connector layer, multilingual HMI, analytics module, user management, deployment scripts and auditable engineering documentation.
 
-## Authoritative Sources
+## Source Material
 
-- `docs/source/3.-OpenAgri-Proposal-AgriTwin_20241202.pdf`
-- `docs/source/AgriTwin_D1_20260124.pdf`
+Project source PDFs are stored under `docs/source/` for local audit and engineering traceability.
 
 ## Local Run
 
@@ -37,7 +36,9 @@ http://localhost/agritwin3/agritwin_dashboard/analytics.php
 http://localhost/agritwin3/api/openapi.json
 ```
 
-The current prototype expects a local database imported from `mysql.sql` and configured through environment variables loaded by `agritwin_dashboard/db_config.php`. See `docs/operations/local_deployment.md` and `docs/operations/database_local_fix.md` for details.
+The current platform expects a local database imported from `mysql.sql` and configured through environment variables loaded by `agritwin_dashboard/db_config.php`. See `docs/operations/local_deployment.md` and `docs/operations/database_local_fix.md` for details.
+
+Local temporary credentials are stored in the ignored `LOCAL_CREDENTIALS.md` file generated during local setup.
 
 ## Post-Reboot Startup
 
@@ -59,7 +60,7 @@ Optional deeper checks:
 
 ```bash
 scripts/openagri/check_openagri_services.sh
-scripts/openagri/check_openagri_services.sh --mandatory-only
+scripts/openagri/check_openagri_services.sh --core-only
 make test
 find . -path './external' -prune -o -path './vendor' -prune -o -name '*.php' -print | xargs -n1 php -l
 curl -s -L http://localhost/agritwin3/index.php
@@ -70,33 +71,33 @@ curl -s -L http://localhost/agritwin3/agritwin_dashboard/openagri_services.php
 
 Live OpenAgri Weather observations require real external credentials and provider configuration outside git.
 
-## Mandatory OpenAgri Services
+## Core OpenAgri Services
 
-Proposal/D1 compliance is assessed first against four mandatory OpenAgri services:
+AgriTwin operational readiness is assessed first against four core OpenAgri services:
 
 - Gatekeeper / Access Control
 - Weather Data Service
 - Irrigation Management Service
 - Pest & Disease Management Service
 
-FarmCalendar and Reporting Service are operational extensions. Geodatabase / OCSM is optional for the local D1 readiness check unless a real endpoint is configured.
+FarmCalendar and Reporting Service are additional operational services. Geodatabase / OCSM is optional unless a real endpoint is configured.
 
-Use the mandatory-only check when validating the core service set:
-
-```bash
-scripts/openagri/check_openagri_services.sh --mandatory-only
-curl -fsS http://localhost/agritwin3/api/openagri/mandatory-services
-```
-
-## Reproducible Mock Demo
-
-Docker Compose mock mode starts the PHP app, MariaDB seeded with synthetic demo data, and the local OpenAgri mock service:
+Use the core-only check when validating the core service set:
 
 ```bash
-make demo
+scripts/openagri/check_openagri_services.sh --core-only
+curl -fsS http://localhost/agritwin3/api/openagri/core-services
 ```
 
-Then open `http://127.0.0.1:8080`. If that port is occupied, run with `AGRITWIN_APP_PORT=18081 make demo`. Run all tests and publication safety checks with:
+## Reproducible Local Run
+
+Docker Compose local mode starts the PHP app, MariaDB seeded with publication-safe operational data, and local OpenAgri-compatible service endpoints:
+
+```bash
+make run
+```
+
+Then open `http://127.0.0.1:8080`. Run all tests and publication safety checks with:
 
 ```bash
 make publication-check
@@ -119,18 +120,18 @@ The checkouts live under ignored path `external/openagri/`. Use `docker-compose.
 ## Documentation Map
 
 - `docs/audit/00_initial_repository_audit.md`: current codebase audit.
-- `docs/audit/01_openagri_requirements_traceability.md`: implementation status against Proposal/D1 requirements.
+- `docs/audit/01_openagri_requirements_traceability.md`: implementation status against source requirements.
 - `docs/architecture/agritwin_system_architecture.md`: cloud-only and mixed edge-cloud ADS architecture.
 - `docs/architecture/openagri_integration_architecture.md`: Gatekeeper, OpenAgri services, FarmCalendar, reporting, and fallback behavior.
 - `docs/architecture/data_model.md`: canonical AgriTwin data records and JSON examples.
 - `docs/analytics/statistics_engine.md`: analytics calculations, graphical page and API endpoints.
 - `docs/integration/openagri_connectors.md`: OpenAgri connector configuration, APIs, cache/offline behavior, and tests.
-- `docs/integration/openagri_services_configuration.md`: OpenAgri live/demo/auto service-health configuration and weather verification.
+- `docs/integration/openagri_services_configuration.md`: OpenAgri live/auto service-health configuration and weather verification.
 - `docs/integration/openagri_endpoint_configuration.md`: OpenAgri endpoint, documentation URL and credential configuration.
-- `docs/integration/openagri_mandatory_services.md`: mandatory Proposal/D1 OpenAgri service set and health-check method.
+- `docs/integration/openagri_core_services.md`: core OpenAgri service set and health-check method.
 - `docs/edge/edge_gateway_runbook.md`: mixed edge-cloud gateway installation, storage, sync, and troubleshooting.
 - `docs/edge/sensor_payload_spec.md`: canonical sensor packet schema and examples.
-- `docs/evidence/kpi_methodology.md`: D1 KPI metric definitions, formulas, collection method, and comparison approach.
+- `docs/evidence/kpi_methodology.md`: KPI metric definitions, formulas, collection method, and comparison approach.
 - `docs/evidence/standards_interoperability_switchability.md`: standards, portability, switchability, and hardware reuse evidence model.
 - `docs/evidence/generated/`: generated sample KPI evidence for cloud-only vs mixed edge-cloud ADS comparison.
 - `docs/hmi/hmi_design_notes.md`: farmer HMI journeys, screens, offline behavior, and limitations.
@@ -144,9 +145,8 @@ The checkouts live under ignored path `external/openagri/`. Use `docker-compose.
 - `docs/integration/openagri_service_health_report.md`: latest local OpenAgri health status.
 - `docs/security/user_management.md`: roles, permissions and account lifecycle.
 - `docs/api/swagger_openapi.md`: local API / Swagger catalogue and OpenAPI JSON notes.
-- `docs/audit/openagri_health_truthfulness_report.md`: live-vs-local-demo OpenAgri connector health truthfulness notes.
+- `docs/audit/openagri_health_truthfulness_report.md`: live-vs-local OpenAgri connector health truthfulness notes.
 - `docs/audit/fotovoltaica_macotera_display_name_cleanup.md`: visible partner display-name cleanup audit.
-- `docs/data/macetera_demo_sensor_dataset.md`: synthetic Fotovoltaica Macotera SL / Macotera sensor dataset used by the local HMI.
 - `docs/data/sensor_stations_macotera.md`: five-station Macotera telemetry model and weather source policy.
 - `docs/operations/local_deployment.md`: developer setup.
 - `docs/operations/pilot_deployment_runbook.md`: pilot deployment checklist and rollback.
@@ -155,7 +155,6 @@ The checkouts live under ignored path `external/openagri/`. Use `docker-compose.
 - `docs/publication/openagri_catalogue_submission.md`: OpenAgri OS Catalogue submission notes.
 - `docs/publication/catalogue_metadata.yml`: draft catalogue metadata.
 - `docs/backlog/implementation_backlog.md`: prioritized implementation backlog.
-- `docs/backlog/proposal_d1_gap_closure_plan.md`: gap-to-action closure plan.
 
 ## Licence
 
@@ -181,13 +180,12 @@ make test-openagri
 
 For configuration details, see `docs/integration/openagri_connectors.md`.
 
-## D1 KPI Evidence
+## KPI Evidence
 
-The KPI tooling uses synthetic sample events unless a local approved telemetry store is configured:
+The KPI tooling uses publication-safe sample events unless a local approved telemetry store is configured:
 
 ```bash
 make test-kpi
-make generate-d1-evidence
 php scripts/agritwin-kpi.php compare-ads cloud mixed
 ```
 

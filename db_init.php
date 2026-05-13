@@ -110,12 +110,12 @@ function ensureSchemaAndSeed_min(PDO $pdo): void
     }
 
     // Local-only bootstrap password hash; rotate in any deployment.
-    $adminHash = getenv('AGRITWIN_DEMO_ADMIN_PASSWORD_HASH') ?: password_hash('change-me-local-demo', PASSWORD_DEFAULT);
-    $technicianHash = password_hash('change-me-local-demo', PASSWORD_DEFAULT);
+    $adminHash = getenv('AGRITWIN_ADMIN_PASSWORD_HASH') ?: password_hash(bin2hex(random_bytes(16)), PASSWORD_DEFAULT);
+    $technicianHash = password_hash(bin2hex(random_bytes(16)), PASSWORD_DEFAULT);
 
     $pdo->exec("INSERT INTO users (id,username,password,role,location,preferred_language,enabled,password_change_required) VALUES
         (1,'admin',{$pdo->quote($adminHash)},'administrator','Spain','en',1,1),
-        (2,'technician',{$pdo->quote($technicianHash)},'technical_manager','Spain','en',1,1)
+        (2,'technical.manager',{$pdo->quote($technicianHash)},'technical_manager','Spain','en',1,1)
     ON DUPLICATE KEY UPDATE id=id");
 
     $pdo->commit();

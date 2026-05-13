@@ -19,7 +19,7 @@ agritwin_render_page('openagri', agritwin_t('openagri'), function () use ($servi
                         <th><?= agritwin_h(agritwin_t('last_check')) ?></th>
                         <th><?= agritwin_h(agritwin_t('latency')) ?></th>
                         <th><?= agritwin_h(agritwin_t('integration_role')) ?></th>
-                        <th><?= agritwin_h(agritwin_t('proposal_d1_relevance')) ?></th>
+                        <th><?= agritwin_h(agritwin_t('integration_relevance')) ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,7 +33,7 @@ agritwin_render_page('openagri', agritwin_t('openagri'), function () use ($servi
                         <td><?= agritwin_h((string) ($service['last_check'] ?? agritwin_t('not_available'))) ?></td>
                         <td><?= $service['latency_ms'] !== null ? agritwin_h((string) $service['latency_ms']) . ' ms' : agritwin_h(agritwin_t('not_available')) ?></td>
                         <td><?= agritwin_h($service['role']) ?></td>
-                        <td><?= agritwin_h($service['proposal_d1_relevance']) ?></td>
+                        <td><?= agritwin_h($service['integration_relevance']) ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
@@ -44,7 +44,7 @@ agritwin_render_page('openagri', agritwin_t('openagri'), function () use ($servi
     ?>
     <section class="view-section">
         <div class="section-heading">
-            <h2><?= agritwin_h(agritwin_t('mandatory_openagri_services')) ?></h2>
+            <h2><?= agritwin_h(agritwin_t('core_openagri_services')) ?></h2>
             <?= agritwin_badge($weatherSource['mode'] === 'live' ? 'healthy' : 'reduced') ?>
         </div>
         <p><?= agritwin_h(agritwin_t('service_health_explanation')) ?></p>
@@ -53,12 +53,12 @@ agritwin_render_page('openagri', agritwin_t('openagri'), function () use ($servi
             <a class="secondary-action" href="api_swagger.php"><i class="fas fa-code"></i> API / Swagger</a>
         </div>
         <p class="source-note"><strong><?= agritwin_h($weatherSource['label']) ?>.</strong> <?= agritwin_h($weatherSource['reason']) ?></p>
-        <?php $renderServiceTable($groups['mandatory'], 'mandatory-service-table'); ?>
+        <?php $renderServiceTable($groups['core'], 'mandatory-service-table'); ?>
     </section>
 
     <section class="view-section compact-section">
         <div class="section-heading">
-            <h2><?= agritwin_h(agritwin_t('operational_extensions')) ?></h2>
+            <h2><?= agritwin_h(agritwin_t('additional_operational_services')) ?></h2>
         </div>
         <?php $renderServiceTable($groups['extensions']); ?>
     </section>
@@ -68,7 +68,7 @@ agritwin_render_page('openagri', agritwin_t('openagri'), function () use ($servi
             <h2><?= agritwin_h(agritwin_t('optional_services')) ?></h2>
             <?= agritwin_badge('optional_not_configured') ?>
         </div>
-        <p><?= agritwin_h(agritwin_t('optional_not_required_for_d1')) ?></p>
+        <p><?= agritwin_h(agritwin_t('optional_service_note')) ?></p>
         <?php $renderServiceTable($groups['optional']); ?>
     </section>
     <?php

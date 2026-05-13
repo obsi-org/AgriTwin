@@ -11,7 +11,7 @@ Date: 2026-05-12
 
 - `GET /agritwin3/api/health`
 - `GET /agritwin3/api/openagri/services`
-- `GET /agritwin3/api/openagri/mandatory-services`
+- `GET /agritwin3/api/openagri/core-services`
 - `GET /agritwin3/api/weather/current`
 - `GET /agritwin3/api/weather/configuration/status`
 - `GET /agritwin3/api/weather/diagnostics`

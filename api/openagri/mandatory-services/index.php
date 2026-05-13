@@ -14,6 +14,8 @@ $records = array_map(static function (array $service): array {
         'name' => $service['name'],
         'required_for_d1' => true,
         'required_for_proposal' => true,
+        'core_service' => true,
+        'integration_priority' => 'core',
         'role' => $service['role'],
         'status' => $service['status'],
         'mode' => $service['mode'],
@@ -30,6 +32,7 @@ $records = array_map(static function (array $service): array {
 
 echo json_encode([
     'group' => 'mandatory',
-    'proposal_d1_compliance_basis' => true,
+    'integration_group' => 'core',
+    'core_service_basis' => true,
     'services' => $records,
 ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);

@@ -12,7 +12,7 @@ $analyticsSummary = agritwin_analytics_summary();
 
 agritwin_render_page('dashboard', agritwin_t('dashboard'), function () use ($sensors, $recommendations, $context, $services, $weatherSource, $stations, $analyticsSummary): void {
     $groups = agritwin_openagri_service_groups($services);
-    $mandatoryServices = $groups['mandatory'];
+    $mandatoryServices = $groups['core'];
     $mandatoryAvailable = count(array_filter($mandatoryServices, static fn ($service): bool => $service['mode'] === 'live' && $service['status'] === 'live_healthy'));
     $weatherService = $mandatoryServices['weather'] ?? null;
     $weatherServiceReachable = $weatherService !== null && $weatherService['status'] === 'live_healthy';
@@ -51,9 +51,9 @@ agritwin_render_page('dashboard', agritwin_t('dashboard'), function () use ($sen
             </article>
             <article class="priority-card">
                 <?= agritwin_badge($mandatoryAvailable === count($mandatoryServices) ? 'healthy' : 'reduced') ?>
-                <h3><?= agritwin_h(agritwin_t('mandatory_openagri_services')) ?></h3>
+                <h3><?= agritwin_h(agritwin_t('core_openagri_services')) ?></h3>
                 <p class="metric"><?= $mandatoryAvailable ?> / <?= count($mandatoryServices) ?></p>
-                <p><?= agritwin_h(agritwin_t('mandatory_service_explanation')) ?></p>
+                <p><?= agritwin_h(agritwin_t('core_service_explanation')) ?></p>
             </article>
             <article class="priority-card">
                 <?= agritwin_badge(in_array($weatherSource['mode'], ['live', 'fallback'], true) ? 'healthy' : 'reduced') ?>

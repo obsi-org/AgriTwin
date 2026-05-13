@@ -648,6 +648,7 @@ function agritwin_openagri_service_groups(array $services): array
 {
     return [
         'mandatory' => array_intersect_key($services, array_flip(agritwin_mandatory_openagri_keys())),
+        'core' => array_intersect_key($services, array_flip(agritwin_mandatory_openagri_keys())),
         'extensions' => array_intersect_key($services, array_flip(agritwin_extension_openagri_keys())),
         'optional' => array_intersect_key($services, array_flip(agritwin_optional_openagri_keys())),
     ];
@@ -719,9 +720,11 @@ function agritwin_check_openagri_service(string $key, array $service): array
         'configured' => $endpoint !== '',
         'required_for_d1' => in_array($key, agritwin_mandatory_openagri_keys(), true),
         'required_for_proposal' => in_array($key, agritwin_mandatory_openagri_keys(), true),
+        'core_service' => in_array($key, agritwin_mandatory_openagri_keys(), true),
+        'integration_priority' => in_array($key, agritwin_mandatory_openagri_keys(), true) ? 'core' : (in_array($key, agritwin_extension_openagri_keys(), true) ? 'additional' : 'optional'),
         'service_group' => in_array($key, agritwin_mandatory_openagri_keys(), true) ? 'mandatory' : (in_array($key, agritwin_extension_openagri_keys(), true) ? 'extensions' : 'optional'),
         'role' => agritwin_openagri_service_role($key),
-        'proposal_d1_relevance' => agritwin_openagri_service_relevance($key),
+        'integration_relevance' => agritwin_openagri_service_relevance($key),
         'mode' => 'not_configured',
         'status' => $key === 'geodatabase' ? 'optional_not_configured' : 'not_configured',
         'http_status' => null,

@@ -14,6 +14,7 @@ foreach ([
     "ALTER TABLE users ADD COLUMN organisation VARCHAR(255) DEFAULT NULL",
     "ALTER TABLE users ADD COLUMN email VARCHAR(255) DEFAULT NULL",
     "ALTER TABLE users ADD COLUMN must_change_password TINYINT(1) NOT NULL DEFAULT 1",
+    "ALTER TABLE users ADD UNIQUE KEY users_username_unique (username)",
 ] as $sql) {
     try {
         $pdo->exec($sql);

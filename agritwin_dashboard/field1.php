@@ -36,7 +36,7 @@ try {
     // Optionally: error_log($e->getMessage());
 }
 
-// Default placeholders for demonstration
+// Default placeholders for local operational view
 $dbSoilMoisture = "N/A";
 $dbTemperature  = "N/A";
 $dbHumidity     = "N/A";
@@ -279,7 +279,7 @@ try {
 </div>
 
 <div class="sensor-data">
-  <h3>AI Insights - Synthetic Salamanca Demo Orchard</h3>
+  <h3>AI Insights - Synthetic Salamanca Orchard</h3>
 
   <p><strong>Alert:</strong>  
     • Orchard soil-moisture reading sits at 17 % VWC after a mid-afternoon high of 29 °C.<br/>
@@ -297,7 +297,7 @@ try {
 <!-- ---------- Property work queue ---------- -->
 <!-- ---------- Property work queue ---------- -->
 <div class="task-list">
-  <h3>Task Scheduling - Synthetic Demo Orchard</h3>
+  <h3>Task Scheduling - Synthetic Operational Orchard</h3>
   <ul>
     <li>✅ Irrigation (A-1 &amp; A-3) – Completed 04 / 08 / 2025 at 14 : 45</li>
     <li>🔄 Drone Mission #27 – Canopy NDVI &amp; pest hot-spot mapping (<strong>In Progress</strong>)</li>
@@ -309,7 +309,7 @@ try {
 
 <!-- ---------- Property-level work queue ---------- -->
 <div class="task-list">
-  <h3>Task Scheduling - Synthetic Demo Farm</h3>
+  <h3>Task Scheduling - Synthetic Operational Farm</h3>
   <ul>
     <li>✅ Irrigation (blocks C-4 &amp; D-1) – Completed 14:45 today</li>
     <li>🔄 Drone pass&nbsp;#27 (stand count &amp; NDVI) – <strong>In Progress</strong></li>

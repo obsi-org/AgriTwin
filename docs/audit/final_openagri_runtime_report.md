@@ -14,7 +14,7 @@ Date: 2026-05-12
 - Rechecked AgriTwin pages and API endpoints against the locally running service URLs.
 - Removed a rendered SQLSTATE failure path by making the login and settings pages degrade to a professional database-unavailable state when the host MySQL credentials are not accepted.
 
-## Mandatory Services - Proposal/D1
+## Core OpenAgri Services
 
 | Service | Local URL | Result |
 | --- | --- | --- |
@@ -23,7 +23,7 @@ Date: 2026-05-12
 | Irrigation Management | `http://127.0.0.1:18093` | Available |
 | Pest and Disease Management | `http://127.0.0.1:18094` | Available |
 
-These four services form the mandatory AgriTwin/OpenAgri integration evidence for Proposal/D1: access control, weather inputs, irrigation advisory support, and pest/disease risk support.
+These four services form the core AgriTwin/OpenAgri integration set for core platform operation: access control, weather inputs, irrigation advisory support, and pest/disease risk support.
 
 ## Operational Extensions
 
@@ -38,7 +38,7 @@ These four services form the mandatory AgriTwin/OpenAgri integration evidence fo
 | --- | --- | --- |
 | Geodatabase / OCSM | Not configured | Configuration required |
 
-Geodatabase / OCSM is optional for the current local D1 readiness check. Its missing configuration is not interpreted as a failure of the mandatory service set.
+Geodatabase / OCSM is optional for the current local operational readiness check. Its missing configuration is not interpreted as a failure of the core service set.
 
 ## Weather Source
 
@@ -50,10 +50,10 @@ The local OpenAgri Weather Service process and documentation endpoint are availa
 scripts/openagri/setup_openagri_services.sh
 OPENAGRI_RUN_CONTAINERS=1 scripts/openagri/start_openagri_services.sh
 scripts/openagri/check_openagri_services.sh
-scripts/openagri/check_openagri_services.sh --mandatory-only
+scripts/openagri/check_openagri_services.sh --core-only
 docker compose -f external/openagri/runtime/docker-compose.generated.yml ps -a
 docker compose -f external/openagri/runtime/docker-compose.generated.yml config
-curl -fsS http://localhost/agritwin3/api/openagri/mandatory-services
+curl -fsS http://localhost/agritwin3/api/openagri/core-services
 ```
 
 ## Remaining Requirements
@@ -63,25 +63,25 @@ curl -fsS http://localhost/agritwin3/api/openagri/mandatory-services
 - Keep generated local `.env` files untracked.
 - Repair or expose the local AgriTwin MySQL user if login/user management should be exercised against the host database rather than the existing graceful unavailable state.
 
-## 2026-05-13 Mandatory-Service Reprioritisation
+## 2026-05-13 Core-Service Reprioritisation
 
-The HMI, settings page, JSON API and health-check script now present Gatekeeper, Weather Data, Irrigation Management and Pest & Disease Management as the primary Proposal/D1 service group. FarmCalendar and Reporting are shown as operational extensions. Geodatabase / OCSM is shown as optional and not required for D1 when no endpoint is configured.
+The HMI, settings page, JSON API and health-check script now present Gatekeeper, Weather Data, Irrigation Management and Pest & Disease Management as the primary core platform operation service group. FarmCalendar and Reporting are shown as additional operational services. Geodatabase / OCSM is shown as optional when no endpoint is configured.
 
 Verification commands run:
 
 ```bash
-scripts/openagri/check_openagri_services.sh --mandatory-only
+scripts/openagri/check_openagri_services.sh --core-only
 scripts/openagri/check_openagri_services.sh
 scripts/check_local_stack.sh
 make test
 docker compose config
-curl -fsS http://localhost/agritwin3/api/openagri/mandatory-services
+curl -fsS http://localhost/agritwin3/api/openagri/core-services
 curl -fsS http://localhost/agritwin3/api/openagri/services
 ```
 
 Observed status:
 
-- Mandatory services: Gatekeeper, Weather, Irrigation and Pest & Disease endpoints all returned HTTP 200 on their configured local health/docs paths.
+- Core services: Gatekeeper, Weather, Irrigation and Pest & Disease endpoints all returned HTTP 200 on their configured local health/docs paths.
 - Extensions: FarmCalendar and Reporting endpoints returned HTTP 200.
 - Optional services: Geodatabase / OCSM remains optional and not configured.
 - Weather observations: the Weather service endpoint is reachable; live weather observations still require external provider credentials when using the OpenAgri data endpoint.

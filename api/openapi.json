@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "AgriTwin Local Prototype API",
+    "title": "AgriTwin Platform API",
     "version": "0.3.0",
     "description": "Implemented JSON endpoints for the AgriTwin local operational platform. Examples use sample station data or explicitly labelled live/fallback weather sources and never expose secrets."
   },
@@ -21,20 +21,20 @@
         "responses": { "200": { "description": "Connector health records", "content": { "application/json": { "schema": { "type": "object", "properties": { "services": { "type": "array", "items": { "$ref": "#/components/schemas/OpenAgriServiceHealth" } }, "weather_source": { "$ref": "#/components/schemas/WeatherSource" } } } } } } }
       }
     },
-    "/api/openagri/mandatory-services": {
+    "/api/openagri/core-services": {
       "get": {
-        "summary": "Mandatory OpenAgri services for Proposal/D1 compliance",
-        "description": "Returns only Gatekeeper, Weather Data, Irrigation Management and Pest & Disease Management service records.",
+        "summary": "Core OpenAgri services",
+        "description": "Preferred endpoint for the core Gatekeeper, Weather Data, Irrigation Management and Pest & Disease Management service records.",
         "responses": {
           "200": {
-            "description": "Mandatory OpenAgri service health records",
+            "description": "Core OpenAgri service health records",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "group": { "type": "string", "example": "mandatory" },
-                    "proposal_d1_compliance_basis": { "type": "boolean", "example": true },
+                    "integration_group": { "type": "string", "example": "core" },
+                    "core_service_basis": { "type": "boolean", "example": true },
                     "services": {
                       "type": "array",
                       "items": { "$ref": "#/components/schemas/OpenAgriServiceHealth" }
@@ -151,7 +151,7 @@
     "/api/analytics/kpis": {
       "get": {
         "summary": "KPI analytics",
-        "responses": { "200": { "description": "D1 KPI and operational performance records", "content": { "application/json": { "schema": { "type": "object" } } } } }
+        "responses": { "200": { "description": "Operational KPI and performance records", "content": { "application/json": { "schema": { "type": "object" } } } } }
       }
     },
     "/api/analytics/service-freshness": {
@@ -192,7 +192,7 @@
     },
     "/api/kpis": {
       "get": {
-        "summary": "D1 KPI summary",
+        "summary": "Operational KPI summary",
         "responses": { "200": { "description": "KPI records", "content": { "application/json": { "schema": { "type": "object" } } } } }
       }
     },
@@ -231,8 +231,8 @@
           "configured": { "type": "boolean" },
           "mode": { "type": "string", "enum": ["live", "auto", "fallback", "not_configured"] },
           "status": { "type": "string", "enum": ["live_healthy", "local_fallback_active", "degraded", "unavailable", "unauthenticated", "not_configured", "optional_not_configured"] },
-          "required_for_d1": { "type": "boolean", "example": true },
-          "required_for_proposal": { "type": "boolean", "example": true },
+          "core_service": { "type": "boolean", "example": true },
+          "integration_priority": { "type": "string", "enum": ["core", "additional", "optional"] },
           "role": { "type": "string", "example": "Weather forecasts and agrometeorological indicators for DSS inputs." },
           "http_status": { "type": "integer", "nullable": true },
           "latency_ms": { "type": "integer", "nullable": true },

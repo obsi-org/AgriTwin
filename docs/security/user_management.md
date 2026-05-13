@@ -27,7 +27,9 @@ The script creates/updates:
 - Pedro Branco, Administrator access, preferred language `pt-PT`.
 - Gregorio Sanchez, Farm Manager access for Fotovoltaica Macotera SL, preferred language `es-ES`.
 
-The script generates strong random temporary passwords at runtime, hashes them with PHP `password_hash`, stores only hashes in MySQL and prints temporary credentials only to the terminal. Do not copy the credentials into documentation, commits, screenshots or logs.
+The script generates strong random temporary passwords at runtime, hashes them with PHP `password_hash`, stores only hashes in MySQL and prints temporary credentials only to the terminal. Do not copy credentials into documentation, commits, screenshots or logs.
+
+For this local installation, the temporary operator credentials are recorded in the ignored `LOCAL_CREDENTIALS.md` file at the repository root. That file is for the local operational team only and must not be committed, copied into tracked documentation, or shared outside the local environment.
 
 ## First Run
 
@@ -37,4 +39,4 @@ Operational accounts created by the script set `password_change_required` and `m
 
 ## Security Limitations
 
-This is a local prototype. The Weather provider API key can be managed by Administrators and Technical Managers through Settings using encrypted local storage. Other production secrets should be supplied through environment variables or a deployment secret store. See `docs/security/secrets_handling.md`.
+This is a local platform deployment. The Weather provider API key can be managed by Administrators and Technical Managers through Settings using encrypted local storage. Other production secrets should be supplied through environment variables or a deployment secret store. See `docs/security/secrets_handling.md`.

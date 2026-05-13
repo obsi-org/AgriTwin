@@ -1,19 +1,19 @@
-# Mandatory OpenAgri Services
+# Core OpenAgri Services
 
 Date: 2026-05-13
 
-AgriTwin treats four OpenAgri services as the core Proposal/D1 compliance set:
+AgriTwin treats four OpenAgri services as the core operational integration set:
 
 1. OpenAgri Gatekeeper / Access Control
 2. OpenAgri Weather Data Service
 3. OpenAgri Irrigation Management Service
 4. OpenAgri Pest & Disease Management Service
 
-FarmCalendar and Reporting Service remain operational extensions. Geodatabase / OCSM is optional for the local D1 readiness view and is not counted as a compliance failure when it is not configured.
+FarmCalendar and Reporting Service remain additional operational services. Geodatabase / OCSM is optional and is not counted as an operational failure when it is not configured.
 
-## Proposal/D1 Traceability
+## Operational Traceability
 
-| Mandatory service | AgriTwin role | Proposal/D1 evidence |
+| Core service | AgriTwin role | Operational evidence |
 | --- | --- | --- |
 | Gatekeeper / Access Control | Authentication, access control and trusted service boundary for OpenAgri calls. | Shows that AgriTwin can use the OpenAgri access-control pattern before invoking reusable services. |
 | Weather Data Service | Weather forecasts and agrometeorological indicators for DSS inputs. | Supports irrigation, pest/disease and water-stress decision inputs. |
@@ -36,15 +36,15 @@ Credentials remain outside git. The local template is `config/openagri.local.env
 Use:
 
 ```bash
-scripts/openagri/check_openagri_services.sh --mandatory-only
+scripts/openagri/check_openagri_services.sh --core-only
 ```
 
-The command checks mandatory services first and returns a non-zero exit code if any mandatory service is not available, unless `--warnings-only` is also supplied. FarmCalendar and Reporting are checked by the full command. Geodatabase / OCSM is reported as optional and does not fail the mandatory compliance check when it is not configured.
+The command checks core services first and returns a non-zero exit code if any core service is not available, unless `--warnings-only` is also supplied. FarmCalendar and Reporting are checked by the full command. Geodatabase / OCSM is reported as optional and does not fail the core service check when it is not configured. The older `--mandatory-only` flag remains as a compatibility alias.
 
-The AgriTwin API exposes the mandatory subset at:
+The AgriTwin API exposes the core subset at:
 
 ```text
-/agritwin3/api/openagri/mandatory-services
+/agritwin3/api/openagri/core-services
 ```
 
 ## Weather Observation Limitation

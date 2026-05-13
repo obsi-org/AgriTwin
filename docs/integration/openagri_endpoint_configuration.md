@@ -13,9 +13,9 @@ Use environment variables such as `OPENAGRI_WEATHER_URL`, `OPENAGRI_WEATHER_HEAL
 
 For local development, `scripts/openagri/generate_openagri_local_env.sh` writes `config/openagri.local.env` and appends the same OpenAgri URL block to the ignored local `.env` file. A safe committed template is available at `config/openagri.local.env.example`.
 
-Discovered local URLs are ordered by Proposal/D1 priority.
+Discovered local URLs are ordered by core platform priority.
 
-### Mandatory OpenAgri services
+### Core OpenAgri services
 
 | Service | Base URL | Health URL/path | Docs URL |
 | --- | --- | --- | --- |
@@ -53,10 +53,10 @@ docker compose -f docker-compose.yml -f docker-compose.openagri.yml config
 
 `scripts/openagri/start_openagri_services.sh` validates upstream compose files by default. It starts the generated local runtime when `OPENAGRI_RUN_CONTAINERS=1` is set. External weather-provider credentials still must be supplied outside git when live upstream weather observations are required.
 
-Mandatory-only verification:
+Core-only verification:
 
 ```bash
-scripts/openagri/check_openagri_services.sh --mandatory-only
+scripts/openagri/check_openagri_services.sh --core-only
 ```
 
 ## Connection States
