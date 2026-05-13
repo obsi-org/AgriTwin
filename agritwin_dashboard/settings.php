@@ -6,8 +6,16 @@ $context = agritwin_farm_context();
 $services = agritwin_service_cards();
 $weatherSource = agritwin_weather_source();
 $dbOk = isset($pdo) && $pdo instanceof PDO;
+$dbDiagnostics = $agritwin_db_diagnostics ?? [
+    'host' => 'not configured',
+    'port' => 'not configured',
+    'database' => 'not configured',
+    'state' => 'unknown',
+    'reason' => 'unknown',
+    'last_successful_connection' => null,
+];
 
-agritwin_render_page('settings', agritwin_t('settings'), function () use ($context, $services, $weatherSource, $dbOk): void {
+agritwin_render_page('settings', agritwin_t('settings'), function () use ($context, $services, $weatherSource, $dbOk, $dbDiagnostics): void {
     ?>
     <section class="view-section">
         <div class="section-heading">
@@ -20,6 +28,21 @@ agritwin_render_page('settings', agritwin_t('settings'), function () use ($conte
             <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('farm_location')) ?></span><strong>Fotovoltaica Macotera SL, Salamanca</strong></article>
             <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('weather_preference')) ?></span><strong><?= agritwin_h(agritwin_mode_label($weatherSource['mode'])) ?></strong></article>
             <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('api_docs')) ?></span><strong>/agritwin3/api/openapi.json</strong></article>
+        </div>
+    </section>
+
+    <section class="view-section">
+        <div class="section-heading">
+            <h2><?= agritwin_h(agritwin_t('database_diagnostics')) ?></h2>
+            <a class="button-link" href="settings.php"><?= agritwin_h(agritwin_t('check_database_connection')) ?></a>
+        </div>
+        <div class="telemetry-grid">
+            <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('db_host')) ?></span><strong><?= agritwin_h((string) $dbDiagnostics['host']) ?></strong></article>
+            <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('db_port')) ?></span><strong><?= agritwin_h((string) $dbDiagnostics['port']) ?></strong></article>
+            <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('db_name')) ?></span><strong><?= agritwin_h((string) $dbDiagnostics['database']) ?></strong></article>
+            <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('connection_state')) ?></span><strong><?= agritwin_h(agritwin_t((string) $dbDiagnostics['state'])) ?></strong></article>
+            <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('connection_reason')) ?></span><strong><?= agritwin_h(agritwin_t((string) $dbDiagnostics['reason'])) ?></strong></article>
+            <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('last_successful_connection')) ?></span><strong><?= agritwin_h((string) ($dbDiagnostics['last_successful_connection'] ?? agritwin_t('not_available'))) ?></strong></article>
         </div>
     </section>
 

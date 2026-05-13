@@ -39,6 +39,8 @@ user: ceres_db_user
 password: agritwin_local_dev_password
 ```
 
+For the Docker-backed local stack, the database container listens on host port `3308` by default so it does not collide with an existing host MySQL/MariaDB on `3306`. `scripts/start_local_stack.sh` writes ignored local runtime settings to `.env` and `config/database.local.env`.
+
 Import:
 
 ```bash
@@ -50,6 +52,8 @@ If the local user is missing or has a different password, apply `docker/mysql/in
 ## Run Checks
 
 ```bash
+scripts/start_local_stack.sh
+scripts/check_local_stack.sh
 make lint
 make test
 ```
@@ -69,6 +73,17 @@ http://127.0.0.1:8080
 ```
 
 The app expects a working database. Login credentials depend on imported seed data.
+
+## After Reboot
+
+Run:
+
+```bash
+scripts/start_local_stack.sh
+scripts/check_local_stack.sh
+```
+
+This starts the AgriTwin MySQL container, checks host and container DB connectivity, starts configured local OpenAgri services, and verifies the key `/agritwin3/` pages. It does not delete Docker volumes.
 
 ## Known Local Limitations
 

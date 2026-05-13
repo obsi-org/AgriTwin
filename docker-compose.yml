@@ -2,6 +2,7 @@ services:
   app:
     build: .
     profiles: ["mock"]
+    restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
@@ -40,6 +41,9 @@ services:
   db:
     image: mysql:8.0
     profiles: ["mock"]
+    restart: unless-stopped
+    ports:
+      - "${AGRITWIN_DB_PUBLISHED_PORT:-3308}:3306"
     environment:
       MYSQL_DATABASE: agritwin_db
       MYSQL_USER: ceres_db_user
@@ -51,12 +55,14 @@ services:
       timeout: 5s
       retries: 20
     volumes:
+      - agritwin_mysql_data:/var/lib/mysql
       - ./docker/mysql/init/00-agritwin-user.sql:/docker-entrypoint-initdb.d/00-agritwin-user.sql:ro
       - ./mysql.sql:/docker-entrypoint-initdb.d/001_seed.sql:ro
 
   openagri-mock:
     image: php:8.3-cli
     profiles: ["mock"]
+    restart: unless-stopped
     working_dir: /app
     command: php -S 0.0.0.0:18080 tests/fixtures/openagri/mock_router.php
     ports:
@@ -67,7 +73,11 @@ services:
   openagri-real-env:
     image: alpine:3.20
     profiles: ["real"]
+    restart: unless-stopped
     command: ["sh", "-c", "env | sort | grep '^AGRITWIN_OPENAGRI_' && sleep infinity"]
     env_file:
       - path: .env
         required: false
+
+volumes:
+  agritwin_mysql_data:

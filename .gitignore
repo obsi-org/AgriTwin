@@ -38,6 +38,7 @@ __pycache__/
 external/openagri/
 external/openagri/**/*.env
 config/openagri.local.env
+config/database.local.env
 
 # Build and generated outputs
 dist/
@@ -64,6 +65,8 @@ var/kpi/*
 var/edge/cache/*
 var/edge/queue/*
 var/cloud_dss/*
+var/backups/*
+var/runtime/*
 exports/kpi/*
 !var/cache/openagri/.gitkeep
 !var/queue/openagri/.gitkeep
@@ -71,6 +74,8 @@ exports/kpi/*
 !var/edge/cache/.gitkeep
 !var/edge/queue/.gitkeep
 !var/cloud_dss/.gitkeep
+!var/backups/.gitkeep
+!var/runtime/.gitkeep
 !exports/kpi/.gitkeep
 
 # OS/editor files

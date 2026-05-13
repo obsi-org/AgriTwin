@@ -14,6 +14,8 @@ This repository currently contains a local PHP/MySQL/Cesium prototype plus the e
 Prerequisites: PHP CLI with PDO MySQL support, MySQL/MariaDB, and `make`.
 
 ```bash
+scripts/start_local_stack.sh
+scripts/check_local_stack.sh
 make lint
 make test
 make run
@@ -35,6 +37,15 @@ http://localhost/agritwin3/api/openapi.json
 ```
 
 The current prototype expects a local database imported from `mysql.sql` and configured through environment variables loaded by `agritwin_dashboard/db_config.php`. See `docs/operations/local_deployment.md` and `docs/operations/database_local_fix.md` for details.
+
+After a machine reboot, restore the local Docker-backed database and OpenAgri runtime with:
+
+```bash
+scripts/start_local_stack.sh
+scripts/check_local_stack.sh
+```
+
+The script publishes the AgriTwin MySQL container on `127.0.0.1:3308` by default to avoid collisions with a host MySQL service on `3306`, and writes only ignored local runtime config under `.env` and `config/database.local.env`.
 
 ## Reproducible Mock Demo
 

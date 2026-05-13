@@ -253,6 +253,7 @@ cat > "${RUNTIME_DIR}/docker-compose.generated.yml" <<'YAML'
 services:
   gatekeeper-db:
     image: mysql:8.0
+    restart: unless-stopped
     environment:
       MYSQL_DATABASE: gatekeeper
       MYSQL_ROOT_PASSWORD: agritwin-local-gatekeeper-root
@@ -285,6 +286,7 @@ services:
 
   weather-mongo:
     image: mongo:4
+    restart: unless-stopped
     volumes:
       - weather_mongo:/data/db
     healthcheck:
@@ -312,6 +314,7 @@ services:
 
   irrigation-db:
     image: postgres:16-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_DB: irrigation
       POSTGRES_USER: irrigation_user
@@ -340,6 +343,7 @@ services:
 
   pest-db:
     image: postgres:16-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_DB: pest
       POSTGRES_USER: pest_user
@@ -368,6 +372,7 @@ services:
 
   farmcalendar-db:
     image: postgres:16-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_DB: farm_calendar
       POSTGRES_USER: farmcalendar_user
@@ -398,6 +403,7 @@ services:
 
   reporting-db:
     image: postgres:16-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_DB: reporting
       POSTGRES_USER: reporting_user
