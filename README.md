@@ -38,14 +38,35 @@ http://localhost/agritwin3/api/openapi.json
 
 The current prototype expects a local database imported from `mysql.sql` and configured through environment variables loaded by `agritwin_dashboard/db_config.php`. See `docs/operations/local_deployment.md` and `docs/operations/database_local_fix.md` for details.
 
+## Post-Reboot Startup
+
 After a machine reboot, restore the local Docker-backed database and OpenAgri runtime with:
 
 ```bash
 scripts/start_local_stack.sh
+```
+
+Verify the recovery with:
+
+```bash
 scripts/check_local_stack.sh
 ```
 
 The script publishes the AgriTwin MySQL container on `127.0.0.1:3308` by default to avoid collisions with a host MySQL service on `3306`, and writes only ignored local runtime config under `.env` and `config/database.local.env`.
+
+Optional deeper checks:
+
+```bash
+scripts/openagri/check_openagri_services.sh
+make test
+find . -path './external' -prune -o -path './vendor' -prune -o -name '*.php' -print | xargs -n1 php -l
+curl -s -L http://localhost/agritwin3/index.php
+curl -s -L http://localhost/agritwin3/agritwin_dashboard/index.php
+curl -s -L http://localhost/agritwin3/agritwin_dashboard/settings.php
+curl -s -L http://localhost/agritwin3/agritwin_dashboard/openagri_services.php
+```
+
+Live OpenAgri Weather observations require real external credentials and provider configuration outside git.
 
 ## Reproducible Mock Demo
 

@@ -76,14 +76,34 @@ The app expects a working database. Login credentials depend on imported seed da
 
 ## After Reboot
 
-Run:
+Run this startup command:
 
 ```bash
 scripts/start_local_stack.sh
+```
+
+Run this validation command:
+
+```bash
 scripts/check_local_stack.sh
 ```
 
-This starts the AgriTwin MySQL container, checks host and container DB connectivity, starts configured local OpenAgri services, and verifies the key `/agritwin3/` pages. It does not delete Docker volumes.
+Check local OpenAgri service endpoints directly:
+
+```bash
+scripts/openagri/check_openagri_services.sh
+```
+
+Expected URL checks:
+
+```bash
+curl -s -L http://localhost/agritwin3/index.php
+curl -s -L http://localhost/agritwin3/agritwin_dashboard/index.php
+curl -s -L http://localhost/agritwin3/agritwin_dashboard/settings.php
+curl -s -L http://localhost/agritwin3/agritwin_dashboard/openagri_services.php
+```
+
+Successful recovery means `agritwin3-db-1` is healthy, the host PHP DB check reports `host-db-ok`, the pages render without `Database status: Unavailable`, and configured local OpenAgri services respond. The scripts do not delete Docker volumes.
 
 ## Known Local Limitations
 

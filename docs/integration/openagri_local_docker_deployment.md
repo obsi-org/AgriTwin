@@ -39,6 +39,8 @@ Check service availability:
 scripts/openagri/check_openagri_services.sh
 ```
 
+This command verifies local OpenAgri service availability through configured health or documentation endpoints. Local service availability is separate from live upstream weather observations: the Weather Service can be running locally while its data endpoint still requires OpenAgri authentication and an upstream weather-provider key.
+
 Stop the local runtime without deleting volumes:
 
 ```bash
@@ -53,4 +55,4 @@ docker compose -f docker-compose.yml -f docker-compose.openagri.yml config
 
 Do not commit generated service `.env` files, `config/openagri.local.env`, or generated runtime compose files. They contain local-only development credentials and are ignored by git.
 
-Troubleshooting: if a service container is running but the health check fails, inspect it with `docker compose -f external/openagri/runtime/docker-compose.generated.yml logs --tail=120 <service>`. Weather data endpoints may require both OpenAgri authentication and an upstream weather-provider key even when the local Weather Service documentation endpoint is available.
+Troubleshooting: if a service container is running but the health check fails, inspect it with `docker compose -f external/openagri/runtime/docker-compose.generated.yml logs --tail=120 <service>`. Live OpenAgri Weather observations require real external credentials and provider configuration outside git even when the local Weather Service documentation endpoint is available.
