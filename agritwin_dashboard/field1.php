@@ -159,6 +159,18 @@ $fieldConfig = [
         'assetUnavailable' => agritwin_t('asset_unavailable'),
         'copernicusRequired' => agritwin_t('copernicus_configuration_required'),
         'terrainUnavailable' => agritwin_t('terrain_unavailable'),
+        'cesiumLoaded' => agritwin_t('cesium_loaded'),
+        'viewerInitialised' => agritwin_t('viewer_initialised'),
+        'terrainProvider' => agritwin_t('terrain_provider'),
+        'cesiumTokenConfigured' => agritwin_t('cesium_token_configured'),
+        'copernicusIdConfigured' => agritwin_t('copernicus_id_configured'),
+        'entitiesLoaded' => agritwin_t('entities_loaded'),
+        'failedAssets' => agritwin_t('failed_assets'),
+        'ionWorldTerrain' => agritwin_t('ion_world_terrain'),
+        'asyncWorldTerrain' => agritwin_t('async_world_terrain'),
+        'ellipsoidFallback' => agritwin_t('ellipsoid_fallback'),
+        'yes' => agritwin_t('yes'),
+        'no' => agritwin_t('no'),
     ],
 ];
 
@@ -208,6 +220,14 @@ agritwin_render_page('digital_twin', agritwin_t('field_digital_twin'), function 
                         <li><?= agritwin_h(agritwin_t('field_task_sensor_review')) ?></li>
                     </ul>
                     <a class="primary-action" href="index.php"><i class="fas fa-table-cells-large"></i> <?= agritwin_h(agritwin_t('back_to_dashboard')) ?></a>
+                </div>
+                <div class="field-runtime-panel">
+                    <strong><?= agritwin_h(agritwin_t('field_diagnostics')) ?></strong>
+                    <dl id="fieldRuntimeDiagnostics" class="field-runtime-diagnostics">
+                        <div><dt><?= agritwin_h(agritwin_t('cesium_loaded')) ?></dt><dd><?= agritwin_h(agritwin_t('no')) ?></dd></div>
+                        <div><dt><?= agritwin_h(agritwin_t('viewer_initialised')) ?></dt><dd><?= agritwin_h(agritwin_t('no')) ?></dd></div>
+                        <div><dt><?= agritwin_h(agritwin_t('terrain_provider')) ?></dt><dd><?= agritwin_h(agritwin_t('terrain_unavailable')) ?></dd></div>
+                    </dl>
                 </div>
             </aside>
 

@@ -1,5 +1,5 @@
 {
-    "generated_at": "2026-05-13T13:37:22+00:00",
+    "generated_at": "2026-05-13T13:50:27+00:00",
     "locales": [
         "en",
         "pt-PT",
@@ -7,13 +7,13 @@
     ],
     "summary": {
         "en": {
-            "key_count": 452
+            "key_count": 464
         },
         "pt-PT": {
-            "key_count": 452
+            "key_count": 464
         },
         "es-ES": {
-            "key_count": 452
+            "key_count": 464
         }
     },
     "missing_keys": {

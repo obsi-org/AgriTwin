@@ -22,6 +22,14 @@
     };
     let viewer = null;
     let selectedEntity = null;
+    const diagnostics = {
+        cesiumLoaded: false,
+        viewerInitialised: false,
+        terrainProvider: 'unavailable',
+        tokenConfigured: !!config.cesiumToken,
+        copernicusConfigured: !!config.copernicusId,
+        failedAssets: 0
+    };
 
     function label(key, fallback) {
         return labels[key] || fallback;
@@ -47,6 +55,23 @@
         item.textContent = message;
         status.hidden = false;
         status.appendChild(item);
+    }
+
+    function updateDiagnostics() {
+        const panel = document.getElementById('fieldRuntimeDiagnostics');
+        if (!panel) {
+            return;
+        }
+        const rows = [
+            [label('cesiumLoaded', 'Cesium loaded'), diagnostics.cesiumLoaded ? label('yes', 'Yes') : label('no', 'No')],
+            [label('viewerInitialised', 'Viewer initialised'), diagnostics.viewerInitialised ? label('yes', 'Yes') : label('no', 'No')],
+            [label('terrainProvider', 'Terrain provider'), diagnostics.terrainProvider],
+            [label('cesiumTokenConfigured', 'Cesium token configured'), diagnostics.tokenConfigured ? label('yes', 'Yes') : label('no', 'No')],
+            [label('copernicusIdConfigured', 'Copernicus ID configured'), diagnostics.copernicusConfigured ? label('yes', 'Yes') : label('no', 'No')],
+            [label('entitiesLoaded', 'Entities loaded'), viewer ? String(viewer.entities.values.length) : '0'],
+            [label('failedAssets', 'Failed assets'), String(diagnostics.failedAssets)]
+        ];
+        panel.innerHTML = rows.map(([name, value]) => `<div><dt>${name}</dt><dd>${value}</dd></div>`).join('');
     }
 
     function cartesian(lon, lat, height) {
@@ -110,24 +135,54 @@
         });
     }
 
-    function terrainProvider() {
+    async function createTerrainProvider() {
         if (!config.cesiumToken) {
             showStatus(label('configurationRequired', 'Configuration required') + ': Cesium', 'warn');
+            diagnostics.terrainProvider = label('ellipsoidFallback', 'Ellipsoid fallback');
+            updateDiagnostics();
             return new Cesium.EllipsoidTerrainProvider();
         }
         try {
             Cesium.Ion.defaultAccessToken = config.cesiumToken;
             if (typeof Cesium.createWorldTerrain === 'function') {
+                diagnostics.terrainProvider = label('ionWorldTerrain', 'Ion world terrain');
+                updateDiagnostics();
                 return Cesium.createWorldTerrain();
             }
+            if (typeof Cesium.createWorldTerrainAsync === 'function') {
+                const provider = await Cesium.createWorldTerrainAsync();
+                diagnostics.terrainProvider = label('asyncWorldTerrain', 'Async world terrain');
+                updateDiagnostics();
+                return provider;
+            }
             if (Cesium.CesiumTerrainProvider && typeof Cesium.CesiumTerrainProvider.fromIonAssetId === 'function') {
-                return Cesium.CesiumTerrainProvider.fromIonAssetId(1);
+                const provider = await Cesium.CesiumTerrainProvider.fromIonAssetId(1);
+                diagnostics.terrainProvider = label('ionWorldTerrain', 'Ion world terrain');
+                updateDiagnostics();
+                return provider;
             }
         } catch (error) {
             showStatus(label('terrainUnavailable', 'Terrain unavailable'), 'warn');
             console.warn('AgriTwin Cesium terrain fallback active', error);
         }
+        diagnostics.terrainProvider = label('ellipsoidFallback', 'Ellipsoid fallback');
+        updateDiagnostics();
         return new Cesium.EllipsoidTerrainProvider();
+    }
+
+    function applyTerrainProvider() {
+        if (!viewer) {
+            return;
+        }
+        createTerrainProvider().then((provider) => {
+            viewer.terrainProvider = provider;
+            updateDiagnostics();
+        }).catch((error) => {
+            diagnostics.terrainProvider = label('ellipsoidFallback', 'Ellipsoid fallback');
+            showStatus(label('terrainUnavailable', 'Terrain unavailable'), 'warn');
+            console.warn('AgriTwin Cesium terrain provider failed', error);
+            updateDiagnostics();
+        });
     }
 
     function sampleTerrain(cartographics) {
@@ -267,6 +322,8 @@
             })
             .catch((error) => {
                 console.warn(`AgriTwin ${layer} CSV fallback active`, error);
+                diagnostics.failedAssets += 1;
+                updateDiagnostics();
                 showStatus(`${label('assetUnavailable', 'Asset unavailable')}: ${csvPath}`, 'warn');
                 addTreeFallback(layer, fallbackName, fallbackColor);
             });
@@ -334,6 +391,8 @@
                 }
                 const entity = addEntityToLayer('solarPanels', viewer.entities.add(entityOptions));
                 entity.model?.readyPromise?.catch(() => {
+                    diagnostics.failedAssets += 1;
+                    updateDiagnostics();
                     entity.model = undefined;
                     entity.box = {
                         dimensions: new Cesium.Cartesian3(4.8, 2.0, 0.15),
@@ -368,6 +427,8 @@
                 label: labelGraphics(label('irrigationPivot', 'Irrigation pivot'), -28)
             }));
             entity.model?.readyPromise?.catch(() => {
+                diagnostics.failedAssets += 1;
+                updateDiagnostics();
                 entity.model = undefined;
                 entity.cylinder = {
                     length: 18,
@@ -449,6 +510,8 @@
         image.hidden = false;
         image.src = asset(active.image);
         image.onerror = function () {
+            diagnostics.failedAssets += 1;
+            updateDiagnostics();
             image.hidden = true;
             fallback.hidden = false;
             fallback.textContent = `${label('assetUnavailable', 'Asset unavailable')}: ${active.image}`;
@@ -498,12 +561,16 @@
             return;
         }
         if (!window.Cesium) {
+            diagnostics.cesiumLoaded = false;
+            updateDiagnostics();
             showStatus(label('cesiumUnavailable', 'Cesium viewer unavailable'), 'error');
             return;
         }
+        diagnostics.cesiumLoaded = true;
+        updateDiagnostics();
         try {
             viewer = new Cesium.Viewer(container, {
-                terrainProvider: terrainProvider(),
+                terrainProvider: new Cesium.EllipsoidTerrainProvider(),
                 animation: false,
                 timeline: false,
                 geocoder: false,
@@ -514,7 +581,11 @@
                 selectionIndicator: true,
                 infoBox: true
             });
+            diagnostics.viewerInitialised = true;
+            diagnostics.terrainProvider = label('ellipsoidFallback', 'Ellipsoid fallback');
+            updateDiagnostics();
             viewer.scene.globe.depthTestAgainstTerrain = false;
+            applyTerrainProvider();
 
             addImageryLayers();
             addBoundary();
@@ -531,8 +602,10 @@
             window.agritwinFieldDiagnostics = {
                 entityCount: () => viewer.entities.values.length,
                 layers: layerEntities,
-                imageryLayers
+                imageryLayers,
+                runtime: diagnostics
             };
+            updateDiagnostics();
         } catch (error) {
             console.error('AgriTwin Cesium field view failed to initialise', error);
             showStatus(`${label('cesiumUnavailable', 'Cesium viewer unavailable')}: ${error.message || error}`, 'error');

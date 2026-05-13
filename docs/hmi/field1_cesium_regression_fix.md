@@ -2,7 +2,11 @@
 
 ## Root Cause
 
-The known-working reference was supplied locally as `docs/reference/field1_working_reference.php`. The current `agritwin_dashboard/field1.php` had been simplified during HMI integration and no longer carried all of the working Cesium logic from the reference. The missing pieces were world-terrain initialisation, Copernicus/Sentinel WMS layers, NASA GIBS NDVI, CSV-driven tree loading, GLTF pivot/solar models, selection highlighting and the complete layer-control set.
+The known-working reference was supplied locally as `docs/reference/field1_working_reference.php`. The previous deployment file was also inspected read-only at `/var/www/html/agritwin2/agritwin_dashboard/field1.php`; the Apache URL `http://localhost/agritwin2/agritwin_dashboard/field1.php` currently returns 404 in this environment, so the local file was used for the functional comparison.
+
+The current `agritwin_dashboard/field1.php` had been simplified during HMI integration and no longer carried all of the working Cesium logic from the reference. The missing pieces were world-terrain initialisation, Copernicus/Sentinel WMS layers, NASA GIBS NDVI, CSV-driven tree loading, GLTF pivot/solar models, selection highlighting and the complete layer-control set.
+
+The remaining terrain-specific failure was traced to local configuration: the AgriTwin3 `app_settings.cesium_token` value returned HTTP 401 when checked against Cesium Ion asset endpoint 1, while the read-only AgriTwin2 token returned HTTP 200. The AgriTwin3 local database was updated from the working local deployment without printing or committing the token. No token value is recorded in this repository.
 
 The earlier standalone page also redirected unauthenticated users to a non-existent local `login.php` path. The repaired page keeps the current AgriTwin shared layout and redirects unauthenticated users through the repository-root login page.
 
@@ -22,7 +26,16 @@ The local reference file remains ignored by Git and was used only for comparison
 
 The field view keeps the CesiumJS 1.106 CDN import used by the working reference. The page renders through the shared AgriTwin HMI shell, uses an explicit `#cesiumContainer` with stable height, and initialises Cesium from `assets/js/field1_cesium.js` after the DOM is ready.
 
-The Cesium Ion token is read from `app_settings.cesium_token` and injected into the browser using JSON encoding because Cesium terrain must be requested client-side. The token is not logged or documented. If the token is missing or terrain initialisation fails, the page shows a professional configuration/terrain notice and falls back to ellipsoid terrain while still rendering farm entities.
+The Cesium Ion token is read from `app_settings.cesium_token` and injected into the browser using JSON encoding because Cesium terrain must be requested client-side. The token is not logged or documented.
+
+The page now initialises the viewer with ellipsoid terrain first, then applies world terrain after the viewer is live. This prevents a token, terrain-service or async-provider failure from aborting the Cesium canvas or local farm entities. The terrain loading order is:
+
+1. `Cesium.createWorldTerrain()`, matching the AgriTwin2 working file when available.
+2. `Cesium.createWorldTerrainAsync()` if the loaded Cesium version supports it.
+3. `Cesium.CesiumTerrainProvider.fromIonAssetId(1)` if required by a newer Cesium build.
+4. `Cesium.EllipsoidTerrainProvider` fallback with a professional diagnostics message.
+
+The right-side field panel includes non-secret runtime diagnostics for Cesium loaded state, viewer initialisation, terrain provider mode, token configured yes/no, Copernicus ID configured yes/no, entity count and failed asset count.
 
 ## Reference Comparison
 
@@ -42,6 +55,8 @@ Features restored from the working reference:
 - NDVI/LAI/SAVI legend handling with a fallback when the LAI/SAVI legend image is absent.
 - Entity selection highlighting.
 - Visible click/tap controls for all major layers.
+
+Previous Git versions inspected included `2c8a309`, `c94ce55`, `dd93e84`, `c86fffd`, `6906e3d`, `c305a9f`, `7d2b731`, `35ada05`, `17507f9`, `a1e71c8`, `10139c0`, `04fd006`, `35d6452`, `69b77d4`, `a1f861f`, `65f225b` and `2eff802` for `field1.php`, field-specific Cesium JavaScript and HMI CSS. The final repair preserved the current shared AgriTwin3 layout and reintroduced only the necessary terrain, imagery and entity rendering behaviour.
 
 ## Farm Objects Restored
 
@@ -121,6 +136,9 @@ Verification completed:
 - Authenticated curl checks returned HTTP 200 for `field1.php`, dashboard, analytics and OpenAgri Services.
 - Authenticated multilingual curl checks returned HTTP 200 for `field1.php?lang=en`, `field1.php?lang=pt-PT` and `field1.php?lang=es-ES`.
 - Rendered `field1.php` contains the Cesium JS/CSS references, `#cesiumContainer`, `assets/js/field1_cesium.js`, farm bounds, CSV/model/legend asset references and the field configuration payload.
+- AgriTwin3 Cesium Ion token check now returns HTTP 200 against Cesium Ion asset endpoint 1 after the local database was updated from the read-only AgriTwin2 deployment.
+- Rendered/JS verification confirmed terrain initialisation code, WMS layer code, farm bounds, CSV/model references and translated runtime diagnostics.
+- Google Chrome is available locally, but Playwright/Puppeteer are not installed; no screenshot was stored.
 
 ## Remaining Limitations
 

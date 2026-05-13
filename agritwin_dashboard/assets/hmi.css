@@ -506,6 +506,33 @@ pre:focus-visible {
     padding-left: 18px;
 }
 
+.field-runtime-panel {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+}
+
+.field-runtime-diagnostics {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+}
+
+.field-runtime-diagnostics div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    padding: 0;
+    border: 0;
+}
+
+.field-runtime-diagnostics dt,
+.field-runtime-diagnostics dd {
+    font-size: 12px;
+}
+
 .field-layer-controls {
     left: 14px;
     bottom: 14px;
