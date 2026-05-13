@@ -11,7 +11,7 @@ agritwin_render_page('digital_twin', agritwin_t('digital_twin'), function () use
             <h2><?= agritwin_h(agritwin_t('sensor_overlays')) ?></h2>
             <p><?= agritwin_h(agritwin_t('map_context_note')) ?></p>
             <div class="action-row">
-                <a class="primary-action" href="field.php"><i class="fas fa-map"></i> <?= agritwin_h(agritwin_t('open_legacy_cesium')) ?></a>
+                <a class="primary-action" href="field1.php"><i class="fas fa-map"></i> <?= agritwin_h(agritwin_t('open_legacy_cesium')) ?></a>
                 <a class="secondary-action" href="telemetry.php"><i class="fas fa-chart-line"></i> <?= agritwin_h(agritwin_t('view_telemetry')) ?></a>
             </div>
         </div>
