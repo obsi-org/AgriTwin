@@ -3,189 +3,53 @@ session_start();
 
 // If user is not logged in, redirect
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../index.php");
+    header("Location: login.php");
     exit();
 }
 
 // Include DB connection
 require_once "db_config.php";
-require_once __DIR__ . "/includes/field_data_provider.php";
 
 // The Spanish farm is farm_id=1
 $spainFarmId = 1;
 
-$supportedLangs = ['en', 'pt-PT', 'es-ES'];
-$fieldLang = $_GET['lang'] ?? ($_SESSION['preferred_language'] ?? 'en');
-if (!in_array($fieldLang, $supportedLangs, true)) {
-    $fieldLang = 'en';
+function agritwin_field_setting(?PDO $pdo, array $names): string
+{
+    if (!$pdo instanceof PDO || $names === []) {
+        return '';
+    }
+
+    $placeholders = implode(',', array_fill(0, count($names), '?'));
+    $stmt = $pdo->prepare("SELECT name, value FROM app_settings WHERE name IN ($placeholders)");
+    $stmt->execute($names);
+    $values = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+    foreach ($names as $name) {
+        $value = trim((string) ($values[$name] ?? ''));
+        if ($value !== '') {
+            return $value;
+        }
+    }
+
+    return '';
 }
 
-$fieldText = [
-    'en' => [
-        'page_title' => 'AgriTwin Field Digital Twin',
-        'field_monitoring' => 'Fotovoltaica Macotera SL - Field Monitoring',
-        'local_weather_station' => 'Local Weather Station - Nava de Sotrobal',
-        'operational_insights' => 'Operational Insights - Fotovoltaica Macotera SL',
-        'task_scheduling' => 'Task Scheduling - Fotovoltaica Macotera SL',
-        'temperature' => 'Temperature',
-        'humidity' => 'Humidity',
-        'wind_speed' => 'Wind speed',
-        'soil_moisture' => 'Soil moisture',
-        'alert' => 'Alert',
-        'targeted_actions' => 'Targeted actions for orchard sectors',
-        'aemet_forecast' => 'AEMET Weather Forecast - Nava de Sotrobal',
-        'loading_forecast' => 'Loading forecast...',
-        'error_loading_forecast' => 'Error loading forecast.',
-        'no_forecast_days' => 'No forecast day data found.',
-        'no_valid_forecast' => 'No valid forecast data available.',
-        'select_index' => 'Select Index',
-        'none' => 'None',
-        'default_imagery_only' => 'Default imagery only',
-        'copernicus_vegetation_index' => 'Copernicus vegetation index',
-        'copernicus_ndvi' => 'NDVI (Copernicus)',
-        'copernicus_lai_savi' => 'LAI/SAVI (Copernicus)',
-        'configuration_required' => 'Configuration required',
-        'copernicus_layer_unavailable' => 'Copernicus layer unavailable',
-        'legend' => 'Legend',
-        'legend_unavailable' => 'Legend unavailable',
-        'index_legend' => 'Index legend',
-        'toggle_sidebar' => 'Toggle side panel (R)',
-        'back_dashboard' => 'Back to AgriTwin Dashboard',
-        'today' => 'Today',
-        'tomorrow' => 'Tomorrow',
-        'rain_probability' => 'Rain probability',
-        'rainfall_today' => 'Rainfall today',
-        'weather_source' => 'Weather source',
-        'last_updated' => 'Last updated',
-        'wind' => 'Wind',
-        'status' => 'Status',
-        'coordinates' => 'Coordinates',
-        'active' => 'Active',
-        'idle' => 'Idle',
-        'online' => 'Online',
-        'orchard_context' => 'Almond and pistachio orchard',
-        'insight_line_1' => 'Soil moisture and weather conditions are evaluated from the current field dataset.',
-        'insight_line_2' => 'Wind, rainfall and humidity are reviewed for irrigation and pest monitoring decisions.',
-        'field_action_1' => 'Almond Block A-3 - Trigger the micro-sprinkler set for a 22 mm recharge before 18:30.',
-        'field_action_2' => 'Pistachio Block P-1 (Kerman) - Schedule an evening wettable-sulphur spray to curb mite pressure favoured by today’s warmth.',
-        'field_action_3' => 'Almond Buffer Row B-7 - Inspect for early navel-orangeworm flight; deploy pheromone traps if more than 2 moths/night are captured.',
-        'field_task_1' => 'Inspect soil-moisture sensors today.',
-        'field_task_2' => 'Verify irrigation line pressure before the next watering window.',
-        'field_task_3' => 'Review almond block irrigation schedule tomorrow.',
-        'field_task_4' => 'Check pest and disease monitoring traps within the next 48 hours.',
-    ],
-    'pt-PT' => [
-        'page_title' => 'Gémeo Digital de Campo AgriTwin',
-        'field_monitoring' => 'Fotovoltaica Macotera SL - Monitorização de Campo',
-        'local_weather_station' => 'Estação meteorológica local - Nava de Sotrobal',
-        'operational_insights' => 'Informação operacional - Fotovoltaica Macotera SL',
-        'task_scheduling' => 'Planeamento de tarefas - Fotovoltaica Macotera SL',
-        'temperature' => 'Temperatura',
-        'humidity' => 'Humidade',
-        'wind_speed' => 'Velocidade do vento',
-        'soil_moisture' => 'Humidade do solo',
-        'alert' => 'Alerta',
-        'targeted_actions' => 'Ações direcionadas para setores do pomar',
-        'aemet_forecast' => 'Previsão meteorológica AEMET - Nava de Sotrobal',
-        'loading_forecast' => 'A carregar previsão...',
-        'error_loading_forecast' => 'Erro ao carregar a previsão.',
-        'no_forecast_days' => 'Não foram encontrados dados diários de previsão.',
-        'no_valid_forecast' => 'Não existem dados de previsão válidos disponíveis.',
-        'select_index' => 'Selecionar índice',
-        'none' => 'Nenhum',
-        'default_imagery_only' => 'Apenas imagem base',
-        'copernicus_vegetation_index' => 'Índice de vegetação Copernicus',
-        'copernicus_ndvi' => 'NDVI (Copernicus)',
-        'copernicus_lai_savi' => 'LAI/SAVI (Copernicus)',
-        'configuration_required' => 'Configuração necessária',
-        'copernicus_layer_unavailable' => 'Camada Copernicus indisponível',
-        'legend' => 'Legenda',
-        'legend_unavailable' => 'Legenda indisponível',
-        'index_legend' => 'Legenda do índice',
-        'toggle_sidebar' => 'Alternar painel lateral (R)',
-        'back_dashboard' => 'Voltar ao painel de controlo AgriTwin',
-        'today' => 'Hoje',
-        'tomorrow' => 'Amanhã',
-        'rain_probability' => 'Probabilidade de chuva',
-        'rainfall_today' => 'Chuva hoje',
-        'weather_source' => 'Fonte meteorológica',
-        'last_updated' => 'Última atualização',
-        'wind' => 'Vento',
-        'status' => 'Estado',
-        'coordinates' => 'Coordenadas',
-        'active' => 'Ativo',
-        'idle' => 'Inativo',
-        'online' => 'Online',
-        'orchard_context' => 'Pomar de amendoeiras e pistácios',
-        'insight_line_1' => 'A humidade do solo e as condições meteorológicas são avaliadas a partir do conjunto de dados atual do campo.',
-        'insight_line_2' => 'Vento, chuva e humidade são revistos para decisões de rega e monitorização fitossanitária.',
-        'field_action_1' => 'Bloco de amendoeiras A-3 - Acionar o conjunto de microaspersores para uma recarga de 22 mm antes das 18:30.',
-        'field_action_2' => 'Bloco de pistácios P-1 (Kerman) - Planear uma aplicação noturna de enxofre molhável para reduzir a pressão de ácaros favorecida pelo calor de hoje.',
-        'field_action_3' => 'Linha tampão de amendoeiras B-7 - Inspecionar o voo inicial de traça-da-amendoeira; instalar armadilhas de feromona se forem capturadas mais de 2 traças/noite.',
-        'field_task_1' => 'Inspecionar os sensores de humidade do solo hoje.',
-        'field_task_2' => 'Verificar a pressão da linha de rega antes da próxima janela de rega.',
-        'field_task_3' => 'Rever amanhã o plano de rega dos blocos de amendoeiras.',
-        'field_task_4' => 'Verificar as armadilhas de monitorização de pragas e doenças nas próximas 48 horas.',
-    ],
-    'es-ES' => [
-        'page_title' => 'Gemelo digital de campo AgriTwin',
-        'field_monitoring' => 'Fotovoltaica Macotera SL - Monitorización de campo',
-        'local_weather_station' => 'Estación meteorológica local - Nava de Sotrobal',
-        'operational_insights' => 'Información operativa - Fotovoltaica Macotera SL',
-        'task_scheduling' => 'Planificación de tareas - Fotovoltaica Macotera SL',
-        'temperature' => 'Temperatura',
-        'humidity' => 'Humedad',
-        'wind_speed' => 'Velocidad del viento',
-        'soil_moisture' => 'Humedad del suelo',
-        'alert' => 'Alerta',
-        'targeted_actions' => 'Acciones dirigidas para sectores del huerto',
-        'aemet_forecast' => 'Previsión meteorológica AEMET - Nava de Sotrobal',
-        'loading_forecast' => 'Cargando previsión...',
-        'error_loading_forecast' => 'Error al cargar la previsión.',
-        'no_forecast_days' => 'No se han encontrado datos diarios de previsión.',
-        'no_valid_forecast' => 'No hay datos de previsión válidos disponibles.',
-        'select_index' => 'Seleccionar índice',
-        'none' => 'Ninguno',
-        'default_imagery_only' => 'Solo imagen base',
-        'copernicus_vegetation_index' => 'Índice de vegetación Copernicus',
-        'copernicus_ndvi' => 'NDVI (Copernicus)',
-        'copernicus_lai_savi' => 'LAI/SAVI (Copernicus)',
-        'configuration_required' => 'Configuración necesaria',
-        'copernicus_layer_unavailable' => 'Capa Copernicus no disponible',
-        'legend' => 'Leyenda',
-        'legend_unavailable' => 'Leyenda no disponible',
-        'index_legend' => 'Leyenda del índice',
-        'toggle_sidebar' => 'Alternar panel lateral (R)',
-        'back_dashboard' => 'Volver al panel de control AgriTwin',
-        'today' => 'Hoy',
-        'tomorrow' => 'Mañana',
-        'rain_probability' => 'Probabilidad de lluvia',
-        'rainfall_today' => 'Lluvia hoy',
-        'weather_source' => 'Fuente meteorológica',
-        'last_updated' => 'Última actualización',
-        'wind' => 'Viento',
-        'status' => 'Estado',
-        'coordinates' => 'Coordenadas',
-        'active' => 'Activo',
-        'idle' => 'Inactivo',
-        'online' => 'Online',
-        'orchard_context' => 'Huerto de almendros y pistachos',
-        'insight_line_1' => 'La humedad del suelo y las condiciones meteorológicas se evalúan a partir del conjunto de datos actual del campo.',
-        'insight_line_2' => 'El viento, la lluvia y la humedad se revisan para decisiones de riego y seguimiento fitosanitario.',
-        'field_action_1' => 'Bloque de almendros A-3 - Activar el conjunto de microaspersores para una recarga de 22 mm antes de las 18:30.',
-        'field_action_2' => 'Bloque de pistachos P-1 (Kerman) - Programar una aplicación vespertina de azufre mojable para contener la presión de ácaros favorecida por el calor de hoy.',
-        'field_action_3' => 'Fila tampón de almendros B-7 - Inspeccionar el vuelo inicial de polilla del almendro; desplegar trampas de feromonas si se capturan más de 2 polillas/noche.',
-        'field_task_1' => 'Inspeccionar hoy los sensores de humedad del suelo.',
-        'field_task_2' => 'Verificar la presión de la línea de riego antes de la próxima ventana de riego.',
-        'field_task_3' => 'Revisar mañana la programación de riego de los bloques de almendros.',
-        'field_task_4' => 'Comprobar las trampas de seguimiento de plagas y enfermedades en las próximas 48 horas.',
-    ],
-];
+function agritwin_field_env(array $names): string
+{
+    foreach ($names as $name) {
+        $value = getenv($name);
+        if ($value !== false && trim((string) $value) !== '') {
+            return trim((string) $value);
+        }
+        if (isset($_ENV[$name]) && trim((string) $_ENV[$name]) !== '') {
+            return trim((string) $_ENV[$name]);
+        }
+        if (isset($_SERVER[$name]) && trim((string) $_SERVER[$name]) !== '') {
+            return trim((string) $_SERVER[$name]);
+        }
+    }
 
-$t = static fn (string $key): string => $fieldText[$fieldLang][$key] ?? $fieldText['en'][$key] ?? $key;
-$fieldData = agritwin_field_current_data($pdo);
-$fieldWeather = $fieldData['local_weather_station'];
-
+    return '';
+}
 
 // 2a) Cesium token (global setting) ---------------------------------------
 try {
@@ -197,20 +61,32 @@ try {
     /* In production, log error */
 }
 
-/* Copernicus ID (global setting) --------------------------------------- */
+/* Copernicus/Sentinel Hub configuration (global setting) ---------------- */
 try {
-    $stmtCop = $pdo->prepare(
-        "SELECT value FROM app_settings WHERE name = 'copernicus_id' LIMIT 1"
-    );
-    $stmtCop->execute();
-    $copernicusId = trim((string) ($stmtCop->fetchColumn() ?: ''));
+    $copernicusWmsUrl = agritwin_field_setting($pdo, ['sentinel_hub_wms_url']);
+    $copernicusId = agritwin_field_setting($pdo, [
+        'copernicus_id',
+        'sentinelhub_instance_id',
+        'sentinel_hub_instance_id',
+    ]);
+    if ($copernicusId === '') {
+        $copernicusId = agritwin_field_env([
+            'COPERNICUS_ID',
+            'SENTINELHUB_INSTANCE_ID',
+            'SENTINEL_HUB_INSTANCE_ID',
+        ]);
+    }
+    if ($copernicusWmsUrl === '') {
+        $copernicusWmsUrl = agritwin_field_env(['SENTINEL_HUB_WMS_URL']);
+    }
 } catch (Exception $e) {
     $copernicusId = '';
+    $copernicusWmsUrl = '';
     // Optionally: error_log($e->getMessage());
 }
-$copernicusConfigured = $copernicusId !== '';
+$copernicusConfigured = $copernicusId !== '' || $copernicusWmsUrl !== '';
 
-// Operational data defaults used when the latest database row is unavailable.
+// Operational placeholders used when the latest database row is unavailable.
 $dbSoilMoisture = "N/A";
 $dbTemperature  = "N/A";
 $dbHumidity     = "N/A";
@@ -247,7 +123,7 @@ try {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title><?= htmlspecialchars($t('page_title'), ENT_QUOTES, 'UTF-8') ?></title>
+    <title>Fotovoltaica Macotera SL Field Monitoring</title>
 
     <!-- Cesium JS + CSS -->
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.106/Build/Cesium/Cesium.js"></script>
@@ -364,14 +240,6 @@ try {
             font-family: sans-serif;
             z-index: 1100;
         }
-        .layerTogglePanel label {
-            display: inline-block;
-            margin: 2px 0;
-        }
-        .layerTogglePanel input:disabled + span,
-        .layerTogglePanel input:disabled {
-            opacity: 0.65;
-        }
         .layer-status {
             margin: 8px 0 0;
             max-width: 220px;
@@ -444,112 +312,118 @@ try {
 <!-- Main Cesium container -->
 <div id="cesiumContainer">
     <div id="logoContainer">
-        <img src="AgriTwin_logo.png" alt="AgriTwin logo">
-        <img src="obsidian.png" alt="OBSIDIAN logo">
+        <img src="AgriTwin_logo.png" alt="agritwin Logo">
+        <img src="obsidian.png" alt="Obsidian Logo">
         <img src="fotomaco.png" alt="Fotovoltaica Macotera SL logo">
-        <img src="OpenAgri.png" alt="OpenAgri logo">
+        <img src="OpenAgri.png" alt="OpenAgri Logo">
         <img src="eufunded.png" alt="EU Funded">
     </div>
 </div>
 
 <!-- Button to toggle the right sidebar -->
-<button id="toggleSidebarBtn"><?= htmlspecialchars($t('toggle_sidebar'), ENT_QUOTES, 'UTF-8') ?></button>
+<button id="toggleSidebarBtn">Toggle Sidebar (R)</button>
 
 <!-- Right sidebar for sensor data, AI insights, tasks, button -->
 <div id="sidebar">
-    <h2><?= htmlspecialchars($t('field_monitoring'), ENT_QUOTES, 'UTF-8') ?></h2>
+    <h2>Fotovoltaica Macotera SL - Field Monitoring</h2>
 
 <div class="sensor-data">
-  <h3><?= htmlspecialchars($t('local_weather_station'), ENT_QUOTES, 'UTF-8') ?> - <?= htmlspecialchars((string) $fieldWeather['last_updated_label'], ENT_QUOTES, 'UTF-8') ?>&nbsp;<?= htmlspecialchars($t('today'), ENT_QUOTES, 'UTF-8') ?></h3>
+  <h3>Local Weather Station (Nava de Sotrobal) – 15 : 00&nbsp;Today</h3>
 
-  <p><strong><?= htmlspecialchars($t('temperature'), ENT_QUOTES, 'UTF-8') ?>:</strong> <?= htmlspecialchars((string) $fieldWeather['temperature_c'], ENT_QUOTES, 'UTF-8') ?> °C</p>
-  <p><strong><?= htmlspecialchars($t('humidity'), ENT_QUOTES, 'UTF-8') ?>:</strong> <?= htmlspecialchars((string) $fieldWeather['humidity_pct'], ENT_QUOTES, 'UTF-8') ?> %</p>
-  <p><strong><?= htmlspecialchars($t('wind_speed'), ENT_QUOTES, 'UTF-8') ?>:</strong> <?= htmlspecialchars((string) $fieldWeather['wind_kmh'], ENT_QUOTES, 'UTF-8') ?> km h<sup>-1</sup> (<?= htmlspecialchars((string) $fieldWeather['wind_direction'], ENT_QUOTES, 'UTF-8') ?>)</p>
-  <p><strong><?= htmlspecialchars($t('rainfall_today'), ENT_QUOTES, 'UTF-8') ?>:</strong> <?= htmlspecialchars((string) $fieldWeather['rainfall_mm'], ENT_QUOTES, 'UTF-8') ?> mm</p>
-  <p><strong><?= htmlspecialchars($t('weather_source'), ENT_QUOTES, 'UTF-8') ?>:</strong> <?= htmlspecialchars((string) $fieldWeather['source_label'], ENT_QUOTES, 'UTF-8') ?></p>
-  <p><strong><?= htmlspecialchars($t('last_updated'), ENT_QUOTES, 'UTF-8') ?>:</strong> <?= htmlspecialchars((string) $fieldWeather['timestamp'], ENT_QUOTES, 'UTF-8') ?></p>
+  <p><strong>Temperature:</strong> 29 °C</p>
+  <p><strong>Humidity:</strong>    33 %</p>
+  <p><strong>Wind&nbsp;Speed:</strong> 9 km h<sup>-1</sup> (NW)</p>
 </div>
 
 <div class="sensor-data">
-  <h3><?= htmlspecialchars($t('operational_insights'), ENT_QUOTES, 'UTF-8') ?> - Nava de Sotrobal • <?= htmlspecialchars($t('orchard_context'), ENT_QUOTES, 'UTF-8') ?></h3>
+  <h3>Operational Insights - Fotovoltaica Macotera SL (Nava de Sotrobal)</h3>
 
-  <p><strong><?= htmlspecialchars($t('alert'), ENT_QUOTES, 'UTF-8') ?>:</strong>
-    <?php foreach ($fieldData['operational_insights'] as $insight): ?>
-      • <?= htmlspecialchars((string) $insight, ENT_QUOTES, 'UTF-8') ?><br/>
-    <?php endforeach; ?>
+  <p><strong>Alert:</strong>
+    • Orchard soil-moisture reading sits at 17 % VWC after a mid-afternoon high of 29 °C.<br/>
+    • Light westerly winds (≈ 12 km h⁻¹) are forecast through dusk, keeping evapotranspiration elevated.
   </p>
 
-  <p><strong><?= htmlspecialchars($t('targeted_actions'), ENT_QUOTES, 'UTF-8') ?></strong></p>
+  <p><strong>Targeted actions (3 randomly chosen orchard sectors)</strong></p>
   <ul>
-    <li><?= htmlspecialchars((string) $fieldData['irrigation_status'], ENT_QUOTES, 'UTF-8') ?></li>
-    <li><?= htmlspecialchars((string) $fieldData['pest_disease_status'], ENT_QUOTES, 'UTF-8') ?></li>
+    <li><em>Almond Block&nbsp;A-3</em> – Trigger the micro-sprinkler set for a 22 mm recharge before 18 : 30.</li>
+    <li><em>Pistachio Block&nbsp;P-1 (Kerman)</em> – Schedule an evening wettable-sulphur spray to curb mite pressure favoured by today’s warmth.</li>
+    <li><em>Almond Buffer&nbsp;Row&nbsp;B-7</em> – Inspect for early navel-orangeworm flight; deploy pheromone traps if > 2 moths/night are captured.</li>
   </ul>
 </div>
 
 <!-- ---------- Property work queue ---------- -->
 <!-- ---------- Property work queue ---------- -->
 <div class="task-list">
-  <h3><?= htmlspecialchars($t('task_scheduling'), ENT_QUOTES, 'UTF-8') ?></h3>
+  <h3>Task Scheduling - Fotovoltaica Macotera SL Orchard</h3>
   <ul>
-    <?php foreach ($fieldData['task_queue'] as $task): ?>
-      <li>• <?= htmlspecialchars((string) $task, ENT_QUOTES, 'UTF-8') ?></li>
-    <?php endforeach; ?>
+    <li>✅ Irrigation (A-1 &amp; A-3) – Completed 04 / 08 / 2025 at 14 : 45</li>
+    <li>🔄 Drone Mission #27 – Canopy NDVI &amp; pest hot-spot mapping (<strong>In Progress</strong>)</li>
+    <li>🕒 Orchard-floor sweep (Pistachio P-2) – Queued for 05 / 08 / 2025 at 07 : 30</li>
+    <li>📅 Post-bloom N-K fertigation – Planned for 10 / 08 / 2025 <small>(pending weather &amp; leaf-analysis)</small></li>
   </ul>
 </div>
 
+
+<!-- ---------- Property-level work queue ---------- -->
+<div class="task-list">
+  <h3>Task Scheduling - Fotovoltaica Macotera SL</h3>
+  <ul>
+    <li>✅ Irrigation (blocks C-4 &amp; D-1) – Completed 14:45 today</li>
+    <li>🔄 Drone pass&nbsp;#27 (stand count &amp; NDVI) – <strong>In Progress</strong></li>
+    <li>🕒 Mower deployment (pasture B-1) – <strong>Queued for 08:00 tomorrow</strong></li>
+    <li>📅 Fertilisation (vine terrace A-sector) – Held for 10 May 2025 <small>(awaiting ≤ 10 km h⁻¹ winds)</small></li>
+  </ul>
+</div>
     <!-- New DIV: AEMET Weather Forecast -->
     <div class="sensor-data">
-        <h3><?= htmlspecialchars($t('aemet_forecast'), ENT_QUOTES, 'UTF-8') ?></h3>
-        <div id="aemetForecast"><?= htmlspecialchars($t('loading_forecast'), ENT_QUOTES, 'UTF-8') ?></div>
+        <h3>AEMET Weather Forecast (Nava de Sotrobal)</h3>
+        <div id="aemetForecast">Loading forecast...</div>
     </div>
     <!-- End of new weather forecast block -->
 
     <!-- Button for navigating back to AgriTwin Dashboard -->
     <button class="dashboard-button" onclick="window.location.href='index.php'">
-        <?= htmlspecialchars($t('back_dashboard'), ENT_QUOTES, 'UTF-8') ?>
+        Go to AgriTwin Dashboard
     </button>
 </div>
 
 <!-- Panel for Copernicus NDVI / LAI_SAVI toggles via radio buttons -->
 <div class="layerTogglePanel">
-    <p><strong><?= htmlspecialchars($t('select_index'), ENT_QUOTES, 'UTF-8') ?></strong></p>
+    <p><strong>Select Index</strong></p>
     <label>
       <input type="radio" name="indexLayer" value="none" checked/>
-      <?= htmlspecialchars($t('none'), ENT_QUOTES, 'UTF-8') ?> (<?= htmlspecialchars($t('default_imagery_only'), ENT_QUOTES, 'UTF-8') ?>)
+      None (Default Imagery Only)
     </label>
     <br>
     <label>
       <input type="radio" name="indexLayer" value="NDVI"<?= $copernicusConfigured ? '' : ' disabled' ?>/>
-      <?= htmlspecialchars($t('copernicus_ndvi'), ENT_QUOTES, 'UTF-8') ?>
+      NDVI (Copernicus)
     </label>
     <br>
     <label>
       <input type="radio" name="indexLayer" value="LAI_SAVI"<?= $copernicusConfigured ? '' : ' disabled' ?>/>
-      <?= htmlspecialchars($t('copernicus_lai_savi'), ENT_QUOTES, 'UTF-8') ?>
+      LAI/SAVI (Copernicus)
     </label>
     <p id="copernicusLayerStatus"
        class="layer-status"
-       data-configured="<?= $copernicusConfigured ? '1' : '0' ?>"
-       data-ready-text="<?= htmlspecialchars($t('copernicus_vegetation_index'), ENT_QUOTES, 'UTF-8') ?>"
-       data-required-text="<?= htmlspecialchars($t('configuration_required'), ENT_QUOTES, 'UTF-8') ?>"
-       data-unavailable-text="<?= htmlspecialchars($t('copernicus_layer_unavailable'), ENT_QUOTES, 'UTF-8') ?>"
-       data-legend-unavailable-text="<?= htmlspecialchars($t('legend_unavailable'), ENT_QUOTES, 'UTF-8') ?>">
-      <?= htmlspecialchars($copernicusConfigured ? $t('copernicus_vegetation_index') : $t('configuration_required'), ENT_QUOTES, 'UTF-8') ?>
+       data-ready-text="Copernicus vegetation index"
+       data-required-text="Configuration required"
+       data-unavailable-text="Copernicus layer unavailable"
+       data-legend-unavailable-text="Legend unavailable">
+      <?= htmlspecialchars($copernicusConfigured ? 'Copernicus vegetation index' : 'Configuration required', ENT_QUOTES, 'UTF-8') ?>
     </p>
 </div>
 
 <!-- Legend container for Copernicus NDVI/LAI_SAVI -->
 <div id="legendContainer">
-    <div id="legendTitle"><?= htmlspecialchars($t('legend'), ENT_QUOTES, 'UTF-8') ?></div>
-    <img id="legendImage" src="" alt="<?= htmlspecialchars($t('index_legend'), ENT_QUOTES, 'UTF-8') ?>" />
+    <div id="legendTitle">Legend</div>
+    <img id="legendImage" src="" alt="Index Legend" />
 </div>
 
 
 <!-------------------------------------------------------------------------->
 <!-- SINGLE, VALID <script> SECTION  (no PHP inside JS!) ------------------->
 <script>
-const FIELD_TEXT = <?= json_encode($fieldText[$fieldLang], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
-const FIELD_DATA = <?= json_encode($fieldData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
 // -------------- 1) Cesium initialisation ---------------------------------
 const CESIUM_TOKEN = <?= json_encode($cesiumToken) ?>;
 Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
@@ -623,9 +497,10 @@ const viewer = new Cesium.Viewer('cesiumContainer', {
     });
 
 const COPERNICUS_ID = String(<?= json_encode($copernicusId) ?> || '').trim();
-const sentinelWmsUrl = COPERNICUS_ID ? `https://sh.dataspace.copernicus.eu/ogc/wms/${COPERNICUS_ID}?` : '';
+const CONFIGURED_COPERNICUS_WMS_URL = String(<?= json_encode($copernicusWmsUrl) ?> || '').trim();
+const sentinelWmsUrl = CONFIGURED_COPERNICUS_WMS_URL || (COPERNICUS_ID ? `https://sh.dataspace.copernicus.eu/ogc/wms/${COPERNICUS_ID}?` : '');
 const copernicusDiagnostics = {
-  idConfigured: Boolean(COPERNICUS_ID),
+  idConfigured: Boolean(COPERNICUS_ID || CONFIGURED_COPERNICUS_WMS_URL),
   wmsUrlConfigured: Boolean(sentinelWmsUrl),
   ndviProviderInitialised: false,
   laiSaviProviderInitialised: false,
@@ -633,6 +508,7 @@ const copernicusDiagnostics = {
   lastLayerError: ''
 };
 window.AgriTwinCopernicusDiagnostics = copernicusDiagnostics;
+
 
     var newNdviLayer = null;
     var laiSaviLayer = null;
@@ -648,12 +524,12 @@ window.AgriTwinCopernicusDiagnostics = copernicusDiagnostics;
       if (provider && provider.errorEvent) {
         provider.errorEvent.addEventListener(function(error) {
           copernicusDiagnostics.lastLayerError = layerName + ': ' + (error && error.message ? error.message : 'imagery request failed');
-          updateCopernicusStatus(copernicusStatus ? copernicusStatus.dataset.unavailableText : FIELD_TEXT.copernicus_layer_unavailable);
+          updateCopernicusStatus(copernicusStatus ? copernicusStatus.dataset.unavailableText : 'Copernicus layer unavailable');
         });
       }
     }
 
-    if (COPERNICUS_ID) {
+    if (sentinelWmsUrl) {
       var wmsOptions = {
         url: sentinelWmsUrl,
         parameters: {
@@ -688,9 +564,9 @@ window.AgriTwinCopernicusDiagnostics = copernicusDiagnostics;
       laiSaviLayer = viewer.imageryLayers.addImageryProvider(laiSaviProvider);
       laiSaviLayer.show = false;
       copernicusDiagnostics.laiSaviProviderInitialised = true;
-      updateCopernicusStatus(copernicusStatus ? copernicusStatus.dataset.readyText : FIELD_TEXT.copernicus_vegetation_index);
+      updateCopernicusStatus(copernicusStatus ? copernicusStatus.dataset.readyText : 'Copernicus vegetation index');
     } else {
-      updateCopernicusStatus(copernicusStatus ? copernicusStatus.dataset.requiredText : FIELD_TEXT.configuration_required);
+      updateCopernicusStatus(copernicusStatus ? copernicusStatus.dataset.requiredText : 'Configuration required');
     }
 
     // Custom legend images
@@ -706,7 +582,7 @@ window.AgriTwinCopernicusDiagnostics = copernicusDiagnostics;
     if (legendImage) {
       legendImage.addEventListener("error", function() {
         legendContainer.style.display = "block";
-        legendTitle.textContent = copernicusStatus ? copernicusStatus.dataset.legendUnavailableText : FIELD_TEXT.legend_unavailable;
+        legendTitle.textContent = copernicusStatus ? copernicusStatus.dataset.legendUnavailableText : 'Legend unavailable';
         legendImage.removeAttribute("src");
       });
     }
@@ -725,8 +601,8 @@ window.AgriTwinCopernicusDiagnostics = copernicusDiagnostics;
           legendContainer.style.display = "none";
           return;
         }
-        if (!COPERNICUS_ID || !newNdviLayer || !laiSaviLayer) {
-          updateCopernicusStatus(copernicusStatus ? copernicusStatus.dataset.requiredText : FIELD_TEXT.configuration_required);
+        if (!sentinelWmsUrl || !newNdviLayer || !laiSaviLayer) {
+          updateCopernicusStatus(copernicusStatus ? copernicusStatus.dataset.requiredText : 'Configuration required');
           rb.checked = false;
           document.querySelector('input[name="indexLayer"][value="none"]').checked = true;
           legendContainer.style.display = "none";
@@ -737,7 +613,7 @@ window.AgriTwinCopernicusDiagnostics = copernicusDiagnostics;
         } else if (rb.value === "LAI_SAVI") {
           laiSaviLayer.show = true;
         }
-        updateCopernicusStatus(copernicusStatus ? copernicusStatus.dataset.readyText : FIELD_TEXT.copernicus_vegetation_index);
+        updateCopernicusStatus(copernicusStatus ? copernicusStatus.dataset.readyText : 'Copernicus vegetation index');
         legendContainer.style.display = "block";
         legendTitle.textContent = rb.value;
         legendImage.src = legendUrls[rb.value] || "";
@@ -772,25 +648,58 @@ window.AgriTwinCopernicusDiagnostics = copernicusDiagnostics;
     var WEATHER_ICON_URL  = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
     var SELECTED_ICON_URL = "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
 
-    var sensorsData = FIELD_DATA.sensor_markers || [];
-
-    var machineryData = [
-      { name: "Tractor 1",   lat: 40.8887, lon: -5.2608, status: FIELD_TEXT.active },
-      { name: "Harvester 1", lat: 40.8875, lon: -5.2612, status: FIELD_TEXT.idle   }
+    var sensorsData = [
+      { name: "Sensor A", lat: 40.8860, lon: -5.2615, temp: 28, moist10: 22, moist30: 24, moist50: 26 },
+      { name: "Sensor B", lat: 40.8900, lon: -5.2590, temp: 27, moist10: 23, moist30: 25, moist50: 27 },
+      { name: "Sensor C", lat: 40.8860, lon: -5.2590, temp: 27, moist10: 23, moist30: 25, moist50: 27 },
+      { name: "Sensor D", lat: 40.8860, lon: -5.2580, temp: 27, moist10: 23, moist30: 25, moist50: 27 },
+      { name: "Sensor E", lat: 40.8920, lon: -5.2580, temp: 26, moist10: 23, moist30: 25, moist50: 28 },
+      { name: "Sensor F", lat: 40.8905, lon: -5.2559, temp: 27, moist10: 23, moist30: 25, moist50: 27 },
+      { name: "Sensor G", lat: 40.8915, lon: -5.2596, temp: 24, moist10: 23, moist30: 25, moist50: 24 },
+      { name: "Sensor H", lat: 40.8916, lon: -5.2559, temp: 27, moist10: 23, moist30: 25, moist50: 27 },
+      { name: "Sensor I", lat: 40.8846, lon: -5.2597, temp: 28, moist10: 22, moist30: 24, moist50: 26 },
+      { name: "Sensor J", lat: 40.8910, lon: -5.2609, temp: 28, moist10: 22, moist30: 24, moist50: 28 },
+      { name: "Sensor L", lat: 40.8871, lon: -5.2603, temp: 28, moist10: 22, moist30: 24, moist50: 28 },
+      { name: "Sensor M", lat: 40.8871, lon: -5.2568, temp: 28, moist10: 22, moist30: 24, moist50: 28 },
     ];
 
-    var weatherStationsData = FIELD_DATA.weather_stations || [];
+    var machineryData = [
+      { name: "Tractor 1",   lat: 40.8887, lon: -5.2608, status: "Active" },
+      { name: "Harvester 1", lat: 40.8875, lon: -5.2612, status: "Idle"   }
+    ];
+
+    var weatherStationsData = [
+      {
+        name: "Weather Station 1",
+        lat: 40.8865,
+        lon: -5.2620,
+        status: "Online",
+        temperature: 25,
+        humidity: 55,
+        windSpeed: 5
+      },
+      {
+        name: "Weather Station 2",
+        lat: 40.886275,
+        lon: -5.2579,
+        status: "Online",
+        temperature: 22,
+        humidity: 60,
+        windSpeed: 4,
+        rainfall: 1.0
+      }
+    ];
 
     function buildSensorDescription(sensor) {
       return `
         <div>
           <i class="fa-solid fa-microchip" style="float:right; margin-left:8px; font-size:32px;"></i>
           <strong>${sensor.name}</strong><br/>
-          ${FIELD_TEXT.temperature}: ${sensor.temp}°C<br/>
-          ${FIELD_TEXT.soil_moisture} (10 cm): ${sensor.moist10}%<br/>
-          ${FIELD_TEXT.soil_moisture} (30 cm): ${sensor.moist30}%<br/>
-          ${FIELD_TEXT.soil_moisture} (50 cm): ${sensor.moist50}%<br/><br/>
-          <em>${FIELD_TEXT.coordinates}:</em> ${sensor.lat.toFixed(5)}, ${sensor.lon.toFixed(5)}
+          Temperature: ${sensor.temp}°C<br/>
+          Soil Moisture (10 cm): ${sensor.moist10}%<br/>
+          Soil Moisture (30 cm): ${sensor.moist30}%<br/>
+          Soil Moisture (50 cm): ${sensor.moist50}%<br/><br/>
+          <em>Coordinates:</em> ${sensor.lat.toFixed(5)}, ${sensor.lon.toFixed(5)}
         </div>
       `;
     }
@@ -799,24 +708,23 @@ window.AgriTwinCopernicusDiagnostics = copernicusDiagnostics;
         <div>
           <i class="fa-solid fa-tractor" style="float:right; margin-left:8px; font-size:32px;"></i>
           <strong>${mach.name}</strong><br/>
-          ${FIELD_TEXT.status}: ${mach.status}<br/><br/>
-          <em>${FIELD_TEXT.coordinates}:</em> ${mach.lat.toFixed(5)}, ${mach.lon.toFixed(5)}
+          Status: ${mach.status}<br/><br/>
+          <em>Coordinates:</em> ${mach.lat.toFixed(5)}, ${mach.lon.toFixed(5)}
         </div>
       `;
     }
     function buildWeatherDescription(ws) {
-      let rainfallLine = ws.rainfall !== undefined ? `${FIELD_TEXT.rainfall_today}: ${ws.rainfall} mm<br/>` : "";
-      let windDirection = ws.windDirection ? ` (${ws.windDirection})` : "";
+      let rainfallLine = ws.rainfall ? `Rainfall: ${ws.rainfall} mm/h<br/>` : "";
       return `
         <div>
           <i class="fa-solid fa-cloud-sun" style="float:right; margin-left:8px; font-size:32px;"></i>
           <strong>${ws.name}</strong><br/>
-          ${FIELD_TEXT.status}: ${ws.status}<br/>
-          ${FIELD_TEXT.temperature}: ${ws.temperature}°C<br/>
-          ${FIELD_TEXT.humidity}: ${ws.humidity}%<br/>
-          ${FIELD_TEXT.wind_speed}: ${ws.windSpeed} km h⁻¹${windDirection}<br/>
+          Status: ${ws.status}<br/>
+          Temperature: ${ws.temperature}°C<br/>
+          Humidity: ${ws.humidity}%<br/>
+          Wind Speed: ${ws.windSpeed} m/s<br/>
           ${rainfallLine}<br/>
-          <em>${FIELD_TEXT.coordinates}:</em> ${ws.lat.toFixed(5)}, ${ws.lon.toFixed(5)}
+          <em>Coordinates:</em> ${ws.lat.toFixed(5)}, ${ws.lon.toFixed(5)}
         </div>
       `;
     }
@@ -1256,25 +1164,25 @@ window.AgriTwinCopernicusDiagnostics = copernicusDiagnostics;
                 }
 
                 html += `<div style="margin-bottom:10px;">
-                          <strong>${i === 0 ? FIELD_TEXT.today : FIELD_TEXT.tomorrow} (${dateStr})</strong><br/>
-                          ${FIELD_TEXT.temperature}: ${minTemp}°C / ${maxTemp}°C<br/>
-                          ${FIELD_TEXT.humidity}: ${minHum}% / ${maxHum}%<br/>
-                          ${FIELD_TEXT.rain_probability}: ${probLluvia}<br/>
-                          ${FIELD_TEXT.wind}: ${windInfo}
+                          <strong>${i === 0 ? "Today" : "Tomorrow"} (${dateStr})</strong><br/>
+                          Temp: ${minTemp}°C / ${maxTemp}°C<br/>
+                          Humidity: ${minHum}% / ${maxHum}%<br/>
+                          Rain Probability: ${probLluvia}<br/>
+                          Wind: ${windInfo}
                         </div>`;
               }
             } else {
-              html = FIELD_TEXT.no_forecast_days;
+              html = "No forecast day data found.";
             }
           } else {
-            html = FIELD_TEXT.no_valid_forecast;
+            html = "No valid forecast data or unexpected structure.";
           }
 
           container.innerHTML = html;
         })
         .catch(err => {
           console.error('Error retrieving forecast:', err);
-          document.getElementById("aemetForecast").innerHTML = FIELD_TEXT.error_loading_forecast;
+          document.getElementById("aemetForecast").innerHTML = "Error loading forecast.";
         });
     });
 </script>

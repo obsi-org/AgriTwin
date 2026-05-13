@@ -2,7 +2,9 @@
 
 ## Root Cause
 
-The field view used the same Copernicus WMS shape as the working reference, but the layer setup was not guarded against missing configuration or WMS request failures. When Copernicus configuration or imagery requests failed, the page provided no safe status and the index controls could leave the operator with no visible change. The LAI/SAVI legend asset is also not present locally, so the legend image could fail independently of the layer.
+The AgriTwin3 field view had been restored from an older working page and only looked up `app_settings.copernicus_id`. The working AgriTwin2 deployment was inspected read-only and its working Copernicus configuration was found as an `app_settings` value named `copernicus_id`, with the same WMS URL construction used by the reference page. AgriTwin3 now contains the same local runtime value in its database, but no credential or instance identifier is committed to Git or documented here.
+
+The field view also had no fallback lookup for equivalent Sentinel Hub setting names or a full configured WMS URL. When configuration or imagery requests failed, the page provided no safe status and the index controls could leave the operator with no visible change. The LAI/SAVI legend asset may also be absent locally, so the legend image can fail independently of the layer.
 
 ## Reference Used
 
@@ -14,11 +16,29 @@ The NDVI/Copernicus section in `docs/reference/field1_working_reference.php` was
 - Tiling scheme: `Cesium.WebMercatorTilingScheme`
 - Farm bounding rectangle: west `-5.262770243294276`, south `40.883388135762168`, east `-5.255199073804725`, north `40.892776720220887`
 
-The actual Copernicus ID remains loaded from `app_settings.copernicus_id` and is not documented here.
+The actual Copernicus ID remains loaded from local runtime configuration and is not documented here.
+
+## Configuration Resolution
+
+AgriTwin3 now resolves Copernicus configuration in this order:
+
+1. `app_settings.sentinel_hub_wms_url`
+2. `app_settings.copernicus_id`
+3. `app_settings.sentinelhub_instance_id`
+4. `app_settings.sentinel_hub_instance_id`
+5. `COPERNICUS_ID`
+6. `SENTINELHUB_INSTANCE_ID`
+7. `SENTINEL_HUB_INSTANCE_ID`
+8. `SENTINEL_HUB_WMS_URL`
+
+If a full WMS URL is configured, it is used directly. Otherwise AgriTwin builds the Copernicus Data Space WMS URL from the configured instance identifier.
 
 ## Changes Made
 
 - Trimmed the database-loaded Copernicus ID before use.
+- Copied the working local Copernicus runtime value from the read-only AgriTwin2 configuration into the AgriTwin3 local `app_settings` table without committing the value.
+- Added alias and environment lookup for Sentinel Hub/Copernicus configuration.
+- Added `scripts/check_copernicus_wms.php` for secret-safe WMS availability checks.
 - Added a safe configured/not-configured state for Copernicus controls.
 - Disabled NDVI and LAI/SAVI controls when Copernicus configuration is missing.
 - Kept Copernicus NDVI and LAI/SAVI layer creation after the Cesium viewer and bounding rectangle exist.
@@ -40,6 +60,7 @@ Commands to run:
 - `make test`
 - `docker compose config`
 - `scripts/check_local_stack.sh`
+- `php scripts/check_copernicus_wms.php`
 - Authenticated curl check for `http://localhost/agritwin3/agritwin_dashboard/field1.php`
 
 Rendered-page checks should confirm:
