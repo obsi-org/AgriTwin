@@ -1,4 +1,11 @@
 <?php
+/*
+ * AgriTwin - Agricultural Digital Twin for Intelligent Decision-Making
+ * Copyright 2026 Obsidian Innovation Institute - Associação
+ * Licensed under the Apache License, Version 2.0. See LICENSE for details.
+ * Funding and disclaimer information is provided in NOTICE.
+ */
+
 declare(strict_types=1);
 
 session_start();
@@ -151,7 +158,9 @@ agritwin_render_page('reports', $labels['report_centre'], function () use ($labe
                 <?php endforeach; ?>
                 <span><?= agritwin_h($previewReport['copyright']) ?></span>
             </div>
+            <p><?= agritwin_h($previewReport['copyright_owner']) ?></p>
             <p><?= agritwin_h($previewReport['funding_acknowledgement']) ?></p>
+            <p><?= agritwin_h($previewReport['ec_disclaimer']) ?></p>
         </footer>
     </section>
 

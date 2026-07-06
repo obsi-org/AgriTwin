@@ -106,3 +106,9 @@ Cesium and Copernicus values continue to resolve through `app_settings` or ignor
 ## Optional Host Apache Reverse Proxy
 
 The Docker URL is the supported local URL. If a host Apache reverse proxy is desired, configure it manually outside this repository to forward `/agritwin/` to `http://localhost:8083/agritwin/`. Do not enable host Apache configuration as part of the repository setup.
+
+## Licence, funding and disclaimer
+
+Reusable AgriTwin software components are released under the Apache License 2.0. See the repository `LICENSE` and `NOTICE` files for licence terms, funding acknowledgement, excluded materials and the European Commission responsibility disclaimer.
+
+Raw pilot-farm data, credentials, security secrets, site-specific configuration and non-anonymised operational logs must remain outside Docker images, Git history, generated reports committed to Git and distributable packages.

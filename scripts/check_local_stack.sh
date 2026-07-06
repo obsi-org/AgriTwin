@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+#
+# AgriTwin - Agricultural Digital Twin for Intelligent Decision-Making
+# Copyright 2026 Obsidian Innovation Institute - Associação
+# Licensed under the Apache License, Version 2.0. See LICENSE for details.
+# Funding and disclaimer information is provided in NOTICE.
+
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -111,7 +117,7 @@ if grep -Eq '<pre|\\{&quot;|\\{"' "${TMP_DIR}/reports.html"; then
   exit 1
 fi
 
-if ! grep -q "This software prototype is part of a sub-project" "${TMP_DIR}/index.html"; then
+if ! grep -q "OpenAgri has received funding from the European Union" "${TMP_DIR}/index.html"; then
   echo "[check] funding acknowledgement not found on entry page" >&2
   exit 1
 fi

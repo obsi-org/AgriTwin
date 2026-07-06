@@ -52,7 +52,9 @@ The Reports page and PDF labels use the active AgriTwin language: English, Portu
 
 - Header primary row: AgriTwin logo, then Fotovoltaica Macotera SL logo.
 - Header secondary row: OpenAgri logo and Obsidian Innovation Institute - Associação branding.
-- Footer: European Union funding logo, `© 2026 AgriTwin`, and the exact OpenAgri funding acknowledgement.
+- Footer: European Union funding logo, `© 2026 AgriTwin`, Obsidian Innovation Institute - Associação copyright ownership, the OpenAgri funding acknowledgement, and the European Commission responsibility disclaimer.
+
+The report footer uses the legal wording from the repository `NOTICE` file without exposing credentials, site-specific configuration or raw operational logs.
 
 ## Verification
 

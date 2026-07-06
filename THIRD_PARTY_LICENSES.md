@@ -1,28 +1,31 @@
 # Third-Party Licences
 
-This repository is being prepared for OpenAgri open-source catalogue submission. The original AgriTwin code and documentation added by this project are licensed under Apache-2.0 unless stated otherwise.
+The reusable AgriTwin software components created by Obsidian Innovation Institute - Associação are released under the Apache License 2.0 unless a file explicitly states otherwise.
+
+Third-party runtimes, libraries, services and assets remain governed by their own licence terms. This file records the known integration points for audit purposes and does not replace upstream licence notices.
 
 ## Runtime and Development Dependencies
 
 | Component | Use | Licence status |
 | --- | --- | --- |
 | PHP 8.x | Application runtime and tests | PHP License; provided by local or container runtime. |
-| Apache HTTP Server image | Docker runtime base through `php:8.3-apache` | Apache-2.0; image includes additional Debian packages. |
-| MariaDB container image | Local mock demo database | GPLv2 for MariaDB server; used as external service. |
+| Apache HTTP Server image | Docker web runtime through the PHP Apache image | Apache-2.0; image includes additional Debian packages. |
+| MySQL container image | Local Docker database service | Oracle MySQL licence terms apply to the container image. |
 | CesiumJS | Environmental Digital Twin map view when configured | Apache-2.0 for CesiumJS; Cesium ion tokens are not included. |
-| Font Awesome classes | Icon class names in legacy PHP pages | Font Awesome licence applies if bundled or loaded by deployment. |
-| OpenAgri services | External service integrations | Each OpenAgri repository keeps its own licence; this repo implements adapters and does not copy service code. |
+| Font Awesome classes | Icon class names in PHP pages | Font Awesome licence applies if bundled or loaded by deployment. |
+| OpenAgri services | External service integrations | Each OpenAgri repository keeps its own licence; this repository implements adapters and does not vendor upstream service code. |
 
 ## Local Assets
 
-The repository contains image and 3D demonstration assets inherited from the local prototype. Before a public release, project owners should confirm that each asset is either original, cleared for publication, or replaced. The publication checklist tracks this as a required manual review item.
+Project-owned AgriTwin, OpenAgri, OBSIDIAN, European Union acknowledgement and partner branding assets are used for platform and report presentation. Any third-party visual or 3D asset must be reviewed before redistribution and must keep its original licence notice where applicable.
 
-## Source Documents
+## Internal Operational Materials
 
-The Proposal and D1 PDFs under `docs/source/` are authoritative project documents for local engineering work. Their redistribution status must be confirmed before public publication. If not cleared, remove them from the public repository and keep only references or approved excerpts.
+The internal operational branch may contain site-specific pilot-farm assets, coordinates, operational reports and reference material. Those materials are not part of the reusable public AgriTwin software components and must not be included in a public distribution package unless they are separately cleared and anonymised.
 
 ## Policy
 
 - Do not alter third-party licence notices.
-- Do not copy third-party OpenAgri service code into this repository unless the licence is compatible and attribution is preserved.
-- Prefer adapters, service endpoints, and documented integration contracts over vendoring.
+- Do not add AgriTwin headers to third-party/vendor files.
+- Do not copy OpenAgri upstream service code into this repository unless the licence is compatible and attribution is preserved.
+- Prefer adapters, service endpoints and documented integration contracts over vendoring.

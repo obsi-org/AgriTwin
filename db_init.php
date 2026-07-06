@@ -1,4 +1,11 @@
 <?php
+/*
+ * AgriTwin - Agricultural Digital Twin for Intelligent Decision-Making
+ * Copyright 2026 Obsidian Innovation Institute - Associação
+ * Licensed under the Apache License, Version 2.0. See LICENSE for details.
+ * Funding and disclaimer information is provided in NOTICE.
+ */
+
 /**
  * db_init.php – Minimal schema/seed loader for CERES (app_settings, farms, users)
  * Called automatically from index.php; safe to leave in production.

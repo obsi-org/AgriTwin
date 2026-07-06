@@ -1,4 +1,11 @@
 <?php
+/*
+ * AgriTwin - Agricultural Digital Twin for Intelligent Decision-Making
+ * Copyright 2026 Obsidian Innovation Institute - Associação
+ * Licensed under the Apache License, Version 2.0. See LICENSE for details.
+ * Funding and disclaimer information is provided in NOTICE.
+ */
+
 declare(strict_types=1);
 
 function agritwin_base_path(): string
@@ -15,7 +22,22 @@ function agritwin_root_path(): string
 
 function agritwin_funding_acknowledgement(): string
 {
-    return "This software prototype is part of a sub-project that has received funding from the European Union's Horizon Europe research and innovation programme under project OpenAgri (grant agreement No 101134083)";
+    return "OpenAgri has received funding from the European Union’s Horizon Europe research and innovation programme under Grant Agreement No. 101134083.";
+}
+
+function agritwin_copyright_notice(): string
+{
+    return 'Copyright 2026 Obsidian Innovation Institute - Associação';
+}
+
+function agritwin_ec_responsibility_disclaimer(): string
+{
+    return "This output reflects only the author’s view. The European Commission cannot be held responsible for any use that may be made of the information contained therein.";
+}
+
+function agritwin_licence_notice(): string
+{
+    return 'The reusable AgriTwin software components are released under the Apache License 2.0. Please see the LICENSE file for the applicable licence terms.';
 }
 
 function agritwin_supported_languages(): array

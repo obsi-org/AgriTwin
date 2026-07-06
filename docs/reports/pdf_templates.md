@@ -13,7 +13,9 @@ AgriTwin PDF reports are generated locally using a lightweight PHP PDF writer. E
 - formatted human-readable sections with operational icons in the preview and compact section markers in the PDF;
 - tables with labels, values and units;
 - the OpenAgri funding acknowledgement;
-- `© 2026 AgriTwin`.
+- `© 2026 AgriTwin`;
+- Obsidian Innovation Institute - Associação copyright ownership;
+- the European Commission responsibility disclaimer from `NOTICE`.
 
 ## Main Sections
 

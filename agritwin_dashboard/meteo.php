@@ -1,4 +1,11 @@
 <?php
+/*
+ * AgriTwin - Agricultural Digital Twin for Intelligent Decision-Making
+ * Copyright 2026 Obsidian Innovation Institute - Associação
+ * Licensed under the Apache License, Version 2.0. See LICENSE for details.
+ * Funding and disclaimer information is provided in NOTICE.
+ */
+
 session_start();
 
 // If user is not logged in, redirect to login

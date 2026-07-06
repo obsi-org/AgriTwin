@@ -1,4 +1,11 @@
 <?php
+/*
+ * AgriTwin - Agricultural Digital Twin for Intelligent Decision-Making
+ * Copyright 2026 Obsidian Innovation Institute - Associação
+ * Licensed under the Apache License, Version 2.0. See LICENSE for details.
+ * Funding and disclaimer information is provided in NOTICE.
+ */
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/statistics_engine.php';
@@ -440,7 +447,10 @@ function agritwin_report_build(string $type, ?string $lang = null): array
         'source' => $sourceLabel,
         'branding' => agritwin_report_branding(),
         'copyright' => '© 2026 AgriTwin',
+        'copyright_owner' => agritwin_copyright_notice(),
         'funding_acknowledgement' => agritwin_funding_acknowledgement(),
+        'licence_notice' => agritwin_licence_notice(),
+        'ec_disclaimer' => agritwin_ec_responsibility_disclaimer(),
         'sections' => $sections,
     ];
 }
@@ -600,8 +610,12 @@ function agritwin_report_pdf_content(array $report): string
         }
         $content .= "ET\n";
         $content .= "BT\n/F1 8 Tf\n150 48 Td\n" . agritwin_report_pdf_string((string) ($report['copyright'] ?? '© 2026 AgriTwin')) . " Tj\n";
+        $content .= "0 -10 Td\n" . agritwin_report_pdf_string((string) ($report['copyright_owner'] ?? agritwin_copyright_notice())) . " Tj\n";
         foreach (agritwin_report_wrap_text((string) ($report['funding_acknowledgement'] ?? agritwin_funding_acknowledgement()), 86) as $idx => $wrapped) {
             $content .= "0 -" . ($idx === 0 ? 10 : 9) . " Td\n" . agritwin_report_pdf_string($wrapped) . " Tj\n";
+        }
+        foreach (agritwin_report_wrap_text((string) ($report['ec_disclaimer'] ?? agritwin_ec_responsibility_disclaimer()), 86) as $wrapped) {
+            $content .= "0 -9 Td\n" . agritwin_report_pdf_string($wrapped) . " Tj\n";
         }
         $content .= "370 0 Td\n" . agritwin_report_pdf_string('p. ' . $pageNumber . '/' . $pageCount) . " Tj\n";
         $content .= "ET\n";

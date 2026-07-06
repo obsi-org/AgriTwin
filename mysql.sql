@@ -1,3 +1,8 @@
+-- AgriTwin - Agricultural Digital Twin for Intelligent Decision-Making
+-- Copyright 2026 Obsidian Innovation Institute - Associação
+-- Licensed under the Apache License, Version 2.0. See LICENSE for details.
+-- Funding and disclaimer information is provided in NOTICE.
+
 -- phpMyAdmin SQL Dump
 -- version 4.9.5deb2ubuntu0.1~esm1
 -- https://www.phpmyadmin.net/

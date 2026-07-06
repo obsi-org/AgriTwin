@@ -1,6 +1,6 @@
 # Translation Audit Report
 
-Generated: 2026-05-13T14:40:08+00:00
+Generated: 2026-07-06T18:55:13+00:00
 
 ## Summary
 
@@ -52,4 +52,5 @@ None.
 None.
 
 ## Suspicious Template Strings
-None.
+
+- `{"file":"agritwin_dashboard/field1.php","line":698,"text":"LAI/SAVI (Copernicus)"}`
