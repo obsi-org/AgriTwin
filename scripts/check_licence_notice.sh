@@ -36,6 +36,8 @@ require_contains() {
 require_file LICENSE
 require_file NOTICE
 require_file README.md
+require_file datasets/agritwin_sample_dataset/LICENSE-DATASET.md
+require_file open-hardware/LICENSE-HARDWARE.md
 
 require_contains LICENSE "Apache License" "Apache License heading"
 require_contains LICENSE "Version 2.0, January 2004" "Apache License 2.0 version"
@@ -45,7 +47,16 @@ require_contains NOTICE "OpenAgri has received funding from the European Unionâ€
 require_contains NOTICE "The reusable AgriTwin software components are released under the Apache License 2.0." "Apache-2.0 component statement"
 require_contains NOTICE "Raw pilot-farm data, credentials, security secrets, site-specific configuration and non-anonymised operational logs are excluded from the public release." "excluded materials statement"
 require_contains NOTICE "This output reflects only the authorâ€™s view. The European Commission cannot be held responsible for any use that may be made of the information contained therein." "European Commission disclaimer"
+require_contains NOTICE "Creative Commons Attribution 4.0 International" "dataset licence statement"
+require_contains NOTICE "CERN-OHL-S-2.0" "open hardware licence statement"
+require_contains README.md "## Licensing overview" "README licensing overview"
 require_contains README.md "## Licence, funding and disclaimer" "README licence section"
+require_contains datasets/agritwin_sample_dataset/LICENSE-DATASET.md "SPDX-License-Identifier: CC-BY-4.0" "dataset SPDX identifier"
+require_contains datasets/agritwin_sample_dataset/LICENSE-DATASET.md "CC BY 4.0" "dataset CC BY 4.0 licence"
+require_contains open-hardware/LICENSE-HARDWARE.md "SPDX-License-Identifier: CERN-OHL-S-2.0" "hardware SPDX identifier"
+require_contains open-hardware/LICENSE-HARDWARE.md "CERN-OHL-S-2.0" "hardware CERN-OHL-S-2.0 licence"
+require_contains open-hardware/firmware/standard_sensor_node/agritwin_sensor_node_example.ino "SPDX-License-Identifier: Apache-2.0" "sensor firmware SPDX identifier"
+require_contains open-hardware/firmware/weather_station/agritwin_weather_station_example.ino "SPDX-License-Identifier: Apache-2.0" "weather firmware SPDX identifier"
 
 if [[ -f agritwin_dashboard/includes/reporting.php ]]; then
   require_contains agritwin_dashboard/includes/reporting.php "agritwin_funding_acknowledgement" "report funding footer"

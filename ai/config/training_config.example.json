@@ -1,0 +1,20 @@
+{
+  "dataset_path": "datasets/agritwin_sample_dataset/synthetic_developer/synthetic_sensor_timeseries.csv",
+  "model_name": "water_stress_forecast",
+  "model_type": "tensorflow_dense_regressor",
+  "framework": "tensorflow_or_compatible",
+  "target_variable": "water_stress_index",
+  "feature_columns": [
+    "soil_moisture_vwc_pct",
+    "soil_temperature_c",
+    "air_temperature_c",
+    "relative_humidity_pct",
+    "leaf_wetness_pct"
+  ],
+  "train_validation_split": 0.8,
+  "epochs": 3,
+  "batch_size": 32,
+  "learning_rate": 0.03,
+  "output_path": "ai/models/generated",
+  "privacy_mode": "sample_dataset_only"
+}

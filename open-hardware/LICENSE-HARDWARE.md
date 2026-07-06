@@ -1,14 +1,21 @@
-# Proposed Open Hardware Licence Notice
+# AgriTwin Open Hardware Licence
 
-This folder contains AgriTwin open hardware reference documentation, example wiring tables, generic bills of materials and example Arduino-compatible firmware sketches.
+SPDX-License-Identifier: CERN-OHL-S-2.0
 
-The firmware examples and reusable software snippets are released under the Apache License 2.0. See the repository `LICENSE` file.
+The AgriTwin open-hardware documentation, wiring references, generic bills of materials and example hardware design guidance under `open-hardware/` are released under the CERN Open Hardware Licence Version 2 - Strongly Reciprocal (CERN-OHL-S-2.0).
 
-For hardware documentation and example hardware designs, a dedicated open hardware licence should be selected before external release. Suitable options include:
+The complete CERN-OHL-S-2.0 licence text is available from CERN:
 
-- CERN Open Hardware Licence - Strongly Reciprocal, Version 2 (CERN-OHL-S v2).
-- CERN Open Hardware Licence - Weakly Reciprocal, Version 2 (CERN-OHL-W v2).
+```text
+https://ohwr.org/cern_ohl_s_v2.txt
+```
 
-This file is a proposed open hardware licence notice for engineering use. Final legal approval is required before declaring a formal hardware licence for manufactured designs, PCB layouts, enclosure designs or externally distributed hardware artefacts.
+This licence applies to hardware reference documentation, wiring and interface guidance, generic bills of materials, example deployment-mode hardware designs, safety guidance, power guidance, enclosure guidance, calibration guidance and testing guidance.
+
+Firmware examples under `open-hardware/firmware/` are released under Apache License 2.0 and include Apache-2.0 SPDX notices.
+
+Software source code, scripts, APIs, OpenAgri adapters, deployment templates and DSS pipeline code remain under Apache License 2.0 unless a file states otherwise.
+
+Third-party sensor modules, boards, weather station components, libraries and manufacturer documentation remain subject to their respective upstream licence and commercial terms.
 
 This package does not include proprietary sensor designs, private site data, exact deployment coordinates, operational logs, credentials or third-party hardware materials beyond generic descriptive references.

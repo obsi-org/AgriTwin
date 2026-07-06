@@ -104,6 +104,18 @@ services:
       - agritwin_mysql_data:/var/lib/mysql
       - ./mysql.sql:/docker-entrypoint-initdb.d/001_seed.sql:ro
 
+  agritwin-ai:
+    image: python:3.11-slim
+    profiles: ["ai"]
+    restart: "no"
+    working_dir: /app
+    command: python ai/train.py --config ai/config/training_config.example.json --dry-run
+    environment:
+      AGRITWIN_AI_MODEL_DIR: /app/ai/models/generated
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - .:/app
+
   openagri-fixture:
     image: php:8.3-cli
     profiles: ["fixture"]

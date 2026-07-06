@@ -22,6 +22,7 @@ $checks = [
             'reports.php',
             'kpis.php',
             'analytics.php',
+            'ai_models.php',
             'api_swagger.php',
             'settings.php',
         ] as $page) {

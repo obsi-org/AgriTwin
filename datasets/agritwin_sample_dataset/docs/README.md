@@ -4,6 +4,10 @@ This folder provides privacy-safe datasets for AgriTwin development, validation 
 
 The package does not include raw pilot-farm data, private coordinates, exact parcel boundaries, operational credentials, security secrets, site-specific configuration or non-anonymised operational logs.
 
+## Licence
+
+Dataset records are released under CC BY 4.0. Dataset generation and validation scripts remain under Apache License 2.0. See `../LICENSE-DATASET.md` and `../DATASET_NOTICE.md`.
+
 ## Packages
 
 - `anonymised_aggregated/`: daily aggregated sample records with generalised parcel and infrastructure identifiers.

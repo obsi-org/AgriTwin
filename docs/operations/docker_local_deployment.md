@@ -23,6 +23,7 @@ Docker Compose defines:
 - `openagri-farmcalendar`: local OpenAgri-compatible FarmCalendar endpoint on port `18095`.
 - `openagri-reporting`: local OpenAgri-compatible Reporting endpoint on port `18096`.
 - `openagri-fixture`: optional connector-test service, only started with the `fixture` profile.
+- `agritwin-ai`: optional Python AI/model-training runtime, only started with the `ai` profile.
 
 Generated reports and runtime files are written under ignored `var/` paths in the repository. Database state is stored in the `agritwin3_agritwin_mysql_data` Docker volume.
 
@@ -85,6 +86,17 @@ scripts/check_local_stack.sh
 ```
 
 The check validates Docker services, database connectivity from the web container, rendered pages, Reports/PDF generation, and all required local OpenAgri services. Geodatabase / OCSM is reported as optional when not configured.
+
+## AI Model Training Profile
+
+The optional AI profile runs TensorFlow-compatible model-training commands against the safe sample dataset package. It is separate from the web container so the normal local stack remains lightweight.
+
+```bash
+docker compose --profile ai run --rm agritwin-ai python ai/train.py --config ai/config/training_config.example.json --dry-run
+docker compose --profile ai run --rm agritwin-ai python ai/train.py --config ai/config/training_config.example.json --epochs 1
+```
+
+Generated model artefacts are written under ignored `ai/models/generated/`. The default training config uses only `datasets/agritwin_sample_dataset/` and does not read private operational data.
 
 ## OpenAgri Connectivity
 

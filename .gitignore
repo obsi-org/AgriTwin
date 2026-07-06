@@ -69,6 +69,7 @@ var/kpi/*
 var/edge/cache/*
 var/edge/queue/*
 var/cloud_dss/*
+ai/models/generated/*
 var/backups/*
 var/runtime/*
 var/reports/*
@@ -79,6 +80,7 @@ exports/kpi/*
 !var/edge/cache/.gitkeep
 !var/edge/queue/.gitkeep
 !var/cloud_dss/.gitkeep
+!ai/models/generated/.gitkeep
 !var/backups/.gitkeep
 !var/runtime/.gitkeep
 !var/reports/.gitkeep

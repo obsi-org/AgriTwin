@@ -28,6 +28,11 @@ function agritwin_nav_items(): array
         'settings' => ['href' => 'settings.php', 'label' => agritwin_t('settings'), 'icon' => 'fas fa-gear'],
         'help' => ['href' => 'help.php', 'label' => agritwin_t('help'), 'icon' => 'fas fa-circle-question'],
     ];
+    if (agritwin_role_allows('ai')) {
+        $items = array_slice($items, 0, 10, true)
+            + ['ai_models' => ['href' => 'ai_models.php', 'label' => agritwin_t('ai_models'), 'icon' => 'fas fa-brain']]
+            + array_slice($items, 10, null, true);
+    }
     if (agritwin_role_allows('users')) {
         $items['users'] = ['href' => 'users.php', 'label' => agritwin_t('users'), 'icon' => 'fas fa-users-gear'];
     }

@@ -106,8 +106,10 @@ check_page "${BASE_URL}/agritwin_dashboard/openagri_services.php" "openagri"
 check_page "${BASE_URL}/agritwin_dashboard/settings.php" "settings"
 check_page "${BASE_URL}/agritwin_dashboard/api_swagger.php" "swagger"
 check_page "${BASE_URL}/api/health" "api_health"
+check_page "${BASE_URL}/api/ai/status" "api_ai_status"
 
 if [[ "${auth_available}" == "1" ]]; then
+  check_page "${BASE_URL}/agritwin_dashboard/ai_models.php" "ai_models"
   grep -q 'cesiumContainer' "${TMP_DIR}/field1.html" || { echo "[check] field1 Cesium container not found" >&2; exit 1; }
   grep -q 'report-branding-panel' "${TMP_DIR}/reports.html" || { echo "[check] reports page did not render report centre" >&2; exit 1; }
 fi

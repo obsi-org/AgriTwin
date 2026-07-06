@@ -2,6 +2,8 @@
 
 The reusable AgriTwin software components created by Obsidian Innovation Institute - Associação are released under the Apache License 2.0 unless a file explicitly states otherwise.
 
+AgriTwin sample dataset records are released under CC BY 4.0. AgriTwin open-hardware documentation and example hardware design guidance are released under CERN-OHL-S-2.0. Firmware examples remain Apache-2.0.
+
 Third-party runtimes, libraries, services and assets remain governed by their own licence terms. This file records the known integration points for audit purposes and does not replace upstream licence notices.
 
 ## Runtime and Development Dependencies
@@ -14,6 +16,8 @@ Third-party runtimes, libraries, services and assets remain governed by their ow
 | CesiumJS | Environmental Digital Twin map view when configured | Apache-2.0 for CesiumJS; Cesium ion tokens are not included. |
 | Font Awesome classes | Icon class names in PHP pages | Font Awesome licence applies if bundled or loaded by deployment. |
 | OpenAgri services | External service integrations | Each OpenAgri repository keeps its own licence; this repository implements adapters and does not vendor upstream service code. |
+| TensorFlow / tensorflow-cpu | Optional AI model-training framework | Apache-2.0; installed only when the optional AI workflow is used. |
+| Python runtime image | Optional AI training container runtime | Python Software Foundation License and container image terms apply. |
 
 ## Local Assets
 

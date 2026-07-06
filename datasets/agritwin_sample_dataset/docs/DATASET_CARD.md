@@ -18,4 +18,4 @@ The anonymised package uses daily buckets, generalised identifiers, aggregated v
 
 ## Licence
 
-Reusable schema, documentation and generation scripts are released under Apache License 2.0. See the repository `LICENSE` and `NOTICE` files.
+Dataset records are released under CC BY 4.0. Dataset generation and validation scripts remain under Apache License 2.0. See `../LICENSE-DATASET.md`, `../DATASET_NOTICE.md`, and the repository `LICENSE` and `NOTICE` files.

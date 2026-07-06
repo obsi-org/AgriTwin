@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "AgriTwin Platform API",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "description": "Implemented JSON endpoints for the AgriTwin local operational platform. Examples use sample station data or explicitly labelled live/fallback weather sources and never expose secrets."
   },
   "servers": [
@@ -242,6 +242,42 @@
         }
       }
     },
+    "/api/ai/status": {
+      "get": {
+        "summary": "AI model-training status",
+        "description": "Returns TensorFlow or compatible framework status, safe dataset source and local model metadata without exposing credentials.",
+        "responses": { "200": { "description": "AI training status", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AiStatusResponse" } } } } }
+      }
+    },
+    "/api/ai/models": {
+      "get": {
+        "summary": "AI model metadata",
+        "description": "Lists available AgriTwin DSS support models and validation metrics from local ignored model metadata.",
+        "responses": { "200": { "description": "AI model list", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AiModelsResponse" } } } } }
+      }
+    },
+    "/api/ai/training-runs": {
+      "get": {
+        "summary": "AI training runs",
+        "description": "Lists recent local AI training-run metadata without returning model artefacts.",
+        "responses": { "200": { "description": "AI training runs", "content": { "application/json": { "schema": { "type": "object", "properties": { "training_runs": { "type": "array", "items": { "$ref": "#/components/schemas/AiTrainingRun" } } } } } } } }
+      }
+    },
+    "/api/ai/train": {
+      "post": {
+        "summary": "Run fixed AI training workflow",
+        "description": "Runs the fixed safe training configuration. Requires Administrator or Technical Manager permission and CSRF validation. The endpoint does not accept arbitrary filesystem paths.",
+        "responses": { "200": { "description": "Training completed", "content": { "application/json": { "schema": { "type": "object" } } } }, "403": { "description": "AI training permission required" }, "422": { "description": "Training failed" } }
+      }
+    },
+    "/api/ai/infer": {
+      "post": {
+        "summary": "Run AI inference",
+        "description": "Runs inference against safe numeric payload fields using the latest local model metadata or rule-based advisory if no model is trained. Requires Administrator or Technical Manager permission and CSRF validation.",
+        "requestBody": { "required": false, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AiInferenceInput" } } } },
+        "responses": { "200": { "description": "Inference completed", "content": { "application/json": { "schema": { "type": "object" } } } }, "403": { "description": "AI training permission required" }, "422": { "description": "Inference failed" } }
+      }
+    },
     "/api/users": {
       "get": {
         "summary": "List users for administrators",
@@ -388,6 +424,68 @@
           "transport": { "type": "string", "enum": ["bearer", "header", "query"], "example": "bearer" },
           "header_name": { "type": "string", "example": "X-API-Key" },
           "query_parameter_name": { "type": "string", "example": "api_key" }
+        }
+      },
+      "AiStatusResponse": {
+        "type": "object",
+        "properties": {
+          "ai": {
+            "type": "object",
+            "properties": {
+              "framework": { "type": "string", "example": "tensorflow_or_compatible" },
+              "tensorflow_available": { "type": "boolean", "example": true },
+              "compatible_framework_available": { "type": "boolean", "example": true },
+              "dataset_source": { "type": "string", "example": "datasets/agritwin_sample_dataset/synthetic_developer/synthetic_sensor_timeseries.csv" },
+              "model_output_path": { "type": "string", "example": "ai/models/generated" },
+              "training_mode": { "type": "string", "example": "cli_or_administrator_triggered" },
+              "model_trained": { "type": "boolean", "example": false },
+              "target_variable": { "type": "string", "example": "water_stress_index" }
+            }
+          }
+        }
+      },
+      "AiModelsResponse": {
+        "type": "object",
+        "properties": {
+          "models": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AiModelMetadata" }
+          }
+        }
+      },
+      "AiModelMetadata": {
+        "type": "object",
+        "properties": {
+          "model_name": { "type": "string", "example": "water_stress_forecast" },
+          "target_variable": { "type": "string", "example": "water_stress_index" },
+          "dataset_source": { "type": "string", "example": "datasets/agritwin_sample_dataset/synthetic_developer/synthetic_sensor_timeseries.csv" },
+          "trained": { "type": "boolean", "example": true },
+          "framework": { "type": "string", "example": "tensorflow" },
+          "trained_at": { "type": "string", "nullable": true, "format": "date-time" },
+          "validation_mae": { "type": "number", "nullable": true, "example": 0.071 }
+        }
+      },
+      "AiTrainingRun": {
+        "type": "object",
+        "properties": {
+          "model_name": { "type": "string", "example": "water_stress_forecast" },
+          "framework": { "type": "string", "example": "tensorflow_compatible_fallback" },
+          "target_variable": { "type": "string", "example": "water_stress_index" },
+          "trained_at": { "type": "string", "format": "date-time" },
+          "validation_mae": { "type": "number", "example": 0.071 },
+          "dataset_source": { "type": "string", "example": "datasets/agritwin_sample_dataset/synthetic_developer/synthetic_sensor_timeseries.csv" }
+        }
+      },
+      "AiInferenceInput": {
+        "type": "object",
+        "properties": {
+          "soil_moisture_vwc_pct": { "type": "number", "example": 22.5 },
+          "soil_temperature_c": { "type": "number", "example": 19.4 },
+          "air_temperature_c": { "type": "number", "example": 27.1 },
+          "relative_humidity_pct": { "type": "number", "example": 48 },
+          "leaf_wetness_pct": { "type": "number", "example": 12 },
+          "rainfall_mm": { "type": "number", "example": 0 },
+          "solar_radiation_w_m2": { "type": "number", "example": 720 }
         }
       },
       "AnalyticsSummary": {

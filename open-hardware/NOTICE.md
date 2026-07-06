@@ -8,6 +8,8 @@ OpenAgri has received funding from the European Union’s Horizon Europe researc
 
 The reusable AgriTwin software components are released under the Apache License 2.0. Please see the LICENSE file for the applicable licence terms.
 
+The AgriTwin open-hardware documentation and example hardware design guidance are released under CERN-OHL-S-2.0. Firmware examples are released under Apache License 2.0.
+
 The AgriTwin software components include Decision-Support System pipelines, Environmental Digital Twin components, OpenAgri service integration adapters, deployment templates and related documentation. Raw pilot-farm data, credentials, security secrets, site-specific configuration and non-anonymised operational logs are excluded from the public release.
 
 This output reflects only the author’s view. The European Commission cannot be held responsible for any use that may be made of the information contained therein.

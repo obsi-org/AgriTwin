@@ -15,6 +15,7 @@ var/kpi/*
 var/edge/cache/*
 var/edge/queue/*
 var/cloud_dss/*
+ai/models/generated/*
 var/backups/*
 var/reports/*
 var/runtime/*

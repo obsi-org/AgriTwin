@@ -27,11 +27,16 @@ Raw pilot-farm data, credentials, exact site coordinates, private parcel identif
 - `safety-privacy/`: identifier, privacy, electrical and field safety notes.
 - `distribution/`: release checklist for sharing the hardware reference package.
 
-## Licence Notes
+## Licensing Overview
 
-The firmware examples and reusable software snippets are provided under the Apache License 2.0, consistent with the repository `LICENSE`.
+| Material | Licence |
+| --- | --- |
+| Hardware documentation and example hardware design guidance | CERN-OHL-S-2.0 |
+| Firmware examples | Apache-2.0 |
+| Software snippets and scripts | Apache-2.0 |
+| Third-party hardware components and libraries | Respective upstream terms |
 
-`LICENSE-HARDWARE.md` provides a proposed open hardware licence notice for the documentation and example designs. It recommends CERN-OHL-S v2 or CERN-OHL-W v2 as suitable open hardware options for final legal approval. It does not include proprietary sensor designs.
+See `LICENSE-HARDWARE.md` for the hardware licence notice. The package does not include proprietary sensor designs.
 
 ## What Is Excluded
 

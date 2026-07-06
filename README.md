@@ -133,6 +133,30 @@ The package is distribution-safe and uses generic identifiers only. It excludes 
 
 See `open-hardware/README.md` for the full package structure.
 
+## AI model training
+
+AgriTwin includes a safe AI/model-training module under `ai/`. The default workflow uses TensorFlow when available and a compatible local training path when TensorFlow is not installed. It reads only the committed AgriTwin sample dataset package by default and writes generated model artefacts to ignored runtime paths under `ai/models/generated/`.
+
+```bash
+python3 ai/train.py --config ai/config/training_config.example.json --dry-run
+python3 ai/train.py --config ai/config/training_config.example.json --epochs 1
+python3 ai/infer.py --model latest --input ai/examples/inference_input.json
+docker compose --profile ai run --rm agritwin-ai python ai/train.py --config ai/config/training_config.example.json --dry-run
+```
+
+The web platform exposes AI status and model metadata through `/agritwin/api/ai/status`, `/agritwin/api/ai/models` and a role-restricted Model Training interface for Administrator and Technical Manager users.
+
+## Licensing overview
+
+| Component | Licence |
+| --- | --- |
+| Reusable software components, deployment templates, OpenAgri adapters, APIs, DSS pipeline code and documentation | Apache License 2.0 |
+| Firmware examples for Arduino/ESP32 sensor nodes and weather stations | Apache License 2.0 |
+| AgriTwin sample dataset records | Creative Commons Attribution 4.0 International (CC BY 4.0) |
+| Dataset schemas, generation scripts and validation scripts | Apache License 2.0 for code/scripts; CC BY 4.0 for example records |
+| Open-hardware documentation and example design files | CERN Open Hardware Licence Version 2 - Strongly Reciprocal (CERN-OHL-S-2.0) |
+| Third-party dependencies and assets | Respective upstream licences |
+
 ## Licence, funding and disclaimer
 
 AgriTwin - Agricultural Digital Twin for Intelligent Decision-Making
@@ -167,6 +191,10 @@ The default local run uses the lightweight OpenAgri-compatible containers define
 - `docs/architecture/openagri_integration_architecture.md`: Gatekeeper, OpenAgri services, FarmCalendar, reporting, and fallback behavior.
 - `docs/architecture/data_model.md`: canonical AgriTwin data records and JSON examples.
 - `docs/analytics/statistics_engine.md`: analytics calculations, graphical page and API endpoints.
+- `docs/ai/model_training.md`: TensorFlow-compatible model training workflow and safe commands.
+- `docs/ai/dss_model_architecture.md`: DSS model pipeline and integration points.
+- `docs/ai/training_data_requirements.md`: model-training feature, privacy and distribution requirements.
+- `docs/ai/api_and_interface.md`: AI API endpoints and role-restricted Model Training HMI.
 - `docs/integration/openagri_connectors.md`: OpenAgri connector configuration, APIs, cache/offline behavior, and tests.
 - `docs/integration/openagri_services_configuration.md`: OpenAgri live/auto service-health configuration and weather verification.
 - `docs/integration/openagri_endpoint_configuration.md`: OpenAgri endpoint, documentation URL and credential configuration.

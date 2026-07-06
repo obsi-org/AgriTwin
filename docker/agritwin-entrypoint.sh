@@ -17,9 +17,11 @@ mkdir -p \
   "${APP_DIR}/var/edge/queue" \
   "${APP_DIR}/var/cloud_dss" \
   "${APP_DIR}/var/reports" \
-  "${APP_DIR}/var/runtime"
+  "${APP_DIR}/var/runtime" \
+  "${APP_DIR}/ai/models/generated"
 
 chown -R www-data:www-data "${APP_DIR}/var" 2>/dev/null || true
 chmod -R ug+rwX "${APP_DIR}/var" 2>/dev/null || true
+chmod -R a+rwX "${APP_DIR}/ai/models/generated" 2>/dev/null || true
 
 exec docker-php-entrypoint "$@"

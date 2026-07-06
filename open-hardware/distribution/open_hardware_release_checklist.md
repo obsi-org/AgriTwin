@@ -9,6 +9,8 @@ Before sharing the Open Hardware package:
 - [ ] MQTT and HTTP examples use generic identifiers.
 - [ ] Safety and privacy notes are included.
 - [ ] `LICENSE-HARDWARE.md` is reviewed for final legal position.
+- [ ] Hardware documentation and design guidance are labelled CERN-OHL-S-2.0.
+- [ ] Firmware examples contain Apache-2.0 SPDX notices.
 - [ ] Repository `LICENSE` and `NOTICE` are present.
 - [ ] Distribution safety scanner passes.
 - [ ] Generated reports, database dumps and local runtime files are not tracked.

@@ -968,8 +968,8 @@ function agritwin_role_allows(string $permission): bool
 {
     $role = strtolower((string) (agritwin_current_user()['role'] ?? 'viewer'));
     $matrix = [
-        'administrator' => ['users', 'settings', 'api', 'reports', 'operations', 'dashboard'],
-        'technical_manager' => ['settings', 'api', 'reports', 'operations', 'dashboard'],
+        'administrator' => ['users', 'settings', 'api', 'reports', 'ai', 'operations', 'dashboard'],
+        'technical_manager' => ['settings', 'api', 'reports', 'ai', 'operations', 'dashboard'],
         'farm_manager' => ['reports', 'operations', 'dashboard'],
         'advisor_researcher' => ['api', 'reports', 'dashboard'],
         'viewer' => ['dashboard'],
