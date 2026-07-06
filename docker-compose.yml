@@ -1,83 +1,112 @@
+name: agritwin3
+
 services:
-  app:
-    build: .
-    profiles: ["mock"]
+  agritwin-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: unless-stopped
     depends_on:
-      db:
+      agritwin-db:
         condition: service_healthy
-      openagri-mock:
-        condition: service_started
     ports:
-      - "${AGRITWIN_APP_PORT:-8080}:80"
+      - "${AGRITWIN_APP_PORT:-8083}:80"
+    env_file:
+      - path: .env
+        required: false
+      - path: config/openagri.local.env
+        required: false
     environment:
-      AGRITWIN_DB_HOST: db
+      AGRITWIN_DB_HOST: agritwin-db
       AGRITWIN_DB_PORT: 3306
-      AGRITWIN_DB_NAME: agritwin_db
-      AGRITWIN_DB_USER: ceres_db_user
-      AGRITWIN_DB_PASSWORD: agritwin_local_dev_password
-      DB_HOST: db
+      AGRITWIN_DB_NAME: ${AGRITWIN_DB_NAME:-agritwin_db}
+      AGRITWIN_DB_USER: ${AGRITWIN_DB_USER:-agritwin_app}
+      AGRITWIN_DB_PASSWORD: ${AGRITWIN_DB_PASSWORD:-agritwin-local-password-change-me}
+      AGRITWIN_SKIP_LOCAL_ENV: "1"
+      DB_HOST: agritwin-db
       DB_PORT: 3306
-      DB_DATABASE: agritwin_db
-      DB_USERNAME: ceres_db_user
-      DB_PASSWORD: agritwin_local_dev_password
-      OPENAGRI_MODE: fallback
-      OPENAGRI_WEATHER_URL: http://openagri-mock:18080
-      OPENAGRI_IRRIGATION_URL: http://openagri-mock:18080
-      OPENAGRI_PEST_DISEASE_URL: http://openagri-mock:18080
-      OPENAGRI_FARMCALENDAR_URL: http://openagri-mock:18080
-      OPENAGRI_REPORTING_URL: http://openagri-mock:18080
-      OPENAGRI_GEODATABASE_URL: http://openagri-mock:18080
-      AGRITWIN_WEATHER_SOURCE_PREFERENCE: auto
-      AGRITWIN_OPENAGRI_MODE: fallback
-      AGRITWIN_OPENAGRI_WEATHER_URL: http://openagri-mock:18080
-      AGRITWIN_OPENAGRI_IRRIGATION_URL: http://openagri-mock:18080
-      AGRITWIN_OPENAGRI_PEST_DISEASE_URL: http://openagri-mock:18080
-      AGRITWIN_OPENAGRI_FARMCALENDAR_URL: http://openagri-mock:18080
-      AGRITWIN_OPENAGRI_REPORTING_URL: http://openagri-mock:18080
-      AGRITWIN_CESIUM_TOKEN: replace-with-local-cesium-token
-      AGRITWIN_AEMET_API_KEY: replace-with-local-aemet-key
-
-  db:
-    image: mysql:8.0
-    profiles: ["mock"]
-    restart: unless-stopped
-    ports:
-      - "${AGRITWIN_DB_PUBLISHED_PORT:-3308}:3306"
-    environment:
-      MYSQL_DATABASE: agritwin_db
-      MYSQL_USER: ceres_db_user
-      MYSQL_PASSWORD: agritwin_local_dev_password
-      MYSQL_ROOT_PASSWORD: agritwin_demo_root_password
+      DB_DATABASE: ${DB_DATABASE:-agritwin_db}
+      DB_USERNAME: ${DB_USERNAME:-agritwin_app}
+      DB_PASSWORD: ${DB_PASSWORD:-agritwin-local-password-change-me}
+      OPENAGRI_MODE: ${OPENAGRI_MODE:-auto}
+      OPENAGRI_GATEKEEPER_URL: ${OPENAGRI_GATEKEEPER_URL:-http://host.docker.internal:18091}
+      OPENAGRI_GATEKEEPER_HEALTH_URL: ${OPENAGRI_GATEKEEPER_HEALTH_URL:-/}
+      OPENAGRI_GATEKEEPER_DOCS_URL: ${OPENAGRI_GATEKEEPER_DOCS_URL:-http://host.docker.internal:18091/}
+      OPENAGRI_WEATHER_URL: ${OPENAGRI_WEATHER_URL:-http://host.docker.internal:18092}
+      OPENAGRI_WEATHER_HEALTH_URL: ${OPENAGRI_WEATHER_HEALTH_URL:-/docs}
+      OPENAGRI_WEATHER_DOCS_URL: ${OPENAGRI_WEATHER_DOCS_URL:-http://host.docker.internal:18092/docs}
+      OPENAGRI_WEATHER_DATA_URL: ${OPENAGRI_WEATHER_DATA_URL:-/api/data/weather/?lat=40.9492&lon=-5.6958}
+      OPENAGRI_IRRIGATION_URL: ${OPENAGRI_IRRIGATION_URL:-http://host.docker.internal:18093}
+      OPENAGRI_IRRIGATION_HEALTH_URL: ${OPENAGRI_IRRIGATION_HEALTH_URL:-/docs}
+      OPENAGRI_IRRIGATION_DOCS_URL: ${OPENAGRI_IRRIGATION_DOCS_URL:-http://host.docker.internal:18093/docs}
+      OPENAGRI_PEST_DISEASE_URL: ${OPENAGRI_PEST_DISEASE_URL:-http://host.docker.internal:18094}
+      OPENAGRI_PEST_DISEASE_HEALTH_URL: ${OPENAGRI_PEST_DISEASE_HEALTH_URL:-/docs}
+      OPENAGRI_PEST_DISEASE_DOCS_URL: ${OPENAGRI_PEST_DISEASE_DOCS_URL:-http://host.docker.internal:18094/docs}
+      OPENAGRI_FARMCALENDAR_URL: ${OPENAGRI_FARMCALENDAR_URL:-http://host.docker.internal:18095}
+      OPENAGRI_FARMCALENDAR_HEALTH_URL: ${OPENAGRI_FARMCALENDAR_HEALTH_URL:-/api/v1/}
+      OPENAGRI_FARMCALENDAR_DOCS_URL: ${OPENAGRI_FARMCALENDAR_DOCS_URL:-http://host.docker.internal:18095/api/v1/}
+      OPENAGRI_REPORTING_URL: ${OPENAGRI_REPORTING_URL:-http://host.docker.internal:18096}
+      OPENAGRI_REPORTING_HEALTH_URL: ${OPENAGRI_REPORTING_HEALTH_URL:-/docs}
+      OPENAGRI_REPORTING_DOCS_URL: ${OPENAGRI_REPORTING_DOCS_URL:-http://host.docker.internal:18096/docs}
+      OPENAGRI_GEODATABASE_URL: ${OPENAGRI_GEODATABASE_URL:-http://host.docker.internal:18097}
+      OPENAGRI_GEODATABASE_HEALTH_URL: ${OPENAGRI_GEODATABASE_HEALTH_URL:-/health}
+      OPENAGRI_GEODATABASE_DOCS_URL: ${OPENAGRI_GEODATABASE_DOCS_URL:-http://host.docker.internal:18097/docs}
+      AGRITWIN_OPENAGRI_MODE: ${AGRITWIN_OPENAGRI_MODE:-auto}
+      AGRITWIN_OPENAGRI_GATEKEEPER_URL: ${AGRITWIN_OPENAGRI_GATEKEEPER_URL:-http://host.docker.internal:18091}
+      AGRITWIN_OPENAGRI_WEATHER_URL: ${AGRITWIN_OPENAGRI_WEATHER_URL:-http://host.docker.internal:18092}
+      AGRITWIN_OPENAGRI_IRRIGATION_URL: ${AGRITWIN_OPENAGRI_IRRIGATION_URL:-http://host.docker.internal:18093}
+      AGRITWIN_OPENAGRI_PEST_DISEASE_URL: ${AGRITWIN_OPENAGRI_PEST_DISEASE_URL:-http://host.docker.internal:18094}
+      AGRITWIN_OPENAGRI_FARMCALENDAR_URL: ${AGRITWIN_OPENAGRI_FARMCALENDAR_URL:-http://host.docker.internal:18095}
+      AGRITWIN_OPENAGRI_REPORTING_URL: ${AGRITWIN_OPENAGRI_REPORTING_URL:-http://host.docker.internal:18096}
+      AGRITWIN_WEATHER_SOURCE_PREFERENCE: ${AGRITWIN_WEATHER_SOURCE_PREFERENCE:-auto}
+      AGRITWIN_CESIUM_TOKEN: ${AGRITWIN_CESIUM_TOKEN:-}
+      AGRITWIN_COPERNICUS_ID: ${AGRITWIN_COPERNICUS_ID:-}
+      AGRITWIN_AEMET_API_KEY: ${AGRITWIN_AEMET_API_KEY:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - .:/var/www/html/agritwin3
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p\"$${MYSQL_ROOT_PASSWORD}\" --silent"]
-      interval: 5s
+      test: ["CMD-SHELL", "curl -fsS http://localhost/agritwin3/index.php >/dev/null || exit 1"]
+      interval: 15s
       timeout: 5s
       retries: 20
+      start_period: 20s
+
+  agritwin-db:
+    image: mysql:8.0
+    restart: unless-stopped
+    ports:
+      - "${AGRITWIN_DB_PUBLISHED_PORT:-33063}:3306"
+    environment:
+      MYSQL_DATABASE: ${AGRITWIN_DB_NAME:-agritwin_db}
+      MYSQL_USER: ${AGRITWIN_DB_USER:-agritwin_app}
+      MYSQL_PASSWORD: ${AGRITWIN_DB_PASSWORD:-agritwin-local-password-change-me}
+      MYSQL_ROOT_PASSWORD: ${AGRITWIN_DB_ROOT_PASSWORD:-agritwin-local-root-password-change-me}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -u$${MYSQL_USER} -p$${MYSQL_PASSWORD} -e 'SELECT 1' $${MYSQL_DATABASE} >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
     volumes:
       - agritwin_mysql_data:/var/lib/mysql
-      - ./docker/mysql/init/00-agritwin-user.sql:/docker-entrypoint-initdb.d/00-agritwin-user.sql:ro
       - ./mysql.sql:/docker-entrypoint-initdb.d/001_seed.sql:ro
 
-  openagri-mock:
+  openagri-fixture:
     image: php:8.3-cli
-    profiles: ["mock"]
+    profiles: ["fixture"]
     restart: unless-stopped
     working_dir: /app
     command: php -S 0.0.0.0:18080 tests/fixtures/openagri/mock_router.php
     ports:
-      - "${AGRITWIN_OPENAGRI_MOCK_PORT:-18080}:18080"
+      - "${AGRITWIN_OPENAGRI_FIXTURE_PORT:-18080}:18080"
     volumes:
       - .:/app:ro
-
-  openagri-real-env:
-    image: alpine:3.20
-    profiles: ["real"]
-    restart: unless-stopped
-    command: ["sh", "-c", "env | sort | grep '^AGRITWIN_OPENAGRI_' && sleep infinity"]
-    env_file:
-      - path: .env
-        required: false
 
 volumes:
   agritwin_mysql_data:

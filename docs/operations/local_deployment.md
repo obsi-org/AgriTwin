@@ -1,20 +1,20 @@
 # Local Deployment
 
-This document describes the current local prototype and the target developer setup implied by the architecture docs.
+This document describes the current local developer setup.
 
-## Current Prototype Stack
+## Current Local Stack
 
-- PHP pages under the repository root and `agritwin_dashboard/`.
-- MySQL/MariaDB schema in `mysql.sql`.
+- PHP/Apache web runtime in Docker service `agritwin-web`.
+- MySQL schema and data in Docker service `agritwin-db`.
 - Static image, CSV, Cesium, and 3D model assets in the repository.
-- Minimal Dockerfile that is not yet sufficient for the full app.
+- Persistent Docker volume for database state.
+- Ignored local `var/` paths for generated reports and runtime files.
 
 ## Prerequisites
 
-- PHP CLI with PDO MySQL support.
-- MySQL or MariaDB.
+- Docker Engine with Docker Compose.
+- PHP CLI for lint/test commands.
 - `make`.
-- Optional: Docker for future container verification.
 
 ## Source Documents
 
@@ -27,27 +27,11 @@ docs/source/AgriTwin_D1_20260124.pdf
 
 ## Database Setup
 
-Create a local database and user matching `agritwin_dashboard/db_config.php`, or set local environment values in `.env`. Do not edit tracked PHP files for credentials.
+Run `scripts/start_local_stack.sh`. It creates ignored local runtime settings in `.env` and `config/database.local.env`, starts `agritwin-db`, and imports `mysql.sql` on first volume initialisation.
 
-Current default values in the prototype:
+The Docker database publishes host port `33063` by default to avoid collisions with host MySQL on `3306`. Do not delete the Docker volume during routine recovery.
 
-```text
-host: localhost
-port: 3306
-database: agritwin_db
-user: ceres_db_user
-password: agritwin_local_dev_password
-```
-
-For the Docker-backed local stack, the database container listens on host port `3308` by default so it does not collide with an existing host MySQL/MariaDB on `3306`. `scripts/start_local_stack.sh` writes ignored local runtime settings to `.env` and `config/database.local.env`.
-
-Import:
-
-```bash
-mysql -u ceres_db_user -p agritwin_db < mysql.sql
-```
-
-If the local user is missing or has a different password, apply `docker/mysql/init/00-agritwin-user.sql` as a privileged local MySQL administrator. See `docs/operations/database_local_fix.md`.
+For migration from an existing database, see `docs/operations/database_migration_to_docker.md`.
 
 ## Run Checks
 
@@ -58,7 +42,7 @@ make lint
 make test
 ```
 
-`make test` currently runs PHP syntax checks and reports that no automated test suite exists.
+`make test` runs PHP syntax checks and the available connector, HMI, KPI, edge and analytics tests.
 
 ## Run the App
 
@@ -69,10 +53,10 @@ make run
 Open:
 
 ```text
-http://127.0.0.1:8080
+http://localhost:8083/agritwin3/
 ```
 
-The app expects a working database. Login credentials depend on imported seed data.
+The Docker URL is the supported local URL. The app expects a working Docker database. Login credentials depend on imported seed data or ignored `LOCAL_CREDENTIALS.md`.
 
 ## After Reboot
 
@@ -97,18 +81,18 @@ scripts/openagri/check_openagri_services.sh
 Expected URL checks:
 
 ```bash
-curl -s -L http://localhost/agritwin3/index.php
-curl -s -L http://localhost/agritwin3/agritwin_dashboard/index.php
-curl -s -L http://localhost/agritwin3/agritwin_dashboard/settings.php
-curl -s -L http://localhost/agritwin3/agritwin_dashboard/openagri_services.php
+curl -s -L http://localhost:8083/agritwin3/index.php
+curl -s -L http://localhost:8083/agritwin3/agritwin_dashboard/index.php
+curl -s -L http://localhost:8083/agritwin3/agritwin_dashboard/settings.php
+curl -s -L http://localhost:8083/agritwin3/agritwin_dashboard/openagri_services.php
 ```
 
-Successful recovery means `agritwin3-db-1` is healthy, the host PHP DB check reports `host-db-ok`, the pages render without `Database status: Unavailable`, and configured local OpenAgri services respond. The scripts do not delete Docker volumes.
+Successful recovery means `agritwin3-agritwin-db-1` is healthy, `agritwin3-agritwin-web-1` is running, the container PHP DB check reports `container-db-ok`, pages render without database-unavailable status, and configured local OpenAgri services respond. The scripts do not delete Docker volumes.
 
 ## Known Local Limitations
 
-- Live OpenAgri credentials and pilot endpoints are not committed; mock mode is the default local path.
-- PDF generation still depends on a live or mocked Reporting Service.
+- Live OpenAgri credentials and operational endpoints are not committed; local fallback remains available where a service is not configured.
+- PDF generation is local to AgriTwin and writes generated files under ignored `var/reports/`.
 - `field.php` references missing `field2.php` and `field3.php`.
 - Production secret management, backups, and hardening remain deployment tasks.
 

@@ -10,7 +10,13 @@ Project source PDFs are stored under `docs/source/` for local audit and engineer
 
 ## Local Run
 
-Prerequisites: PHP CLI with PDO MySQL support, MySQL/MariaDB, and `make`.
+The active local repository is:
+
+```text
+/media/pedrobranco/AikoHD/Documents/Dev/agritwin
+```
+
+Prerequisites: Docker Engine with Docker Compose, PHP CLI for local lint/tests, and `make`.
 
 ```bash
 scripts/start_local_stack.sh
@@ -23,26 +29,26 @@ make run
 Then open:
 
 ```text
-http://127.0.0.1:8080
+http://localhost:8083/agritwin3/
 ```
 
-Dashboard URLs under the Apache deployment path are:
+Dashboard URLs under the Docker web runtime are:
 
 ```text
-http://localhost/agritwin3/
-http://localhost/agritwin3/agritwin_dashboard/index.php
-http://localhost/agritwin3/agritwin_dashboard/api_swagger.php
-http://localhost/agritwin3/agritwin_dashboard/analytics.php
-http://localhost/agritwin3/api/openapi.json
+http://localhost:8083/agritwin3/
+http://localhost:8083/agritwin3/agritwin_dashboard/index.php
+http://localhost:8083/agritwin3/agritwin_dashboard/api_swagger.php
+http://localhost:8083/agritwin3/agritwin_dashboard/analytics.php
+http://localhost:8083/agritwin3/api/openapi.json
 ```
 
-The current platform expects a local database imported from `mysql.sql` and configured through environment variables loaded by `agritwin_dashboard/db_config.php`. See `docs/operations/local_deployment.md` and `docs/operations/database_local_fix.md` for details.
+The current platform runs from this repository through Docker Compose. Apache and PHP run in the `agritwin-web` container, MySQL runs in `agritwin-db`, and the application is served under `/agritwin3/` without requiring a host checkout under `/var/www/html`. See `docs/operations/docker_local_deployment.md` and `docs/operations/database_migration_to_docker.md` for details.
 
 Local temporary credentials are stored in the ignored `LOCAL_CREDENTIALS.md` file generated during local setup.
 
 ## Post-Reboot Startup
 
-After a machine reboot, restore the local Docker-backed database and OpenAgri runtime with:
+After a machine reboot, restore the Docker-backed web and database runtime with:
 
 ```bash
 scripts/start_local_stack.sh
@@ -54,7 +60,13 @@ Verify the recovery with:
 scripts/check_local_stack.sh
 ```
 
-The script publishes the AgriTwin MySQL container on `127.0.0.1:3308` by default to avoid collisions with a host MySQL service on `3306`, and writes only ignored local runtime config under `.env` and `config/database.local.env`.
+The script publishes the AgriTwin web container on `http://localhost:8083/agritwin3/` and the MySQL container on host port `33063` by default. It writes only ignored local runtime config under `.env` and `config/database.local.env`.
+
+If the local OpenAgri upstream runtime should also be started by the same command, run:
+
+```bash
+AGRITWIN_START_OPENAGRI=1 scripts/start_local_stack.sh
+```
 
 Optional deeper checks:
 
@@ -63,10 +75,10 @@ scripts/openagri/check_openagri_services.sh
 scripts/openagri/check_openagri_services.sh --core-only
 make test
 find . -path './external' -prune -o -path './vendor' -prune -o -name '*.php' -print | xargs -n1 php -l
-curl -s -L http://localhost/agritwin3/index.php
-curl -s -L http://localhost/agritwin3/agritwin_dashboard/index.php
-curl -s -L http://localhost/agritwin3/agritwin_dashboard/settings.php
-curl -s -L http://localhost/agritwin3/agritwin_dashboard/openagri_services.php
+curl -s -L http://localhost:8083/agritwin3/index.php
+curl -s -L http://localhost:8083/agritwin3/agritwin_dashboard/index.php
+curl -s -L http://localhost:8083/agritwin3/agritwin_dashboard/settings.php
+curl -s -L http://localhost:8083/agritwin3/agritwin_dashboard/openagri_services.php
 ```
 
 Live OpenAgri Weather observations require real external credentials and provider configuration outside git.
@@ -86,18 +98,18 @@ Use the core-only check when validating the core service set:
 
 ```bash
 scripts/openagri/check_openagri_services.sh --core-only
-curl -fsS http://localhost/agritwin3/api/openagri/core-services
+curl -fsS http://localhost:8083/agritwin3/api/openagri/core-services
 ```
 
 ## Reproducible Local Run
 
-Docker Compose local mode starts the PHP app, MariaDB seeded with publication-safe operational data, and local OpenAgri-compatible service endpoints:
+Docker Compose local mode starts the PHP/Apache app and MySQL database from this repository:
 
 ```bash
 make run
 ```
 
-Then open `http://127.0.0.1:8080`. Run all tests and publication safety checks with:
+Then open `http://localhost:8083/agritwin3/`. Run all tests and publication safety checks with:
 
 ```bash
 make publication-check

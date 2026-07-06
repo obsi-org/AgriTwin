@@ -1,13 +1,15 @@
 <?php
 // db_config.php
 agritwin_load_env(dirname(__DIR__) . '/.env');
-agritwin_load_env(dirname(__DIR__) . '/config/database.local.env', true);
+if (getenv('AGRITWIN_SKIP_LOCAL_ENV') !== '1') {
+    agritwin_load_env(dirname(__DIR__) . '/config/database.local.env', true);
+}
 
 $host = agritwin_env(['AGRITWIN_DB_HOST', 'DB_HOST'], "localhost");
 $port = agritwin_env(['AGRITWIN_DB_PORT', 'DB_PORT'], "3306");
 $db_name = agritwin_env(['AGRITWIN_DB_NAME', 'AGRITWIN_DB_DATABASE', 'DB_DATABASE', 'DB_NAME'], "agritwin_db");
-$username = agritwin_env(['AGRITWIN_DB_USER', 'AGRITWIN_DB_USERNAME', 'DB_USERNAME', 'DB_USER'], "ceres_db_user");
-$password = agritwin_env(['AGRITWIN_DB_PASSWORD', 'AGRITWIN_DB_PASS', 'DB_PASSWORD', 'DB_PASS'], "agritwin_local_dev_password");
+$username = agritwin_env(['AGRITWIN_DB_USER', 'AGRITWIN_DB_USERNAME', 'DB_USERNAME', 'DB_USER'], "agritwin_app");
+$password = agritwin_env(['AGRITWIN_DB_PASSWORD', 'AGRITWIN_DB_PASS', 'DB_PASSWORD', 'DB_PASS'], "");
 $agritwin_db_diagnostics = [
     'host' => $host,
     'port' => $port,

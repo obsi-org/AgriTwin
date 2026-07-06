@@ -4,95 +4,140 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT_DIR}"
 
-ensure_local_db_env() {
-  local env_file="${ROOT_DIR}/.env"
-  local db_env_file="${ROOT_DIR}/config/database.local.env"
-  local port="${AGRITWIN_DB_PUBLISHED_PORT:-3308}"
-  [[ -f "${env_file}" ]] || cp .env.example "${env_file}"
-  local tmp
-  tmp="$(mktemp)"
-  awk -v port="${port}" '
-    BEGIN { seen_host=seen_port=seen_user=seen_pass=seen_dbhost=seen_dbport=seen_dbuser=seen_dbpass=seen_pub=0 }
-    /^AGRITWIN_DB_HOST=/ { print "AGRITWIN_DB_HOST=127.0.0.1"; seen_host=1; next }
-    /^AGRITWIN_DB_PORT=/ { print "AGRITWIN_DB_PORT=" port; seen_port=1; next }
-    /^AGRITWIN_DB_USER=/ { print "AGRITWIN_DB_USER=ceres_db_user"; seen_user=1; next }
-    /^AGRITWIN_DB_PASSWORD=/ { print "AGRITWIN_DB_PASSWORD=agritwin_local_dev_password"; seen_pass=1; next }
-    /^DB_HOST=/ { print "DB_HOST=127.0.0.1"; seen_dbhost=1; next }
-    /^DB_PORT=/ { print "DB_PORT=" port; seen_dbport=1; next }
-    /^DB_USERNAME=/ { print "DB_USERNAME=ceres_db_user"; seen_dbuser=1; next }
-    /^DB_PASSWORD=/ { print "DB_PASSWORD=agritwin_local_dev_password"; seen_dbpass=1; next }
-    /^AGRITWIN_DB_PUBLISHED_PORT=/ { print "AGRITWIN_DB_PUBLISHED_PORT=" port; seen_pub=1; next }
-    { print }
-    END {
-      if (!seen_host) print "AGRITWIN_DB_HOST=127.0.0.1"
-      if (!seen_port) print "AGRITWIN_DB_PORT=" port
-      if (!seen_user) print "AGRITWIN_DB_USER=ceres_db_user"
-      if (!seen_pass) print "AGRITWIN_DB_PASSWORD=agritwin_local_dev_password"
-      if (!seen_dbhost) print "DB_HOST=127.0.0.1"
-      if (!seen_dbport) print "DB_PORT=" port
-      if (!seen_dbuser) print "DB_USERNAME=ceres_db_user"
-      if (!seen_dbpass) print "DB_PASSWORD=agritwin_local_dev_password"
-      if (!seen_pub) print "AGRITWIN_DB_PUBLISHED_PORT=" port
-    }
-  ' "${env_file}" > "${tmp}"
-  mv "${tmp}" "${env_file}"
-  chmod 600 "${env_file}" || true
-  mkdir -p "${ROOT_DIR}/config"
-  cat > "${db_env_file}" <<ENV
-AGRITWIN_DB_HOST=127.0.0.1
-AGRITWIN_DB_PORT=${port}
-AGRITWIN_DB_NAME=agritwin_db
-AGRITWIN_DB_USER=ceres_db_user
-AGRITWIN_DB_PASSWORD=agritwin_local_dev_password
-DB_HOST=127.0.0.1
-DB_PORT=${port}
-DB_DATABASE=agritwin_db
-DB_USERNAME=ceres_db_user
-DB_PASSWORD=agritwin_local_dev_password
-AGRITWIN_DB_PUBLISHED_PORT=${port}
-ENV
-  chmod 644 "${db_env_file}" || true
+random_secret() {
+  if command -v openssl >/dev/null 2>&1; then
+    openssl rand -hex 24
+  else
+    date +%s%N | sha256sum | awk '{print $1}'
+  fi
 }
 
-ensure_local_db_env
+env_value() {
+  local key="$1"
+  [[ -f .env ]] || return 1
+  awk -F= -v key="${key}" '$1 == key { sub(/^[^=]*=/, ""); print; found=1; exit } END { exit found ? 0 : 1 }' .env
+}
 
-echo "[stack] starting AgriTwin database and local support services"
-docker compose --profile mock up -d db openagri-mock
+set_env_value() {
+  local key="$1"
+  local value="$2"
+  local file="${3:-.env}"
+  local tmp
+  mkdir -p "$(dirname "${file}")"
+  touch "${file}"
+  tmp="$(mktemp)"
+  if grep -q "^${key}=" "${file}"; then
+    awk -v key="${key}" -v value="${value}" 'BEGIN { done=0 } $0 ~ "^" key "=" { print key "=" value; done=1; next } { print } END { if (!done) print key "=" value }' "${file}" > "${tmp}"
+  else
+    cat "${file}" > "${tmp}"
+    printf '%s=%s\n' "${key}" "${value}" >> "${tmp}"
+  fi
+  mv "${tmp}" "${file}"
+}
 
-echo "[stack] ensuring local database user grants"
-for _ in {1..30}; do
-  if docker compose exec -T db mysqladmin ping -h localhost -uroot -pagritwin_demo_root_password --silent >/dev/null 2>&1; then
-    docker compose exec -T db mysql -uroot -pagritwin_demo_root_password >/dev/null <<'SQL'
-CREATE DATABASE IF NOT EXISTS agritwin_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER IF NOT EXISTS 'ceres_db_user'@'%' IDENTIFIED BY 'agritwin_local_dev_password';
-ALTER USER 'ceres_db_user'@'%' IDENTIFIED BY 'agritwin_local_dev_password';
-GRANT ALL PRIVILEGES ON agritwin_db.* TO 'ceres_db_user'@'%';
-CREATE USER IF NOT EXISTS 'ceres_db_user'@'localhost' IDENTIFIED BY 'agritwin_local_dev_password';
-ALTER USER 'ceres_db_user'@'localhost' IDENTIFIED BY 'agritwin_local_dev_password';
-GRANT ALL PRIVILEGES ON agritwin_db.* TO 'ceres_db_user'@'localhost';
-FLUSH PRIVILEGES;
-USE agritwin_db;
-UPDATE farms SET farm_name='Fotovoltaica Macotera SL', farm_code='MACOTERA' WHERE farm_name LIKE '%Demo%' OR farm_code LIKE 'DEMO%';
-SQL
+needs_generated_secret() {
+  local value="${1:-}"
+  [[ -z "${value}" ]] && return 0
+  [[ "${value}" == *"replace-with"* ]] && return 0
+  [[ "${value}" == *"change-me"* ]] && return 0
+  [[ "${value}" == *"GENERATED_BY_START_SCRIPT"* ]] && return 0
+  return 1
+}
+
+ensure_local_env() {
+  [[ -f .env ]] || cp .env.example .env
+  chmod 600 .env || true
+
+  local app_port="${AGRITWIN_APP_PORT:-$(env_value AGRITWIN_APP_PORT || echo 8083)}"
+  local db_port="${AGRITWIN_DB_PUBLISHED_PORT:-$(env_value AGRITWIN_DB_PUBLISHED_PORT || echo 33063)}"
+  local db_name="${AGRITWIN_DB_NAME:-$(env_value AGRITWIN_DB_NAME || echo agritwin_db)}"
+  local db_user="${AGRITWIN_DB_USER:-$(env_value AGRITWIN_DB_USER || echo agritwin_app)}"
+  local db_password
+  local db_root_password
+
+  db_password="$(env_value AGRITWIN_DB_PASSWORD || true)"
+  if needs_generated_secret "${db_password}"; then
+    db_password="$(random_secret)"
+  fi
+  db_root_password="$(env_value AGRITWIN_DB_ROOT_PASSWORD || true)"
+  if needs_generated_secret "${db_root_password}"; then
+    db_root_password="$(random_secret)"
+  fi
+
+  set_env_value AGRITWIN_APP_PORT "${app_port}"
+  set_env_value AGRITWIN_DB_PUBLISHED_PORT "${db_port}"
+  set_env_value AGRITWIN_DB_NAME "${db_name}"
+  set_env_value AGRITWIN_DB_USER "${db_user}"
+  set_env_value AGRITWIN_DB_PASSWORD "${db_password}"
+  set_env_value AGRITWIN_DB_ROOT_PASSWORD "${db_root_password}"
+  set_env_value DB_HOST "127.0.0.1"
+  set_env_value DB_PORT "${db_port}"
+  set_env_value DB_DATABASE "${db_name}"
+  set_env_value DB_USERNAME "${db_user}"
+  set_env_value DB_PASSWORD "${db_password}"
+
+  set_env_value OPENAGRI_MODE "${OPENAGRI_MODE:-auto}"
+  set_env_value OPENAGRI_GATEKEEPER_URL "${OPENAGRI_GATEKEEPER_URL:-http://host.docker.internal:18091}"
+  set_env_value OPENAGRI_WEATHER_URL "${OPENAGRI_WEATHER_URL:-http://host.docker.internal:18092}"
+  set_env_value OPENAGRI_IRRIGATION_URL "${OPENAGRI_IRRIGATION_URL:-http://host.docker.internal:18093}"
+  set_env_value OPENAGRI_PEST_DISEASE_URL "${OPENAGRI_PEST_DISEASE_URL:-http://host.docker.internal:18094}"
+  set_env_value OPENAGRI_FARMCALENDAR_URL "${OPENAGRI_FARMCALENDAR_URL:-http://host.docker.internal:18095}"
+  set_env_value OPENAGRI_REPORTING_URL "${OPENAGRI_REPORTING_URL:-http://host.docker.internal:18096}"
+  set_env_value AGRITWIN_OPENAGRI_MODE "${AGRITWIN_OPENAGRI_MODE:-auto}"
+  set_env_value AGRITWIN_OPENAGRI_GATEKEEPER_URL "${AGRITWIN_OPENAGRI_GATEKEEPER_URL:-http://host.docker.internal:18091}"
+  set_env_value AGRITWIN_OPENAGRI_WEATHER_URL "${AGRITWIN_OPENAGRI_WEATHER_URL:-http://host.docker.internal:18092}"
+  set_env_value AGRITWIN_OPENAGRI_IRRIGATION_URL "${AGRITWIN_OPENAGRI_IRRIGATION_URL:-http://host.docker.internal:18093}"
+  set_env_value AGRITWIN_OPENAGRI_PEST_DISEASE_URL "${AGRITWIN_OPENAGRI_PEST_DISEASE_URL:-http://host.docker.internal:18094}"
+  set_env_value AGRITWIN_OPENAGRI_FARMCALENDAR_URL "${AGRITWIN_OPENAGRI_FARMCALENDAR_URL:-http://host.docker.internal:18095}"
+  set_env_value AGRITWIN_OPENAGRI_REPORTING_URL "${AGRITWIN_OPENAGRI_REPORTING_URL:-http://host.docker.internal:18096}"
+
+  mkdir -p config
+  cat > config/database.local.env <<ENV
+AGRITWIN_DB_HOST=127.0.0.1
+AGRITWIN_DB_PORT=${db_port}
+AGRITWIN_DB_NAME=${db_name}
+AGRITWIN_DB_USER=${db_user}
+AGRITWIN_DB_PASSWORD=${db_password}
+DB_HOST=127.0.0.1
+DB_PORT=${db_port}
+DB_DATABASE=${db_name}
+DB_USERNAME=${db_user}
+DB_PASSWORD=${db_password}
+AGRITWIN_DB_PUBLISHED_PORT=${db_port}
+ENV
+  chmod 600 config/database.local.env || true
+}
+
+ensure_local_env
+
+if [[ "${AGRITWIN_START_OPENAGRI:-0}" == "1" ]]; then
+  if [[ -x scripts/openagri/setup_openagri_services.sh ]]; then
+    scripts/openagri/setup_openagri_services.sh || true
+  fi
+  if [[ -x scripts/openagri/start_openagri_services.sh ]]; then
+    OPENAGRI_VALIDATE_UPSTREAM_COMPOSE="${OPENAGRI_VALIDATE_UPSTREAM_COMPOSE:-0}" \
+    OPENAGRI_RUN_CONTAINERS="${OPENAGRI_RUN_CONTAINERS:-1}" \
+      scripts/openagri/start_openagri_services.sh || true
+  fi
+fi
+
+echo "[stack] starting AgriTwin Docker web and database services"
+docker compose up -d --build --remove-orphans agritwin-db agritwin-web
+
+echo "[stack] waiting for database health"
+for _ in $(seq 1 60); do
+  status="$(docker inspect -f '{{.State.Health.Status}}' "$(docker compose ps -q agritwin-db)" 2>/dev/null || true)"
+  [[ "${status}" == "healthy" ]] && break
+  sleep 2
+done
+
+echo "[stack] waiting for web health"
+for _ in $(seq 1 60); do
+  if curl -fsS "http://localhost:${AGRITWIN_APP_PORT:-8083}/agritwin3/index.php" >/dev/null 2>&1; then
     break
   fi
   sleep 2
 done
 
-if [[ "${AGRITWIN_START_COMPOSE_APP:-0}" == "1" ]]; then
-  echo "[stack] starting optional compose web app on AGRITWIN_APP_PORT"
-  docker compose --profile mock up -d app
-else
-  echo "[stack] Apache/local web root is used for http://localhost/agritwin3/; compose app start skipped"
-fi
-
-if [[ -x scripts/openagri/setup_openagri_services.sh ]]; then
-  scripts/openagri/setup_openagri_services.sh
-fi
-if [[ -x scripts/openagri/start_openagri_services.sh ]]; then
-  OPENAGRI_VALIDATE_UPSTREAM_COMPOSE="${OPENAGRI_VALIDATE_UPSTREAM_COMPOSE:-0}" \
-  OPENAGRI_RUN_CONTAINERS="${OPENAGRI_RUN_CONTAINERS:-1}" \
-    scripts/openagri/start_openagri_services.sh
-fi
-
+echo "[stack] AgriTwin local URL: http://localhost:${AGRITWIN_APP_PORT:-8083}/agritwin3/"
 echo "[stack] local stack start complete"

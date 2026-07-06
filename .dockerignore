@@ -2,6 +2,11 @@
 .env
 .env.*
 !.env.example
+LOCAL_CREDENTIALS.md
+config/database.local.env
+config/openagri.local.env
+docs/reference/
+external/
 node_modules/
 vendor/
 var/cache/openagri/*
@@ -10,6 +15,9 @@ var/kpi/*
 var/edge/cache/*
 var/edge/queue/*
 var/cloud_dss/*
+var/backups/*
+var/reports/*
+var/runtime/*
 exports/kpi/*
 logs/
 private_data/

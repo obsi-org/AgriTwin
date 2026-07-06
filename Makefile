@@ -1,4 +1,4 @@
-.PHONY: help setup lint test run docs audit test-openagri test-hmi test-kpi test-edge test-analytics collect-kpis export-kpis compare-ads generate-d1-evidence scan-secrets publication-check demo
+.PHONY: help setup lint test run docs audit test-openagri test-hmi test-kpi test-edge test-analytics collect-kpis export-kpis compare-ads generate-d1-evidence scan-secrets publication-check compose-up
 
 PHP_FILES := $(shell find . -name '*.php' -not -path './vendor/*')
 
@@ -18,8 +18,8 @@ help:
 	@echo "  make generate-d1-evidence - Generate all sample D1 KPI evidence artefacts"
 	@echo "  make scan-secrets - Run conservative publication safety scan"
 	@echo "  make publication-check - Run tests plus publication safety scan"
-	@echo "  make demo   - Start Docker Compose mock demo on http://127.0.0.1:8080"
-	@echo "  make run    - Start PHP built-in server on 127.0.0.1:8080"
+	@echo "  make run    - Start Docker Compose local stack on http://localhost:8083/agritwin3/"
+	@echo "  make compose-up - Build and start Docker Compose services"
 	@echo "  make docs   - List audit and source documentation"
 	@echo "  make audit  - Run lint and show audit documents"
 
@@ -58,8 +58,8 @@ scan-secrets:
 
 publication-check: test scan-secrets
 
-demo:
-	@docker compose --profile mock up --build
+compose-up:
+	@scripts/start_local_stack.sh
 
 collect-kpis:
 	@php scripts/agritwin-kpi.php collect-kpis
@@ -75,8 +75,7 @@ generate-d1-evidence:
 	@php scripts/agritwin-kpi.php generate-d1-evidence
 
 run:
-	@echo "Serving on http://127.0.0.1:8080"
-	@php -S 127.0.0.1:8080 -t .
+	@scripts/start_local_stack.sh
 
 docs:
 	@find docs -maxdepth 3 -type f | sort

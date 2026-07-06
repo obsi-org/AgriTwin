@@ -8,5 +8,5 @@ if [[ -x scripts/openagri/stop_openagri_services.sh ]]; then
   scripts/openagri/stop_openagri_services.sh
 fi
 
-docker compose --profile mock stop app openagri-mock db
+docker compose stop agritwin-web openagri-fixture agritwin-db
 echo "[stack] stopped local services without deleting volumes"

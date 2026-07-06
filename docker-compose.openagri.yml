@@ -1,5 +1,5 @@
 services:
-  app:
+  agritwin-web:
     environment:
       OPENAGRI_MODE: ${OPENAGRI_MODE:-auto}
       OPENAGRI_GATEKEEPER_URL: ${OPENAGRI_GATEKEEPER_URL:-http://host.docker.internal:18091}
