@@ -6,6 +6,7 @@ This document describes the current local developer setup.
 
 - PHP/Apache web runtime in Docker service `agritwin-web`.
 - MySQL schema and data in Docker service `agritwin-db`.
+- Local OpenAgri-compatible service endpoints for Gatekeeper, Weather, Irrigation, Pest and Disease, FarmCalendar and Reporting.
 - Static image, CSV, Cesium, and 3D model assets in the repository.
 - Persistent Docker volume for database state.
 - Ignored local `var/` paths for generated reports and runtime files.
@@ -27,7 +28,7 @@ docs/source/AgriTwin_D1_20260124.pdf
 
 ## Database Setup
 
-Run `scripts/start_local_stack.sh`. It creates ignored local runtime settings in `.env` and `config/database.local.env`, starts `agritwin-db`, and imports `mysql.sql` on first volume initialisation.
+Run `scripts/start_local_stack.sh`. It creates ignored local runtime settings in `.env`, `config/database.local.env` and `config/openagri.local.env`, starts `agritwin-db`, starts the local OpenAgri-compatible service endpoints, and imports `mysql.sql` on first volume initialisation.
 
 The Docker database publishes host port `33063` by default to avoid collisions with host MySQL on `3306`. Do not delete the Docker volume during routine recovery.
 
@@ -87,11 +88,11 @@ curl -s -L http://localhost:8083/agritwin/agritwin_dashboard/settings.php
 curl -s -L http://localhost:8083/agritwin/agritwin_dashboard/openagri_services.php
 ```
 
-Successful recovery means `agritwin3-agritwin-db-1` is healthy, `agritwin3-agritwin-web-1` is running, the container PHP DB check reports `container-db-ok`, pages render without database-unavailable status, and configured local OpenAgri services respond. The scripts do not delete Docker volumes.
+Successful recovery means `agritwin3-agritwin-db-1` is healthy, `agritwin3-agritwin-web-1` is running, local OpenAgri service containers or equivalent endpoints respond on ports `18091` through `18096`, the container PHP DB check reports `container-db-ok`, and pages render without database-unavailable status. The scripts do not delete Docker volumes.
 
 ## Known Local Limitations
 
-- Live OpenAgri credentials and operational endpoints are not committed; local fallback remains available where a service is not configured.
+- Live OpenAgri credentials and external provider endpoints are not committed; the local OpenAgri-compatible service runtime keeps integration paths available for local operation.
 - PDF generation is local to AgriTwin and writes generated files under ignored `var/reports/`.
 - `field.php` references missing `field2.php` and `field3.php`.
 - Production secret management, backups, and hardening remain deployment tasks.

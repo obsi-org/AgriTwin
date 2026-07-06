@@ -134,6 +134,9 @@ function agritwin_load_local_env(): void
     }
     $loaded = true;
     $root = dirname(__DIR__, 2);
+    if (getenv('AGRITWIN_SKIP_LOCAL_ENV') === '1') {
+        return;
+    }
     foreach ([$root . '/.env', $root . '/config/openagri.local.env'] as $path) {
         if (!is_file($path) || !is_readable($path)) {
             continue;

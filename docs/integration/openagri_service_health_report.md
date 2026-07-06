@@ -1,6 +1,6 @@
 # OpenAgri Service Health Report
 
-Date: 2026-05-13
+Date: 2026-07-06
 
 AgriTwin now reports OpenAgri health in three groups. The first group is the core OpenAgri service set and is checked before extensions or optional services.
 
@@ -22,7 +22,7 @@ AgriTwin now reports OpenAgri health in three groups. The first group is the cor
 
 ## Optional Services
 
-| Service | Current result | Compliance interpretation |
+| Service | Current result | Operational interpretation |
 | --- | --- | --- |
 | Geodatabase / OCSM | Optional service - not configured | Not required for the core service check. |
 
@@ -31,8 +31,8 @@ AgriTwin now reports OpenAgri health in three groups. The first group is the cor
 ```bash
 scripts/openagri/check_openagri_services.sh --core-only
 scripts/openagri/check_openagri_services.sh
-curl -fsS http://localhost/agritwin3/api/openagri/core-services
-curl -fsS http://localhost/agritwin3/api/openagri/services
+curl -fsS http://localhost:8083/agritwin/api/openagri/core-services
+curl -fsS http://localhost:8083/agritwin/api/openagri/services
 ```
 
-The full health script returns non-zero when a core service is missing, unavailable or requires credentials. Missing optional Geodatabase / OCSM configuration is reported but does not fail the core service check.
+The full health script returns non-zero when a core or additional operational service is missing, unavailable or requires credentials. Missing optional Geodatabase / OCSM configuration is reported but does not fail the local service check.

@@ -1,6 +1,8 @@
 # Local OpenAgri Docker Deployment
 
-AgriTwin provides non-interactive helper scripts under `scripts/openagri/`:
+AgriTwin provides local OpenAgri-compatible Docker services in the main `docker-compose.yml`. They are started by `scripts/start_local_stack.sh` and expose the standard local ports used by the AgriTwin web container and host-side checks.
+
+The upstream OpenAgri helper scripts remain available under `scripts/openagri/` for installations that need to run the cloned upstream repositories:
 
 - `setup_openagri_services.sh`: clones or updates upstream OpenAgri repositories into `external/openagri/`.
 - `generate_openagri_local_env.sh`: creates untracked local `.env` files plus `external/openagri/runtime/docker-compose.generated.yml` and `config/openagri.local.env`.
@@ -8,7 +10,7 @@ AgriTwin provides non-interactive helper scripts under `scripts/openagri/`:
 - `check_openagri_services.sh`: checks configured OpenAgri endpoint URLs.
 - `stop_openagri_services.sh`: stops any upstream compose stacks that were started through their compose files.
 
-The AgriTwin compose overlay is `docker-compose.openagri.yml`. It supplies stable local service URLs to the AgriTwin app:
+The default local runtime supplies stable service URLs:
 
 | Service | Default local URL |
 | --- | --- |
@@ -20,17 +22,22 @@ The AgriTwin compose overlay is `docker-compose.openagri.yml`. It supplies stabl
 | Reporting | `http://127.0.0.1:18096` |
 | Geodatabase / OCSM | Configuration required |
 
-Generate local service configuration:
+Start AgriTwin plus the local OpenAgri-compatible services:
 
 ```bash
-scripts/openagri/setup_openagri_services.sh
-scripts/openagri/generate_openagri_local_env.sh
+scripts/start_local_stack.sh
 ```
 
-Start the local OpenAgri runtime:
+Skip local OpenAgri-compatible service containers only when another local OpenAgri runtime already provides the required ports:
 
 ```bash
-OPENAGRI_RUN_CONTAINERS=1 scripts/openagri/start_openagri_services.sh
+AGRITWIN_START_OPENAGRI=0 scripts/start_local_stack.sh
+```
+
+Use cloned upstream OpenAgri repositories only after their ignored service `.env` files are configured outside git:
+
+```bash
+AGRITWIN_START_EXTERNAL_OPENAGRI=1 scripts/start_local_stack.sh
 ```
 
 Check service availability:
@@ -39,7 +46,7 @@ Check service availability:
 scripts/openagri/check_openagri_services.sh
 ```
 
-This command verifies local OpenAgri service availability through configured health or documentation endpoints. Local service availability is separate from live upstream weather observations: the Weather Service can be running locally while its data endpoint still requires OpenAgri authentication and an upstream weather-provider key.
+This command verifies local OpenAgri service availability through configured health or documentation endpoints. Local service availability is separate from live upstream weather observations: the Weather Service can be running locally while live external observations still require OpenAgri authentication and an upstream weather-provider key.
 
 Stop the local runtime without deleting volumes:
 
@@ -53,6 +60,6 @@ Validate the combined AgriTwin configuration:
 docker compose -f docker-compose.yml -f docker-compose.openagri.yml config
 ```
 
-Do not commit generated service `.env` files, `config/openagri.local.env`, or generated runtime compose files. They contain local-only development credentials and are ignored by git.
+Do not commit generated service `.env` files, `config/openagri.local.env`, or generated runtime compose files. They contain local-only operational configuration and are ignored by git.
 
-Troubleshooting: if a service container is running but the health check fails, inspect it with `docker compose -f external/openagri/runtime/docker-compose.generated.yml logs --tail=120 <service>`. Live OpenAgri Weather observations require real external credentials and provider configuration outside git even when the local Weather Service documentation endpoint is available.
+Troubleshooting: if one of the default local services fails, inspect it with `docker compose logs --tail=120 openagri-weather` or the relevant service name. If an upstream service container is running but the health check fails, inspect it with `docker compose -f external/openagri/runtime/docker-compose.generated.yml logs --tail=120 <service>`. Live OpenAgri Weather observations require real external credentials and provider configuration outside git even when the local Weather Service documentation endpoint is available.

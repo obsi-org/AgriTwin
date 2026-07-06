@@ -60,12 +60,12 @@ Verify the recovery with:
 scripts/check_local_stack.sh
 ```
 
-The script publishes the AgriTwin web container on `http://localhost:8083/agritwin/` and the MySQL container on host port `33063` by default. It writes only ignored local runtime config under `.env` and `config/database.local.env`.
+The script publishes the AgriTwin web container on `http://localhost:8083/agritwin/`, the MySQL container on host port `33063`, and local OpenAgri-compatible service endpoints on ports `18091` through `18096` by default. It writes only ignored local runtime config under `.env`, `config/database.local.env`, and `config/openagri.local.env`.
 
-If the local OpenAgri upstream runtime should also be started by the same command, run:
+To skip the local OpenAgri-compatible service containers:
 
 ```bash
-AGRITWIN_START_OPENAGRI=1 scripts/start_local_stack.sh
+AGRITWIN_START_OPENAGRI=0 scripts/start_local_stack.sh
 ```
 
 Optional deeper checks:
@@ -127,7 +127,7 @@ scripts/openagri/start_openagri_services.sh
 scripts/openagri/check_openagri_services.sh
 ```
 
-The checkouts live under ignored path `external/openagri/`. Use `docker-compose.openagri.yml` to point AgriTwin at local OpenAgri service endpoints once each upstream service has its required local `.env` and credentials configured outside git.
+The default local run uses the lightweight OpenAgri-compatible containers defined in `docker-compose.yml`. Upstream checkouts live under ignored path `external/openagri/`; set `AGRITWIN_START_EXTERNAL_OPENAGRI=1` only when those service repositories and their local `.env` files are ready outside git.
 
 ## Documentation Map
 

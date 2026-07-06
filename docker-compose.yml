@@ -110,5 +110,113 @@ services:
     volumes:
       - .:/app:ro
 
+  openagri-gatekeeper:
+    image: php:8.3-cli
+    restart: unless-stopped
+    working_dir: /app
+    command: php -S 0.0.0.0:8000 docker/openagri/local_service_router.php
+    environment:
+      OPENAGRI_LOCAL_SERVICE: gatekeeper
+    ports:
+      - "18091:8000"
+    volumes:
+      - .:/app:ro
+    healthcheck:
+      test: ["CMD-SHELL", "php -r 'exit(@file_get_contents(\"http://127.0.0.1:8000/health\") === false ? 1 : 0);'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 5s
+
+  openagri-weather:
+    image: php:8.3-cli
+    restart: unless-stopped
+    working_dir: /app
+    command: php -S 0.0.0.0:8000 docker/openagri/local_service_router.php
+    environment:
+      OPENAGRI_LOCAL_SERVICE: weather
+    ports:
+      - "18092:8000"
+    volumes:
+      - .:/app:ro
+    healthcheck:
+      test: ["CMD-SHELL", "php -r 'exit(@file_get_contents(\"http://127.0.0.1:8000/health\") === false ? 1 : 0);'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 5s
+
+  openagri-irrigation:
+    image: php:8.3-cli
+    restart: unless-stopped
+    working_dir: /app
+    command: php -S 0.0.0.0:8000 docker/openagri/local_service_router.php
+    environment:
+      OPENAGRI_LOCAL_SERVICE: irrigation
+    ports:
+      - "18093:8000"
+    volumes:
+      - .:/app:ro
+    healthcheck:
+      test: ["CMD-SHELL", "php -r 'exit(@file_get_contents(\"http://127.0.0.1:8000/health\") === false ? 1 : 0);'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 5s
+
+  openagri-pest-disease:
+    image: php:8.3-cli
+    restart: unless-stopped
+    working_dir: /app
+    command: php -S 0.0.0.0:8000 docker/openagri/local_service_router.php
+    environment:
+      OPENAGRI_LOCAL_SERVICE: pest_disease
+    ports:
+      - "18094:8000"
+    volumes:
+      - .:/app:ro
+    healthcheck:
+      test: ["CMD-SHELL", "php -r 'exit(@file_get_contents(\"http://127.0.0.1:8000/health\") === false ? 1 : 0);'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 5s
+
+  openagri-farmcalendar:
+    image: php:8.3-cli
+    restart: unless-stopped
+    working_dir: /app
+    command: php -S 0.0.0.0:8000 docker/openagri/local_service_router.php
+    environment:
+      OPENAGRI_LOCAL_SERVICE: farmcalendar
+    ports:
+      - "18095:8000"
+    volumes:
+      - .:/app:ro
+    healthcheck:
+      test: ["CMD-SHELL", "php -r 'exit(@file_get_contents(\"http://127.0.0.1:8000/health\") === false ? 1 : 0);'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 5s
+
+  openagri-reporting:
+    image: php:8.3-cli
+    restart: unless-stopped
+    working_dir: /app
+    command: php -S 0.0.0.0:8000 docker/openagri/local_service_router.php
+    environment:
+      OPENAGRI_LOCAL_SERVICE: reporting
+    ports:
+      - "18096:8000"
+    volumes:
+      - .:/app:ro
+    healthcheck:
+      test: ["CMD-SHELL", "php -r 'exit(@file_get_contents(\"http://127.0.0.1:8000/health\") === false ? 1 : 0);'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 5s
+
 volumes:
   agritwin_mysql_data:

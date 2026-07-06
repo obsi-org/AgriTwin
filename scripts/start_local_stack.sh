@@ -80,11 +80,24 @@ ensure_local_env() {
 
   set_env_value OPENAGRI_MODE "${OPENAGRI_MODE:-auto}"
   set_env_value OPENAGRI_GATEKEEPER_URL "${OPENAGRI_GATEKEEPER_URL:-http://host.docker.internal:18091}"
+  set_env_value OPENAGRI_GATEKEEPER_HEALTH_URL "${OPENAGRI_GATEKEEPER_HEALTH_URL:-/}"
+  set_env_value OPENAGRI_GATEKEEPER_DOCS_URL "${OPENAGRI_GATEKEEPER_DOCS_URL:-http://127.0.0.1:18091/}"
   set_env_value OPENAGRI_WEATHER_URL "${OPENAGRI_WEATHER_URL:-http://host.docker.internal:18092}"
+  set_env_value OPENAGRI_WEATHER_HEALTH_URL "${OPENAGRI_WEATHER_HEALTH_URL:-/docs}"
+  set_env_value OPENAGRI_WEATHER_DOCS_URL "${OPENAGRI_WEATHER_DOCS_URL:-http://127.0.0.1:18092/docs}"
+  set_env_value OPENAGRI_WEATHER_DATA_URL "${OPENAGRI_WEATHER_DATA_URL:-/api/data/weather/?lat=40.9492&lon=-5.6958}"
   set_env_value OPENAGRI_IRRIGATION_URL "${OPENAGRI_IRRIGATION_URL:-http://host.docker.internal:18093}"
+  set_env_value OPENAGRI_IRRIGATION_HEALTH_URL "${OPENAGRI_IRRIGATION_HEALTH_URL:-/docs}"
+  set_env_value OPENAGRI_IRRIGATION_DOCS_URL "${OPENAGRI_IRRIGATION_DOCS_URL:-http://127.0.0.1:18093/docs}"
   set_env_value OPENAGRI_PEST_DISEASE_URL "${OPENAGRI_PEST_DISEASE_URL:-http://host.docker.internal:18094}"
+  set_env_value OPENAGRI_PEST_DISEASE_HEALTH_URL "${OPENAGRI_PEST_DISEASE_HEALTH_URL:-/docs}"
+  set_env_value OPENAGRI_PEST_DISEASE_DOCS_URL "${OPENAGRI_PEST_DISEASE_DOCS_URL:-http://127.0.0.1:18094/docs}"
   set_env_value OPENAGRI_FARMCALENDAR_URL "${OPENAGRI_FARMCALENDAR_URL:-http://host.docker.internal:18095}"
+  set_env_value OPENAGRI_FARMCALENDAR_HEALTH_URL "${OPENAGRI_FARMCALENDAR_HEALTH_URL:-/api/v1/}"
+  set_env_value OPENAGRI_FARMCALENDAR_DOCS_URL "${OPENAGRI_FARMCALENDAR_DOCS_URL:-http://127.0.0.1:18095/api/v1/}"
   set_env_value OPENAGRI_REPORTING_URL "${OPENAGRI_REPORTING_URL:-http://host.docker.internal:18096}"
+  set_env_value OPENAGRI_REPORTING_HEALTH_URL "${OPENAGRI_REPORTING_HEALTH_URL:-/docs}"
+  set_env_value OPENAGRI_REPORTING_DOCS_URL "${OPENAGRI_REPORTING_DOCS_URL:-http://127.0.0.1:18096/docs}"
   set_env_value AGRITWIN_OPENAGRI_MODE "${AGRITWIN_OPENAGRI_MODE:-auto}"
   set_env_value AGRITWIN_OPENAGRI_GATEKEEPER_URL "${AGRITWIN_OPENAGRI_GATEKEEPER_URL:-http://host.docker.internal:18091}"
   set_env_value AGRITWIN_OPENAGRI_WEATHER_URL "${AGRITWIN_OPENAGRI_WEATHER_URL:-http://host.docker.internal:18092}"
@@ -108,11 +121,45 @@ DB_PASSWORD=${db_password}
 AGRITWIN_DB_PUBLISHED_PORT=${db_port}
 ENV
   chmod 600 config/database.local.env || true
+
+  cat > config/openagri.local.env <<'ENV'
+OPENAGRI_MODE=auto
+OPENAGRI_GATEKEEPER_URL=http://127.0.0.1:18091
+OPENAGRI_GATEKEEPER_HEALTH_URL=/
+OPENAGRI_GATEKEEPER_DOCS_URL=http://127.0.0.1:18091/
+OPENAGRI_WEATHER_URL=http://127.0.0.1:18092
+OPENAGRI_WEATHER_HEALTH_URL=/docs
+OPENAGRI_WEATHER_DOCS_URL=http://127.0.0.1:18092/docs
+OPENAGRI_WEATHER_DATA_URL=/api/data/weather/?lat=40.9492&lon=-5.6958
+OPENAGRI_IRRIGATION_URL=http://127.0.0.1:18093
+OPENAGRI_IRRIGATION_HEALTH_URL=/docs
+OPENAGRI_IRRIGATION_DOCS_URL=http://127.0.0.1:18093/docs
+OPENAGRI_PEST_DISEASE_URL=http://127.0.0.1:18094
+OPENAGRI_PEST_DISEASE_HEALTH_URL=/docs
+OPENAGRI_PEST_DISEASE_DOCS_URL=http://127.0.0.1:18094/docs
+OPENAGRI_FARMCALENDAR_URL=http://127.0.0.1:18095
+OPENAGRI_FARMCALENDAR_HEALTH_URL=/api/v1/
+OPENAGRI_FARMCALENDAR_DOCS_URL=http://127.0.0.1:18095/api/v1/
+OPENAGRI_REPORTING_URL=http://127.0.0.1:18096
+OPENAGRI_REPORTING_HEALTH_URL=/docs
+OPENAGRI_REPORTING_DOCS_URL=http://127.0.0.1:18096/docs
+OPENAGRI_GEODATABASE_URL=
+OPENAGRI_GEODATABASE_HEALTH_URL=/health
+OPENAGRI_GEODATABASE_DOCS_URL=
+AGRITWIN_OPENAGRI_MODE=auto
+AGRITWIN_OPENAGRI_GATEKEEPER_URL=http://host.docker.internal:18091
+AGRITWIN_OPENAGRI_WEATHER_URL=http://host.docker.internal:18092
+AGRITWIN_OPENAGRI_IRRIGATION_URL=http://host.docker.internal:18093
+AGRITWIN_OPENAGRI_PEST_DISEASE_URL=http://host.docker.internal:18094
+AGRITWIN_OPENAGRI_FARMCALENDAR_URL=http://host.docker.internal:18095
+AGRITWIN_OPENAGRI_REPORTING_URL=http://host.docker.internal:18096
+ENV
+  chmod 600 config/openagri.local.env || true
 }
 
 ensure_local_env
 
-if [[ "${AGRITWIN_START_OPENAGRI:-0}" == "1" ]]; then
+if [[ "${AGRITWIN_START_EXTERNAL_OPENAGRI:-0}" == "1" || "${AGRITWIN_START_OPENAGRI:-1}" == "external" ]]; then
   if [[ -x scripts/openagri/setup_openagri_services.sh ]]; then
     scripts/openagri/setup_openagri_services.sh || true
   fi
@@ -123,8 +170,43 @@ if [[ "${AGRITWIN_START_OPENAGRI:-0}" == "1" ]]; then
   fi
 fi
 
+openagri_specs=(
+  "openagri-gatekeeper|18091|/"
+  "openagri-weather|18092|/docs"
+  "openagri-irrigation|18093|/docs"
+  "openagri-pest-disease|18094|/docs"
+  "openagri-farmcalendar|18095|/api/v1/"
+  "openagri-reporting|18096|/docs"
+)
+openagri_services=()
+if [[ "${AGRITWIN_START_OPENAGRI:-1}" != "0" && "${AGRITWIN_START_OPENAGRI:-1}" != "external" ]]; then
+  echo "[stack] checking local OpenAgri service ports"
+  for spec in "${openagri_specs[@]}"; do
+    IFS='|' read -r service port health_path <<<"${spec}"
+    if curl -fsS --max-time 2 "http://127.0.0.1:${port}${health_path}" >/dev/null 2>&1; then
+      echo "[stack] ${service} already available on 127.0.0.1:${port}"
+    else
+      openagri_services+=("${service}")
+    fi
+  done
+fi
+
 echo "[stack] starting AgriTwin Docker web and database services"
-docker compose up -d --build --remove-orphans agritwin-db agritwin-web
+docker compose up -d --build --remove-orphans agritwin-db "${openagri_services[@]}" agritwin-web
+
+if [[ "${#openagri_services[@]}" -gt 0 ]]; then
+  echo "[stack] waiting for local OpenAgri service ports"
+  for spec in "${openagri_specs[@]}"; do
+    IFS='|' read -r service port health_path <<<"${spec}"
+    for _ in $(seq 1 30); do
+      if curl -fsS --max-time 2 "http://127.0.0.1:${port}${health_path}" >/dev/null 2>&1; then
+        echo "[stack] ${service} available on 127.0.0.1:${port}"
+        break
+      fi
+      sleep 2
+    done
+  done
+fi
 
 echo "[stack] waiting for database health"
 for _ in $(seq 1 60); do

@@ -16,7 +16,13 @@ Docker Compose defines:
 
 - `agritwin-web`: PHP 8.3 with Apache, GD, PDO MySQL, mysqli, intl, mbstring, curl, zip, XML and opcache.
 - `agritwin-db`: MySQL 8 with a persistent named Docker volume.
-- `openagri-fixture`: optional fixture service for connector tests, only started with the `fixture` profile.
+- `openagri-gatekeeper`: local OpenAgri-compatible Gatekeeper endpoint on port `18091`.
+- `openagri-weather`: local OpenAgri-compatible Weather endpoint on port `18092`.
+- `openagri-irrigation`: local OpenAgri-compatible Irrigation endpoint on port `18093`.
+- `openagri-pest-disease`: local OpenAgri-compatible Pest and Disease endpoint on port `18094`.
+- `openagri-farmcalendar`: local OpenAgri-compatible FarmCalendar endpoint on port `18095`.
+- `openagri-reporting`: local OpenAgri-compatible Reporting endpoint on port `18096`.
+- `openagri-fixture`: optional connector-test service, only started with the `fixture` profile.
 
 Generated reports and runtime files are written under ignored `var/` paths in the repository. Database state is stored in the `agritwin3_agritwin_mysql_data` Docker volume.
 
@@ -30,13 +36,20 @@ The script creates or updates ignored local runtime files:
 
 - `.env`
 - `config/database.local.env`
+- `config/openagri.local.env`
 
 It generates local database passwords when needed and does not print them.
 
-By default the script starts only the AgriTwin web and database containers. To also ask the local OpenAgri helper scripts to start upstream services from the ignored `external/openagri/` checkout, use:
+By default the script starts AgriTwin web, database and local OpenAgri-compatible service containers. To skip local OpenAgri services, use:
 
 ```bash
-AGRITWIN_START_OPENAGRI=1 scripts/start_local_stack.sh
+AGRITWIN_START_OPENAGRI=0 scripts/start_local_stack.sh
+```
+
+To use cloned upstream OpenAgri service repositories instead, configure them under ignored `external/openagri/`, then run:
+
+```bash
+AGRITWIN_START_EXTERNAL_OPENAGRI=1 scripts/start_local_stack.sh
 ```
 
 ## URL
@@ -71,7 +84,7 @@ This stops containers without deleting volumes.
 scripts/check_local_stack.sh
 ```
 
-The check validates Docker services, database connectivity from the web container, rendered pages, Reports/PDF generation, and OpenAgri core service health when local services are available.
+The check validates Docker services, database connectivity from the web container, rendered pages, Reports/PDF generation, and all required local OpenAgri services. Geodatabase / OCSM is reported as optional when not configured.
 
 ## OpenAgri Connectivity
 

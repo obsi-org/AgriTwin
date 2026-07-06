@@ -7,6 +7,7 @@ LOCAL_OPENAGRI_ENV="${ROOT_DIR}/config/openagri.local.env"
 MANDATORY_ONLY=0
 WARNINGS_ONLY=0
 MANDATORY_FAILURE=0
+SERVICE_FAILURE=0
 
 for arg in "$@"; do
   case "${arg}" in
@@ -57,6 +58,9 @@ check_url() {
     echo "${group}|${name}|not_configured|Configuration required"
     if [[ "${group}" == "core" ]]; then
       MANDATORY_FAILURE=1
+      SERVICE_FAILURE=1
+    elif [[ "${group}" == "extension" && "${MANDATORY_ONLY}" -eq 0 ]]; then
+      SERVICE_FAILURE=1
     fi
     return 0
   fi
@@ -64,21 +68,30 @@ check_url() {
   if [[ "${path}" != http* ]]; then
     target="${url%/}/${path#/}"
   fi
-  local started status latency
+  local started status latency body_file err_file
+  body_file="$(mktemp /tmp/agritwin-openagri-body.XXXXXX)"
+  err_file="$(mktemp /tmp/agritwin-openagri-error.XXXXXX)"
   started="$(date +%s%3N)"
-  status="$(curl -k -sS -o /tmp/agritwin-openagri-check.out -w '%{http_code}' --max-time 5 "${target}" 2>/tmp/agritwin-openagri-check.err || echo 000)"
+  status="$(curl -k -sS -o "${body_file}" -w '%{http_code}' --max-time 5 "${target}" 2>"${err_file}" || echo 000)"
   latency="$(( $(date +%s%3N) - started ))"
+  rm -f "${body_file}" "${err_file}"
   if [[ "${status}" =~ ^[23] ]]; then
     echo "${group}|${name}|available|${target}|${status}|${latency}ms"
   elif [[ "${status}" == "401" || "${status}" == "403" ]]; then
     echo "${group}|${name}|credentials_required|${target}|${status}|${latency}ms"
     if [[ "${group}" == "core" ]]; then
       MANDATORY_FAILURE=1
+      SERVICE_FAILURE=1
+    elif [[ "${group}" == "extension" && "${MANDATORY_ONLY}" -eq 0 ]]; then
+      SERVICE_FAILURE=1
     fi
   else
     echo "${group}|${name}|unavailable|${target}|${status}|${latency}ms"
     if [[ "${group}" == "core" ]]; then
       MANDATORY_FAILURE=1
+      SERVICE_FAILURE=1
+    elif [[ "${group}" == "extension" && "${MANDATORY_ONLY}" -eq 0 ]]; then
+      SERVICE_FAILURE=1
     fi
   fi
 }
@@ -102,7 +115,7 @@ if [[ "${MANDATORY_ONLY}" -eq 0 ]]; then
   fi
 fi
 
-if [[ "${MANDATORY_FAILURE}" -ne 0 && "${WARNINGS_ONLY}" -ne 1 ]]; then
+if [[ "${SERVICE_FAILURE}" -ne 0 && "${WARNINGS_ONLY}" -ne 1 ]]; then
   exit 1
 fi
 exit 0

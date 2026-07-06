@@ -16,8 +16,9 @@ The active repository now runs directly from `/media/pedrobranco/AikoHD/Document
 - Added a named `agritwin_mysql_data` volume for persistent MySQL data.
 - Published the AgriTwin web service on `http://localhost:8083/agritwin/`.
 - Published the AgriTwin MySQL service on host port `33063` by default to avoid `3306` conflicts.
+- Published local OpenAgri-compatible service endpoints on ports `18091` through `18096`.
 - Added `scripts/start_local_stack.sh`, `scripts/check_local_stack.sh` and `scripts/stop_local_stack.sh`.
-- Added ignored `.env` and `config/database.local.env` generation for local runtime configuration.
+- Added ignored `.env`, `config/database.local.env` and `config/openagri.local.env` generation for local runtime configuration.
 - Added database diagnostics on the settings page without exposing passwords or SQL stack traces.
 
 ## Recovery Commands
@@ -28,10 +29,10 @@ Start the local stack:
 scripts/start_local_stack.sh
 ```
 
-To also ask the local OpenAgri helper scripts to start upstream services from the ignored `external/openagri/` checkout, run:
+The startup command also starts local OpenAgri-compatible service containers by default. To use cloned upstream OpenAgri services from the ignored `external/openagri/` checkout, run:
 
 ```bash
-AGRITWIN_START_OPENAGRI=1 scripts/start_local_stack.sh
+AGRITWIN_START_EXTERNAL_OPENAGRI=1 scripts/start_local_stack.sh
 ```
 
 Validate the local stack:
@@ -53,7 +54,7 @@ The check script verifies:
 - Docker Compose web and database service status.
 - Database connectivity inside the MySQL container.
 - PHP application database connectivity from inside the web container.
-- Local OpenAgri service checks when the services are configured and running.
+- Local OpenAgri checks for Gatekeeper, Weather, Irrigation, Pest and Disease, FarmCalendar and Reporting.
 - Rendered `http://localhost:8083/agritwin/` pages for SQLSTATE, access-denied and prohibited terms.
 - Reports/PDF generation inside the web container.
 
@@ -63,7 +64,7 @@ Expected successful result:
 - Web container `agritwin3-agritwin-web-1` is running.
 - Container PHP DB check prints `container-db-ok`.
 - `Database status: Unavailable` no longer appears when the stack is running.
-- Configured local OpenAgri services respond to real HTTP checks.
+- Required local OpenAgri services respond to HTTP checks.
 
 Additional verification commands:
 
@@ -83,7 +84,8 @@ curl -s -L http://localhost:8083/agritwin/agritwin_dashboard/openagri_services.p
 - Database container not healthy: run `docker compose ps` and `docker compose logs agritwin-db --tail=120`; do not delete volumes as a routine recovery action.
 - Web container not healthy: run `docker compose logs agritwin-web --tail=120` and verify `http://localhost:8083/agritwin/index.php`.
 - DB credentials/config not loaded: rerun `scripts/start_local_stack.sh` to regenerate ignored local `.env` and `config/database.local.env`, then rerun `scripts/check_local_stack.sh`.
-- OpenAgri local services not started: run `AGRITWIN_START_OPENAGRI=1 scripts/start_local_stack.sh` or `OPENAGRI_RUN_CONTAINERS=1 scripts/openagri/start_openagri_services.sh`, then run `scripts/openagri/check_openagri_services.sh`.
+- OpenAgri local services not started: run `scripts/start_local_stack.sh`, then run `scripts/openagri/check_openagri_services.sh`.
+- Upstream OpenAgri service repositories required: run `AGRITWIN_START_EXTERNAL_OPENAGRI=1 scripts/start_local_stack.sh` after configuring ignored service `.env` files.
 - Weather service running but live weather credentials missing: this is expected until real OpenAgri Weather authentication and upstream weather-provider credentials are supplied outside git.
 
 ## Safety Warnings

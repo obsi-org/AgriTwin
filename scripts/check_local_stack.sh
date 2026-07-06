@@ -42,11 +42,12 @@ docker compose exec -T agritwin-web php -r 'require "agritwin_dashboard/db_confi
 
 if [[ -x scripts/openagri/check_openagri_services.sh ]]; then
   echo "[check] OpenAgri local services"
-  if scripts/openagri/check_openagri_services.sh --core-only >/tmp/agritwin-openagri-check.out 2>&1; then
+  if scripts/openagri/check_openagri_services.sh >/tmp/agritwin-openagri-check.out 2>&1; then
     tr -d '\000' </tmp/agritwin-openagri-check.out
   else
     tr -d '\000' </tmp/agritwin-openagri-check.out
-    echo "[check] OpenAgri local services are not fully available; AgriTwin will use configured fallback behaviour where supported."
+    echo "[check] required OpenAgri local services are not fully available" >&2
+    exit 1
   fi
 fi
 
