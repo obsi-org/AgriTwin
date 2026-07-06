@@ -59,7 +59,7 @@ header_phrase="AgriTwin - Agricultural Digital Twin for Intelligent Decision-Mak
 mapfile -t source_files < <(
   git ls-files --cached --others --exclude-standard -- \
     '*.php' '*.js' '*.css' '*.sh' '*.sql' \
-    '*.py' \
+    '*.py' '*.ino' \
     'Dockerfile' 'docker-compose*.yml' |
   grep -Ev '^(vendor/|node_modules/|external/openagri/|generated/|storage/|var/|docs/reference/)' |
   grep -Ev '(^|/)(.*\\.min\\.js|.*\\.min\\.css)$' |

@@ -125,6 +125,14 @@ A safe AgriTwin sample dataset package is available under `datasets/agritwin_sam
 
 See `datasets/agritwin_sample_dataset/docs/README.md` for package structure, validation commands and developer usage.
 
+## Open Hardware package
+
+A generic Open Hardware reference package is available under `open-hardware/`. It documents cloud-based and edge + cloud AgriTwin deployment modes, Arduino-compatible sensor nodes, open sensor probes, weather station options, edge gateway hardware, wiring, firmware examples, payload schemas, calibration, testing, maintenance, safety and privacy guidance.
+
+The package is distribution-safe and uses generic identifiers only. It excludes real pilot-farm data, exact private coordinates, credentials, site-specific thresholds and non-anonymised operational logs.
+
+See `open-hardware/README.md` for the full package structure.
+
 ## Licence, funding and disclaimer
 
 AgriTwin - Agricultural Digital Twin for Intelligent Decision-Making

@@ -1,0 +1,11 @@
+item_id,component,category,suggested_specification,open_alternative,quantity,required_or_optional,notes
+EG-001,Edge compute unit,gateway,"Raspberry Pi class SBC, industrial mini-PC or Jetson Nano class device","Any Linux-capable low-power edge computer",1,required,"Select rugged hardware for unattended field use."
+EG-002,Industrial storage,storage,"High-endurance microSD, SSD or eMMC","Any reliable local storage with backups",1,required,"Use wear-aware storage for queues and caches."
+EG-003,MQTT broker software,software,"Mosquitto or equivalent local broker","Local HTTP receiver only where MQTT is not used",1,required,"Run with authentication configured outside repository."
+EG-004,Local queue/cache,software,"SQLite, file queue or InfluxDB for telemetry buffer","Lightweight append-only JSONL queue",1,required,"Must survive power loss safely."
+EG-005,4G/5G or Ethernet connectivity,network,"Router or modem with external antenna as needed","Wi-Fi bridge where reliable",1,required,"Plan fallback for rural outages."
+EG-006,LoRaWAN concentrator,network,"Gateway hat or USB concentrator","Wi-Fi sensor nodes if range permits",1,optional,"Use for low-power long-range nodes."
+EG-007,UPS or DC power backup,power,"DC UPS, solar battery system or protected mains supply","Battery HAT for small tests",1,required,"Avoid unclean shutdowns during sync."
+EG-008,Weatherproof cabinet,enclosure,"IP-rated cabinet with ventilation and service access","Indoor control room cabinet when available",1,required,"Keep electronics within safe temperature range."
+EG-009,Monitoring agent,software,"System health and disk monitoring","Cron-based health script",1,required,"Report gateway health to AgriTwin."
+EG-010,Secure time source,timing,"NTP via network or RTC module","GPS time source for isolated sites",1,required,"Telemetry requires reliable timestamps."

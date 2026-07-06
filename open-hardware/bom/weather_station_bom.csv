@@ -1,0 +1,13 @@
+item_id,component,category,suggested_specification,open_alternative,quantity,required_or_optional,notes
+WS-001,Arduino-compatible or ESP32 controller,controller,"ESP32, Arduino MKR or similar with MQTT/HTTP support","Any open microcontroller with required interfaces",1,required,"Use gateway mode when station has RS485 output."
+WS-002,Air temperature and humidity sensor,weather sensor,"SHT31, SHT35 or equivalent in radiation shield","DHT22 for educational builds",1,required,"Shield from rain and direct solar radiation."
+WS-003,Tipping bucket rain gauge,weather sensor,"Dry contact pulse output with calibration factor","Open tipping bucket design",1,required,"Level carefully and clean seasonally."
+WS-004,Anemometer,weather sensor,"Pulse or analog wind speed sensor","Open cup anemometer design",1,required,"Mount above local obstructions where feasible."
+WS-005,Wind vane,weather sensor,"Analog or digital direction output","Open wind vane design",1,required,"Record orientation offset during installation."
+WS-006,Solar radiation sensor,weather sensor,"Calibrated pyranometer or silicon irradiance sensor","Open irradiance sensor for relative measurements",1,optional,"State calibration class in metadata."
+WS-007,Atmospheric pressure sensor,weather sensor,"BMP280, BME280 or equivalent","Any open I2C barometric sensor",1,optional,"Useful for weather trend diagnostics."
+WS-008,RS485 compact weather station,weather sensor,"Modbus RTU all-in-one weather station","Discrete open sensors wired to controller",1,optional,"Use when maintenance simplicity is preferred."
+WS-009,Solar power subsystem,power,"Solar panel, charger and protected battery","Shared power from edge gateway where safe",1,required,"Size for continuous station telemetry."
+WS-010,Mounting mast,mechanical,"UV-stable mast with guying if required","Existing safe instrument pole",1,required,"Respect field safety and local installation rules."
+WS-011,IP-rated junction enclosure,enclosure,"IP65 or IP67 with cable glands","Weatherproof industrial junction box",1,required,"Provide drip loops and service access."
+WS-012,Grounding and surge protection,safety,"Appropriate local protection for outdoor wiring","Qualified installer-selected equivalent",1,required,"Follow local electrical and lightning safety guidance."
