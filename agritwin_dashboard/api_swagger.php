@@ -13,13 +13,13 @@ agritwin_render_page('api', agritwin_t('api'), function (): void {
         </div>
         <p><?= agritwin_h(agritwin_t('swagger_note')) ?></p>
         <div id="swagger-ui" class="swagger-frame"></div>
-        <noscript><p><?= agritwin_h(agritwin_t('javascript_required')) ?> <a href="../api/openapi.json">/agritwin3/api/openapi.json</a>.</p></noscript>
+        <noscript><p><?= agritwin_h(agritwin_t('javascript_required')) ?> <a href="../api/openapi.json"><?= agritwin_h(rtrim(agritwin_root_path(), '/') . '/api/openapi.json') ?></a>.</p></noscript>
         <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
         <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
         <script>
             window.addEventListener("load", function () {
                 SwaggerUIBundle({
-                    url: "/agritwin3/api/openapi.json",
+                    url: <?= json_encode(rtrim(agritwin_root_path(), '/') . '/api/openapi.json', JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>,
                     dom_id: "#swagger-ui",
                     deepLinking: true,
                     presets: [SwaggerUIBundle.presets.apis],

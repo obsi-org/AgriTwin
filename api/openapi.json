@@ -6,7 +6,7 @@
     "description": "Implemented JSON endpoints for the AgriTwin local operational platform. Examples use sample station data or explicitly labelled live/fallback weather sources and never expose secrets."
   },
   "servers": [
-    { "url": "/agritwin3", "description": "Local AgriTwin base path" }
+    { "url": "/agritwin", "description": "Local AgriTwin base path" }
   ],
   "paths": {
     "/api/health": {
@@ -291,7 +291,7 @@
         "properties": {
           "ok": { "type": "boolean" },
           "application": { "type": "string", "example": "AgriTwin" },
-          "base_path": { "type": "string", "example": "/agritwin3/" },
+          "base_path": { "type": "string", "example": "/agritwin/" },
           "data_mode": { "type": "string", "example": "Local fallback active" }
         }
       },

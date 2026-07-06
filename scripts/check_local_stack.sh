@@ -5,12 +5,33 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT_DIR}"
 
 APP_PORT="${AGRITWIN_APP_PORT:-$(awk -F= '$1=="AGRITWIN_APP_PORT"{print $2; found=1; exit} END{if(!found) print "8083"}' .env 2>/dev/null || echo 8083)}"
-BASE_URL="http://localhost:${APP_PORT}/agritwin3"
+BASE_URL="http://localhost:${APP_PORT}/agritwin"
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "${TMP_DIR}"' EXIT
 
 echo "[check] docker compose services"
 docker compose ps
+
+wait_for_service_health() {
+  local service="$1"
+  local container_id
+  for _ in $(seq 1 60); do
+    container_id="$(docker compose ps -q "${service}" 2>/dev/null || true)"
+    if [[ -n "${container_id}" ]]; then
+      status="$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "${container_id}" 2>/dev/null || true)"
+      if [[ "${status}" == "healthy" || "${status}" == "running" ]]; then
+        echo "[check] ${service} status: ${status}"
+        return 0
+      fi
+    fi
+    sleep 2
+  done
+  echo "[check] ${service} did not become healthy in time" >&2
+  return 1
+}
+
+wait_for_service_health agritwin-db
+wait_for_service_health agritwin-web
 
 echo "[check] database container connectivity"
 docker compose exec -T agritwin-db sh -lc 'mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -e "SELECT DATABASE() AS db, COUNT(*) AS farms FROM farms;" "$MYSQL_DATABASE"' >"${TMP_DIR}/db.out"
@@ -22,9 +43,9 @@ docker compose exec -T agritwin-web php -r 'require "agritwin_dashboard/db_confi
 if [[ -x scripts/openagri/check_openagri_services.sh ]]; then
   echo "[check] OpenAgri local services"
   if scripts/openagri/check_openagri_services.sh --core-only >/tmp/agritwin-openagri-check.out 2>&1; then
-    cat /tmp/agritwin-openagri-check.out
+    tr -d '\000' </tmp/agritwin-openagri-check.out
   else
-    cat /tmp/agritwin-openagri-check.out
+    tr -d '\000' </tmp/agritwin-openagri-check.out
     echo "[check] OpenAgri local services are not fully available; AgriTwin will use configured fallback behaviour where supported."
   fi
 fi
@@ -77,6 +98,7 @@ check_page "${BASE_URL}/agritwin_dashboard/reports.php" "reports"
 check_page "${BASE_URL}/agritwin_dashboard/openagri_services.php" "openagri"
 check_page "${BASE_URL}/agritwin_dashboard/settings.php" "settings"
 check_page "${BASE_URL}/agritwin_dashboard/api_swagger.php" "swagger"
+check_page "${BASE_URL}/api/health" "api_health"
 
 if [[ "${auth_available}" == "1" ]]; then
   grep -q 'cesiumContainer' "${TMP_DIR}/field1.html" || { echo "[check] field1 Cesium container not found" >&2; exit 1; }

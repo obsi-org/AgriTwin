@@ -65,6 +65,8 @@ ensure_local_env() {
   fi
 
   set_env_value AGRITWIN_APP_PORT "${app_port}"
+  set_env_value AGRITWIN_BASE_PATH "/agritwin"
+  set_env_value APP_BASE_PATH "/agritwin"
   set_env_value AGRITWIN_DB_PUBLISHED_PORT "${db_port}"
   set_env_value AGRITWIN_DB_NAME "${db_name}"
   set_env_value AGRITWIN_DB_USER "${db_user}"
@@ -133,11 +135,11 @@ done
 
 echo "[stack] waiting for web health"
 for _ in $(seq 1 60); do
-  if curl -fsS "http://localhost:${AGRITWIN_APP_PORT:-8083}/agritwin3/index.php" >/dev/null 2>&1; then
+  if curl -fsS "http://localhost:${AGRITWIN_APP_PORT:-8083}/agritwin/index.php" >/dev/null 2>&1; then
     break
   fi
   sleep 2
 done
 
-echo "[stack] AgriTwin local URL: http://localhost:${AGRITWIN_APP_PORT:-8083}/agritwin3/"
+echo "[stack] AgriTwin local URL: http://localhost:${AGRITWIN_APP_PORT:-8083}/agritwin/"
 echo "[stack] local stack start complete"

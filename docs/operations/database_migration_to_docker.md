@@ -20,14 +20,14 @@ The dump is written to `var/backups/` and ignored by Git.
 ## Import a Local Dump
 
 ```bash
-scripts/db/import_local_db.sh /path/to/agritwin.sql
+scripts/db/import_docker_db.sh /path/to/agritwin.sql
 ```
 
 This imports into the running Docker database without deleting volumes.
 
 ## Migrating From the Previous Apache/MySQL Deployment
 
-Treat previous deployments under `/var/www/html/agritwin2` and `/var/www/html/agritwin3` as read-only references. If the old MySQL database is still available, create a dump outside Git, then import it with `scripts/db/import_local_db.sh`.
+Treat previous deployments under `/var/www/html/agritwin2` and `/var/www/html/agritwin3` as read-only references. If the old MySQL database is still available, create a dump outside Git, then import it with `scripts/db/import_docker_db.sh`.
 
 Do not commit:
 

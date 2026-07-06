@@ -29,6 +29,6 @@ echo json_encode([
     'type' => $report['type'],
     'title' => $report['title'],
     'generated_at' => $report['generated_at'],
-    'download_url' => '/agritwin3/api/reports/download?id=' . rawurlencode($report['id']),
+    'download_url' => rtrim(agritwin_root_path(), '/') . '/api/reports/download?id=' . rawurlencode($report['id']),
     'content_type' => 'application/pdf',
 ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);

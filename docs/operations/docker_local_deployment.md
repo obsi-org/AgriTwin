@@ -8,7 +8,7 @@ The active AgriTwin repository is:
 /media/pedrobranco/AikoHD/Documents/Dev/agritwin
 ```
 
-The application no longer requires the source tree to live under `/var/www/html`. The Docker web container mounts this repository and serves it under the `/agritwin3/` base path.
+The application no longer requires the source tree to live under `/var/www/html`. The Docker web container mounts this repository and serves it under the `/agritwin/` base path.
 
 ## Services
 
@@ -44,17 +44,17 @@ AGRITWIN_START_OPENAGRI=1 scripts/start_local_stack.sh
 Open:
 
 ```text
-http://localhost:8083/agritwin3/
+http://localhost:8083/agritwin/
 ```
 
 Important routes:
 
 ```text
-http://localhost:8083/agritwin3/agritwin_dashboard/index.php
-http://localhost:8083/agritwin3/agritwin_dashboard/field1.php
-http://localhost:8083/agritwin3/agritwin_dashboard/reports.php
-http://localhost:8083/agritwin3/agritwin_dashboard/api_swagger.php
-http://localhost:8083/agritwin3/api/openapi.json
+http://localhost:8083/agritwin/agritwin_dashboard/index.php
+http://localhost:8083/agritwin/agritwin_dashboard/field1.php
+http://localhost:8083/agritwin/agritwin_dashboard/reports.php
+http://localhost:8083/agritwin/agritwin_dashboard/api_swagger.php
+http://localhost:8083/agritwin/api/openapi.json
 ```
 
 ## Stop
@@ -92,4 +92,4 @@ Cesium and Copernicus values continue to resolve through `app_settings` or ignor
 
 ## Optional Host Apache Reverse Proxy
 
-The Docker URL is the supported local URL. If a host Apache reverse proxy is desired, configure it manually outside this repository to forward `/agritwin3/` to `http://localhost:8083/agritwin3/`. Do not enable host Apache configuration as part of the repository setup.
+The Docker URL is the supported local URL. If a host Apache reverse proxy is desired, configure it manually outside this repository to forward `/agritwin/` to `http://localhost:8083/agritwin/`. Do not enable host Apache configuration as part of the repository setup.

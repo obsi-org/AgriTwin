@@ -3,7 +3,14 @@ declare(strict_types=1);
 
 function agritwin_base_path(): string
 {
-    return '/agritwin3/agritwin_dashboard/';
+    return rtrim(agritwin_root_path(), '/') . '/agritwin_dashboard/';
+}
+
+function agritwin_root_path(): string
+{
+    $basePath = agritwin_hmi_env('AGRITWIN_BASE_PATH', 'APP_BASE_PATH', '/agritwin');
+    $basePath = '/' . trim((string) $basePath, '/');
+    return $basePath === '/' ? '' : $basePath;
 }
 
 function agritwin_funding_acknowledgement(): string
@@ -33,7 +40,7 @@ function agritwin_current_language(): string
     if (is_string($requested) && isset(agritwin_supported_languages()[$requested])) {
         $_SESSION['agritwin_lang'] = $requested;
         if (!headers_sent()) {
-            setcookie('agritwin_lang', $requested, ['expires' => time() + 31536000, 'path' => '/agritwin3/', 'samesite' => 'Lax']);
+            setcookie('agritwin_lang', $requested, ['expires' => time() + 31536000, 'path' => rtrim(agritwin_root_path(), '/') . '/', 'samesite' => 'Lax']);
         }
         $currentLanguage = $requested;
         return $currentLanguage;
@@ -98,7 +105,7 @@ function agritwin_farm_context(): array
         'primary_crop' => agritwin_t('almonds'),
         'secondary_crops' => [agritwin_t('pistachios'), agritwin_t('maize')],
         'timezone' => 'Europe/Madrid',
-        'base_path' => '/agritwin3/',
+        'base_path' => rtrim(agritwin_root_path(), '/') . '/',
         'data_mode' => agritwin_t('local_fallback'),
         'last_sync' => agritwin_demo_date()->format(DateTimeInterface::ATOM),
     ];

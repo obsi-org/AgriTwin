@@ -153,7 +153,7 @@ return [
             'Se a base de dados estiver indisponível, execute scripts/start_local_stack.sh e depois scripts/check_local_stack.sh. Não elimine volumes da base de dados durante a recuperação normal.',
             'Se um serviço OpenAgri estiver indisponível, execute scripts/openagri/check_openagri_services.sh e reveja ponto de acesso, credenciais e estado do contentor.',
             'Se forem necessárias credenciais meteorológicas, um utilizador autorizado deve configurar a chave do fornecedor nas Definições.',
-            'Se os gráficos não carregarem, atualize a página e confirme que o JavaScript está ativo. Se o idioma não persistir, verifique os cookies do navegador para /agritwin3/.',
+            'Se os gráficos não carregarem, atualize a página e confirme que o JavaScript está ativo. Se o idioma não persistir, verifique os cookies do navegador para /agritwin/.',
             'Para problemas de acesso ou palavra-passe, contacte um Administrador para redefinir a conta ou confirmar permissões.',
         ],
     ],

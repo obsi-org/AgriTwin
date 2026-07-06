@@ -53,7 +53,7 @@ make run
 Open:
 
 ```text
-http://localhost:8083/agritwin3/
+http://localhost:8083/agritwin/
 ```
 
 The Docker URL is the supported local URL. The app expects a working Docker database. Login credentials depend on imported seed data or ignored `LOCAL_CREDENTIALS.md`.
@@ -81,10 +81,10 @@ scripts/openagri/check_openagri_services.sh
 Expected URL checks:
 
 ```bash
-curl -s -L http://localhost:8083/agritwin3/index.php
-curl -s -L http://localhost:8083/agritwin3/agritwin_dashboard/index.php
-curl -s -L http://localhost:8083/agritwin3/agritwin_dashboard/settings.php
-curl -s -L http://localhost:8083/agritwin3/agritwin_dashboard/openagri_services.php
+curl -s -L http://localhost:8083/agritwin/index.php
+curl -s -L http://localhost:8083/agritwin/agritwin_dashboard/index.php
+curl -s -L http://localhost:8083/agritwin/agritwin_dashboard/settings.php
+curl -s -L http://localhost:8083/agritwin/agritwin_dashboard/openagri_services.php
 ```
 
 Successful recovery means `agritwin3-agritwin-db-1` is healthy, `agritwin3-agritwin-web-1` is running, the container PHP DB check reports `container-db-ok`, pages render without database-unavailable status, and configured local OpenAgri services respond. The scripts do not delete Docker volumes.

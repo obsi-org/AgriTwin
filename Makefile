@@ -18,7 +18,7 @@ help:
 	@echo "  make generate-d1-evidence - Generate all sample D1 KPI evidence artefacts"
 	@echo "  make scan-secrets - Run conservative publication safety scan"
 	@echo "  make publication-check - Run tests plus publication safety scan"
-	@echo "  make run    - Start Docker Compose local stack on http://localhost:8083/agritwin3/"
+	@echo "  make run    - Start Docker Compose local stack on http://localhost:8083/agritwin/"
 	@echo "  make compose-up - Build and start Docker Compose services"
 	@echo "  make docs   - List audit and source documentation"
 	@echo "  make audit  - Run lint and show audit documents"

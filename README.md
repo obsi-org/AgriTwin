@@ -29,20 +29,20 @@ make run
 Then open:
 
 ```text
-http://localhost:8083/agritwin3/
+http://localhost:8083/agritwin/
 ```
 
 Dashboard URLs under the Docker web runtime are:
 
 ```text
-http://localhost:8083/agritwin3/
-http://localhost:8083/agritwin3/agritwin_dashboard/index.php
-http://localhost:8083/agritwin3/agritwin_dashboard/api_swagger.php
-http://localhost:8083/agritwin3/agritwin_dashboard/analytics.php
-http://localhost:8083/agritwin3/api/openapi.json
+http://localhost:8083/agritwin/
+http://localhost:8083/agritwin/agritwin_dashboard/index.php
+http://localhost:8083/agritwin/agritwin_dashboard/api_swagger.php
+http://localhost:8083/agritwin/agritwin_dashboard/analytics.php
+http://localhost:8083/agritwin/api/openapi.json
 ```
 
-The current platform runs from this repository through Docker Compose. Apache and PHP run in the `agritwin-web` container, MySQL runs in `agritwin-db`, and the application is served under `/agritwin3/` without requiring a host checkout under `/var/www/html`. See `docs/operations/docker_local_deployment.md` and `docs/operations/database_migration_to_docker.md` for details.
+The current platform runs from this repository through Docker Compose. Apache and PHP run in the `agritwin-web` container, MySQL runs in `agritwin-db`, and the application is served under `/agritwin/` without requiring a host checkout under `/var/www/html`. See `docs/operations/docker_local_deployment.md` and `docs/operations/database_migration_to_docker.md` for details.
 
 Local temporary credentials are stored in the ignored `LOCAL_CREDENTIALS.md` file generated during local setup.
 
@@ -60,7 +60,7 @@ Verify the recovery with:
 scripts/check_local_stack.sh
 ```
 
-The script publishes the AgriTwin web container on `http://localhost:8083/agritwin3/` and the MySQL container on host port `33063` by default. It writes only ignored local runtime config under `.env` and `config/database.local.env`.
+The script publishes the AgriTwin web container on `http://localhost:8083/agritwin/` and the MySQL container on host port `33063` by default. It writes only ignored local runtime config under `.env` and `config/database.local.env`.
 
 If the local OpenAgri upstream runtime should also be started by the same command, run:
 
@@ -75,10 +75,10 @@ scripts/openagri/check_openagri_services.sh
 scripts/openagri/check_openagri_services.sh --core-only
 make test
 find . -path './external' -prune -o -path './vendor' -prune -o -name '*.php' -print | xargs -n1 php -l
-curl -s -L http://localhost:8083/agritwin3/index.php
-curl -s -L http://localhost:8083/agritwin3/agritwin_dashboard/index.php
-curl -s -L http://localhost:8083/agritwin3/agritwin_dashboard/settings.php
-curl -s -L http://localhost:8083/agritwin3/agritwin_dashboard/openagri_services.php
+curl -s -L http://localhost:8083/agritwin/index.php
+curl -s -L http://localhost:8083/agritwin/agritwin_dashboard/index.php
+curl -s -L http://localhost:8083/agritwin/agritwin_dashboard/settings.php
+curl -s -L http://localhost:8083/agritwin/agritwin_dashboard/openagri_services.php
 ```
 
 Live OpenAgri Weather observations require real external credentials and provider configuration outside git.
@@ -98,7 +98,7 @@ Use the core-only check when validating the core service set:
 
 ```bash
 scripts/openagri/check_openagri_services.sh --core-only
-curl -fsS http://localhost:8083/agritwin3/api/openagri/core-services
+curl -fsS http://localhost:8083/agritwin/api/openagri/core-services
 ```
 
 ## Reproducible Local Run
@@ -109,7 +109,7 @@ Docker Compose local mode starts the PHP/Apache app and MySQL database from this
 make run
 ```
 
-Then open `http://localhost:8083/agritwin3/`. Run all tests and publication safety checks with:
+Then open `http://localhost:8083/agritwin/`. Run all tests and publication safety checks with:
 
 ```bash
 make publication-check

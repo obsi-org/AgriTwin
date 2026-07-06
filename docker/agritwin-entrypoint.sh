@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -eu
 
-APP_DIR="/var/www/html/agritwin3"
+APP_DIR="/var/www/html/agritwin"
 
 mkdir -p \
   "${APP_DIR}/var/cache/openagri" \

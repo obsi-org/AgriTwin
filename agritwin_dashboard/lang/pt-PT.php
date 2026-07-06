@@ -157,7 +157,7 @@ return [
     'kpi_source_note' => 'Os cálculos de KPI usam atualmente %d estações de sensores configuradas e registos de eventos de exemplo.',
     'swagger_ui' => 'Swagger UI',
     'open_openapi_json' => 'Abrir openapi.json',
-    'swagger_note' => 'O Swagger UI carrega a especificação da API local AgriTwin implementada a partir de `/agritwin3/api/openapi.json`. Os exemplos usam dados de estações de exemplo e nunca incluem segredos.',
+    'swagger_note' => 'O Swagger UI carrega a especificação da API local AgriTwin implementada a partir de `/agritwin/api/openapi.json`. Os exemplos usam dados de estações de exemplo e nunca incluem segredos.',
     'javascript_required' => 'É necessário JavaScript para o Swagger UI. O JSON OpenAPI permanece disponível em',
     'service_health' => 'Estado dos serviços e proveniência dos dados',
     'service_health_explanation' => 'A AgriTwin só marca um conector como serviço em tempo real depois de um pedido real a um ponto de acesso ser bem-sucedido. Serviços sem conectividade verificada mostram estados de configuração, indisponibilidade ou modo local de contingência.',

@@ -74,7 +74,7 @@ agritwin_render_page('settings', agritwin_t('settings'), function () use ($conte
             <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('db_status')) ?></span><strong><?= $dbOk ? agritwin_h(agritwin_t('connected')) : agritwin_h(agritwin_t('unavailable')) ?></strong></article>
             <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('farm_location')) ?></span><strong>Fotovoltaica Macotera SL, Salamanca</strong></article>
             <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('weather_preference')) ?></span><strong><?= agritwin_h(agritwin_mode_label($weatherSource['mode'])) ?></strong></article>
-            <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('api_docs')) ?></span><strong>/agritwin3/api/openapi.json</strong></article>
+            <article class="telemetry-card"><span><?= agritwin_h(agritwin_t('api_docs')) ?></span><strong>/agritwin/api/openapi.json</strong></article>
         </div>
     </section>
 
@@ -200,7 +200,7 @@ agritwin_render_page('settings', agritwin_t('settings'), function () use ($conte
                 <input type="text" value="<?= agritwin_h(agritwin_t('five_minutes')) ?>" readonly>
             </label>
             <label><?= agritwin_h(agritwin_t('api_base_path')) ?>
-                <input type="text" value="/agritwin3/" readonly>
+                <input type="text" value="/agritwin/" readonly>
             </label>
             <label><?= agritwin_h(agritwin_t('timezone')) ?>
                 <input type="text" value="Europe/Madrid" readonly>

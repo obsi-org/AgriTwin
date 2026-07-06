@@ -14,7 +14,7 @@ The active repository now runs directly from `/media/pedrobranco/AikoHD/Document
 
 - Added `restart: unless-stopped` to the AgriTwin web container, database and optional OpenAgri fixture service.
 - Added a named `agritwin_mysql_data` volume for persistent MySQL data.
-- Published the AgriTwin web service on `http://localhost:8083/agritwin3/`.
+- Published the AgriTwin web service on `http://localhost:8083/agritwin/`.
 - Published the AgriTwin MySQL service on host port `33063` by default to avoid `3306` conflicts.
 - Added `scripts/start_local_stack.sh`, `scripts/check_local_stack.sh` and `scripts/stop_local_stack.sh`.
 - Added ignored `.env` and `config/database.local.env` generation for local runtime configuration.
@@ -54,7 +54,7 @@ The check script verifies:
 - Database connectivity inside the MySQL container.
 - PHP application database connectivity from inside the web container.
 - Local OpenAgri service checks when the services are configured and running.
-- Rendered `http://localhost:8083/agritwin3/` pages for SQLSTATE, access-denied and prohibited terms.
+- Rendered `http://localhost:8083/agritwin/` pages for SQLSTATE, access-denied and prohibited terms.
 - Reports/PDF generation inside the web container.
 
 Expected successful result:
@@ -71,17 +71,17 @@ Additional verification commands:
 scripts/openagri/check_openagri_services.sh
 make test
 find . -path './external' -prune -o -path './vendor' -prune -o -name '*.php' -print | xargs -n1 php -l
-curl -s -L http://localhost:8083/agritwin3/index.php
-curl -s -L http://localhost:8083/agritwin3/agritwin_dashboard/index.php
-curl -s -L http://localhost:8083/agritwin3/agritwin_dashboard/settings.php
-curl -s -L http://localhost:8083/agritwin3/agritwin_dashboard/openagri_services.php
+curl -s -L http://localhost:8083/agritwin/index.php
+curl -s -L http://localhost:8083/agritwin/agritwin_dashboard/index.php
+curl -s -L http://localhost:8083/agritwin/agritwin_dashboard/settings.php
+curl -s -L http://localhost:8083/agritwin/agritwin_dashboard/openagri_services.php
 ```
 
 ## Troubleshooting
 
 - Docker not running: start Docker, then rerun `scripts/start_local_stack.sh`.
 - Database container not healthy: run `docker compose ps` and `docker compose logs agritwin-db --tail=120`; do not delete volumes as a routine recovery action.
-- Web container not healthy: run `docker compose logs agritwin-web --tail=120` and verify `http://localhost:8083/agritwin3/index.php`.
+- Web container not healthy: run `docker compose logs agritwin-web --tail=120` and verify `http://localhost:8083/agritwin/index.php`.
 - DB credentials/config not loaded: rerun `scripts/start_local_stack.sh` to regenerate ignored local `.env` and `config/database.local.env`, then rerun `scripts/check_local_stack.sh`.
 - OpenAgri local services not started: run `AGRITWIN_START_OPENAGRI=1 scripts/start_local_stack.sh` or `OPENAGRI_RUN_CONTAINERS=1 scripts/openagri/start_openagri_services.sh`, then run `scripts/openagri/check_openagri_services.sh`.
 - Weather service running but live weather credentials missing: this is expected until real OpenAgri Weather authentication and upstream weather-provider credentials are supplied outside git.

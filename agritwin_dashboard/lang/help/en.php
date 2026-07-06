@@ -153,7 +153,7 @@ return [
             'If the database is unavailable, run scripts/start_local_stack.sh and then scripts/check_local_stack.sh. Do not delete database volumes during normal recovery.',
             'If an OpenAgri service is unavailable, run scripts/openagri/check_openagri_services.sh and review endpoint, credentials and container status.',
             'If weather credentials are required, an authorised user must configure the provider key in Settings.',
-            'If charts do not load, refresh the page and confirm JavaScript is enabled. If language selection does not persist, check browser cookies for /agritwin3/.',
+            'If charts do not load, refresh the page and confirm JavaScript is enabled. If language selection does not persist, check browser cookies for /agritwin/.',
             'For login or password issues, contact an Administrator to reset the account or confirm role access.',
         ],
     ],

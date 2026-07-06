@@ -36,8 +36,8 @@ RUN apt-get update \
 COPY docker/apache/agritwin.conf /etc/apache2/sites-available/000-default.conf
 COPY docker/agritwin-entrypoint.sh /usr/local/bin/agritwin-entrypoint
 
-WORKDIR /var/www/html/agritwin3
-COPY . /var/www/html/agritwin3/
+WORKDIR /var/www/html/agritwin
+COPY . /var/www/html/agritwin/
 
 RUN chmod +x /usr/local/bin/agritwin-entrypoint \
     && mkdir -p \
