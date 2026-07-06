@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/agritwin/schema/agritwin-sample-record.schema.json",
+  "title": "AgriTwin Sample Dataset Record",
+  "type": "object",
+  "required": [
+    "data_source_classification"
+  ],
+  "properties": {
+    "record_type": {
+      "type": "string"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "bucket_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "parcel_group_id": {
+      "type": "string",
+      "enum": [
+        "parcel_group_001",
+        "parcel_group_002",
+        "parcel_group_003"
+      ]
+    },
+    "crop_code": {
+      "type": "string",
+      "enum": [
+        "almond",
+        "pistachio",
+        "maize"
+      ]
+    },
+    "air_temperature_c": {
+      "type": "number",
+      "minimum": 8,
+      "maximum": 34
+    },
+    "relative_humidity_pct": {
+      "type": "number",
+      "minimum": 25,
+      "maximum": 90
+    },
+    "soil_moisture_vwc_pct": {
+      "type": "number",
+      "minimum": 10,
+      "maximum": 38
+    },
+    "soil_temperature_c": {
+      "type": "number",
+      "minimum": 6,
+      "maximum": 28
+    },
+    "leaf_wetness_pct": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "rainfall_mm": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 25
+    },
+    "wind_speed_kmh": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 45
+    },
+    "solar_radiation_w_m2": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 950
+    },
+    "irrigation_flow_m3_h": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 40
+    },
+    "pump_energy_kwh": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 260
+    },
+    "pv_power_kw": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 90
+    },
+    "water_stress_index": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "pest_disease_risk_index": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "nitrogen_recommendation_kg_ha": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 120
+    },
+    "data_source_classification": {
+      "type": "string",
+      "enum": [
+        "anonymised_aggregated_sample",
+        "synthetic_developer_sample",
+        "schema_only_example"
+      ]
+    }
+  },
+  "additionalProperties": true
+}

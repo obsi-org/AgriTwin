@@ -1,0 +1,34 @@
+{
+  "record_type": "openagri_service_status",
+  "generated_at": "2026-06-05T12:00:00Z",
+  "services": [
+    {
+      "service": "Gatekeeper",
+      "status": "available",
+      "latency_ms": 36
+    },
+    {
+      "service": "Weather Data Service",
+      "status": "available",
+      "latency_ms": 54
+    },
+    {
+      "service": "Irrigation Management Service",
+      "status": "available",
+      "latency_ms": 61
+    },
+    {
+      "service": "Pest and Disease Management Service",
+      "status": "unavailable",
+      "latency_ms": null,
+      "scenario_label": "OpenAgri service unavailable event"
+    },
+    {
+      "service": "Reporting Service",
+      "status": "available",
+      "latency_ms": 72,
+      "scenario_label": "recovery_synchronisation_event"
+    }
+  ],
+  "data_source_classification": "synthetic_developer_sample"
+}

@@ -1,0 +1,9 @@
+{
+  "record_type": "eo_vegetation_index_summary",
+  "observed_date": "2026-06-01",
+  "parcel_group_id": "parcel_group_001",
+  "ndvi_mean": 0.66,
+  "lai_savi_mean": 0.51,
+  "cloud_cover_pct": 9.0,
+  "data_source_classification": "schema_only_example"
+}

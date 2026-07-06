@@ -1,0 +1,8 @@
+{
+  "record_type": "irrigation_event",
+  "started_at": "2026-06-01T18:00:00Z",
+  "ended_at": "2026-06-01T18:45:00Z",
+  "parcel_group_id": "parcel_group_001",
+  "irrigation_flow_m3_h": 28.0,
+  "data_source_classification": "schema_only_example"
+}

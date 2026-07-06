@@ -1,0 +1,42 @@
+{
+  "dataset_name": "AgriTwin anonymised aggregated sample dataset",
+  "version": "1.0.0",
+  "seed": 134083,
+  "days": 30,
+  "site_metadata": {
+    "region": "Castilla y León",
+    "province": "Salamanca",
+    "site_label": "anonymised_salamanca_agri_site",
+    "location_precision": "regional_or_grid_cell",
+    "coarse_grid_centroid": {
+      "lat": 40.9,
+      "lon": -5.7,
+      "coordinate_precision": "1_decimal_degree"
+    }
+  },
+  "data_source_classification": "anonymised_aggregated_sample",
+  "privacy_transformations": [
+    "location_generalised",
+    "parcel_identifiers_generalised",
+    "infrastructure_identifiers_generalised",
+    "timestamps_bucketed",
+    "values_aggregated",
+    "private_logs_excluded"
+  ],
+  "excluded_materials": [
+    "raw_pilot_farm_data",
+    "exact_private_coordinates",
+    "credentials",
+    "site_specific_configuration",
+    "non_anonymised_operational_logs"
+  ],
+  "files": {
+    "aggregated_weather_daily.csv": 30,
+    "aggregated_sensor_daily.csv": 90,
+    "aggregated_irrigation_daily.csv": 90,
+    "aggregated_energy_daily.csv": 30,
+    "aggregated_pest_disease_daily.csv": 90,
+    "aggregated_dss_recommendations.csv": 90,
+    "aggregated_kpis.csv": 90
+  }
+}

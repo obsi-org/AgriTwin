@@ -1,0 +1,10 @@
+{
+  "record_type": "digital_twin_telemetry_summary",
+  "generated_at": "2026-06-01T13:00:00Z",
+  "entity_id": "sensor_station_A",
+  "entity_type": "sensor_station",
+  "status": "active",
+  "coordinate_type": "synthetic",
+  "coordinate_precision": "coarse",
+  "data_source_classification": "schema_only_example"
+}

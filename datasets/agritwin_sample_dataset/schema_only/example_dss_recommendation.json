@@ -1,0 +1,10 @@
+{
+  "record_type": "recommendation",
+  "generated_at": "2026-06-01T13:00:00Z",
+  "parcel_group_id": "parcel_group_001",
+  "recommendation_type": "irrigation",
+  "water_stress_index": 0.42,
+  "nitrogen_recommendation_kg_ha": 52.0,
+  "confidence": "normal",
+  "data_source_classification": "schema_only_example"
+}

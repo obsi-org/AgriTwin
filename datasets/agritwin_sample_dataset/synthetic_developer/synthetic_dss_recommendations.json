@@ -1,0 +1,26 @@
+{
+  "dataset_name": "Synthetic DSS recommendations",
+  "generated_at": "2026-06-05T12:00:00Z",
+  "data_source_classification": "synthetic_developer_sample",
+  "recommendations": [
+    {
+      "recommendation_id": "synthetic_rec_001",
+      "record_type": "recommendation",
+      "parcel_group_id": "parcel_group_002",
+      "recommendation_type": "irrigation",
+      "water_stress_index": 0.68,
+      "nitrogen_recommendation_kg_ha": 48.0,
+      "confidence": "normal",
+      "reason": "Soil moisture below preferred range after a warm windy interval."
+    },
+    {
+      "recommendation_id": "synthetic_rec_002",
+      "record_type": "recommendation",
+      "parcel_group_id": "parcel_group_001",
+      "recommendation_type": "pest_monitoring",
+      "pest_disease_risk_index": 0.62,
+      "confidence": "reduced",
+      "reason": "Rainfall, humidity and leaf wetness increased monitoring priority."
+    }
+  ]
+}

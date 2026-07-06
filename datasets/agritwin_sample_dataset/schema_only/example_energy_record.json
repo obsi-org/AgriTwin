@@ -1,0 +1,8 @@
+{
+  "record_type": "energy_reading",
+  "observed_at": "2026-06-01T12:00:00Z",
+  "pv_meter_group_id": "pv_meter_group_01",
+  "pv_power_kw": 62.0,
+  "pump_energy_kwh": 0.0,
+  "data_source_classification": "schema_only_example"
+}

@@ -1,0 +1,7 @@
+activity_id,activity_at,parcel_group_id,activity_type,operator_role,note,data_source_classification
+synthetic_activity_001,2026-06-01T07:15:00Z,parcel_group_002,field_inspection,farm_manager,Normal irrigation day pre-check,synthetic_developer_sample
+synthetic_activity_002,2026-06-02T08:00:00Z,parcel_group_003,sensor_check,technical_manager,Low soil-moisture event review,synthetic_developer_sample
+synthetic_activity_003,2026-06-02T17:30:00Z,parcel_group_001,irrigation_pressure_check,farm_manager,Pump pressure verified,synthetic_developer_sample
+synthetic_activity_004,2026-06-03T08:10:00Z,parcel_group_002,pest_monitoring,technical_manager,Humidity and leaf wetness increased risk,synthetic_developer_sample
+synthetic_activity_005,2026-06-04T09:00:00Z,parcel_group_003,energy_review,farm_manager,Pump energy anomaly review,synthetic_developer_sample
+synthetic_activity_006,2026-06-05T11:00:00Z,parcel_group_001,service_recovery,technical_manager,OpenAgri synchronisation recovered,synthetic_developer_sample

@@ -1,0 +1,15 @@
+field_name,unit,description
+air_temperature_c,°C,Air temperature
+relative_humidity_pct,%,Relative humidity
+soil_moisture_vwc_pct,% VWC,Volumetric water content
+soil_temperature_c,°C,Soil temperature
+leaf_wetness_pct,%,Leaf wetness
+rainfall_mm,mm,Rainfall
+wind_speed_kmh,km/h,Wind speed
+solar_radiation_w_m2,W/m²,Solar radiation
+irrigation_flow_m3_h,m³/h,Irrigation flow
+pump_energy_kwh,kWh,Pump energy
+pv_power_kw,kW,PV power
+water_stress_index,index_0_1,Water stress
+pest_disease_risk_index,index_0_1,Pest and disease risk
+nitrogen_recommendation_kg_ha,kg/ha,Nitrogen recommendation

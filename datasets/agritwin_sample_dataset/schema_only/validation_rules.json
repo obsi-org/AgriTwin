@@ -1,0 +1,105 @@
+{
+  "timestamp_conventions": {
+    "timezone": "UTC for generated examples; operational deployments may store local timezone with explicit offset.",
+    "iso_8601_required_for": [
+      "observed_at",
+      "generated_at",
+      "started_at",
+      "ended_at"
+    ],
+    "aggregated_bucket_fields": [
+      "bucket_date",
+      "bucket_start",
+      "bucket_end"
+    ]
+  },
+  "allowed_crop_codes": [
+    "almond",
+    "pistachio",
+    "maize"
+  ],
+  "allowed_location_precision_values": [
+    "regional_or_grid_cell",
+    "coarse",
+    "none"
+  ],
+  "distribution_constraints": [
+    "No exact private coordinates",
+    "No private parcel identifiers",
+    "No private infrastructure identifiers",
+    "No credentials or API keys",
+    "No non-anonymised operational logs"
+  ],
+  "numeric_ranges": {
+    "air_temperature_c": {
+      "type": "number",
+      "minimum": 8,
+      "maximum": 34
+    },
+    "relative_humidity_pct": {
+      "type": "number",
+      "minimum": 25,
+      "maximum": 90
+    },
+    "soil_moisture_vwc_pct": {
+      "type": "number",
+      "minimum": 10,
+      "maximum": 38
+    },
+    "soil_temperature_c": {
+      "type": "number",
+      "minimum": 6,
+      "maximum": 28
+    },
+    "leaf_wetness_pct": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "rainfall_mm": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 25
+    },
+    "wind_speed_kmh": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 45
+    },
+    "solar_radiation_w_m2": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 950
+    },
+    "irrigation_flow_m3_h": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 40
+    },
+    "pump_energy_kwh": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 260
+    },
+    "pv_power_kw": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 90
+    },
+    "water_stress_index": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "pest_disease_risk_index": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "nitrogen_recommendation_kg_ha": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 120
+    }
+  }
+}

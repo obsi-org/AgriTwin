@@ -1,0 +1,8 @@
+{
+  "record_type": "kpi_evaluation",
+  "generated_at": "2026-06-01T13:00:00Z",
+  "kpi_name": "irrigation_schedule_latency",
+  "kpi_value": 42.0,
+  "unit": "seconds",
+  "data_source_classification": "schema_only_example"
+}

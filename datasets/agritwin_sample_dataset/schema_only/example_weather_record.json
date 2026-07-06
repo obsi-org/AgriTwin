@@ -1,0 +1,19 @@
+{
+  "record_type": "weather_observation",
+  "observed_at": "2026-06-01T12:00:00Z",
+  "region": "Castilla y León",
+  "province": "Salamanca",
+  "site_label": "anonymised_salamanca_agri_site",
+  "location_precision": "regional_or_grid_cell",
+  "coarse_grid_centroid": {
+    "lat": 40.9,
+    "lon": -5.7,
+    "coordinate_precision": "1_decimal_degree"
+  },
+  "air_temperature_c": 25.4,
+  "relative_humidity_pct": 44,
+  "rainfall_mm": 0.0,
+  "wind_speed_kmh": 14.2,
+  "solar_radiation_w_m2": 780,
+  "data_source_classification": "schema_only_example"
+}

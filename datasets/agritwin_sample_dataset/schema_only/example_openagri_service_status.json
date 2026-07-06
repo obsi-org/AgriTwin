@@ -1,0 +1,8 @@
+{
+  "record_type": "openagri_service_status",
+  "generated_at": "2026-06-01T13:00:00Z",
+  "service": "Weather Data Service",
+  "status": "available",
+  "latency_ms": 54,
+  "data_source_classification": "schema_only_example"
+}

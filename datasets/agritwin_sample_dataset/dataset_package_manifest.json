@@ -1,0 +1,45 @@
+{
+  "dataset_name": "AgriTwin safe sample dataset package",
+  "version": "1.0.0",
+  "generated_by": "scripts/generate_sample_dataset.py",
+  "seed": 134083,
+  "days": 30,
+  "packages": {
+    "anonymised_aggregated": {
+      "aggregated_weather_daily.csv": 30,
+      "aggregated_sensor_daily.csv": 90,
+      "aggregated_irrigation_daily.csv": 90,
+      "aggregated_energy_daily.csv": 30,
+      "aggregated_pest_disease_daily.csv": 90,
+      "aggregated_dss_recommendations.csv": 90,
+      "aggregated_kpis.csv": 90
+    },
+    "synthetic_developer": {
+      "synthetic_weather_timeseries.csv": 2880,
+      "synthetic_sensor_timeseries.csv": 11520,
+      "synthetic_irrigation_events.csv": 7,
+      "synthetic_energy_timeseries.csv": 2880,
+      "synthetic_eo_indices.csv": 18,
+      "synthetic_farm_activity_log.csv": 6,
+      "synthetic_dss_recommendations.json": 2,
+      "synthetic_digital_twin_telemetry.json": 4,
+      "synthetic_openagri_service_status.json": 5
+    },
+    "schema_only": {
+      "field_definitions.csv": 39,
+      "units.csv": 14,
+      "example_records.csv": 10,
+      "json_schema_files": 12
+    },
+    "docs": {
+      "README.md": 1,
+      "DATASET_CARD.md": 1,
+      "PRIVACY_AND_ANONYMISATION.md": 1,
+      "SCHEMA_GUIDE.md": 1,
+      "DEVELOPER_USAGE.md": 1,
+      "VALIDATION_GUIDE.md": 1,
+      "DISTRIBUTION_NOTES.md": 1
+    }
+  },
+  "privacy_statement": "No raw pilot-farm data, credentials, exact private coordinates or non-anonymised operational logs are included."
+}

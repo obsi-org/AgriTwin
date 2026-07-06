@@ -1,0 +1,8 @@
+event_id,started_at,ended_at,parcel_group_id,irrigation_infrastructure_group_id,irrigation_flow_m3_h,estimated_volume_m3,scenario_label,data_source_classification
+synthetic_irrigation_event_001,2026-06-01T21:30:00Z,2026-06-01T22:15:00Z,parcel_group_001,irrigation_pump_group_01,28.0,21.0,normal_irrigation_day,synthetic_developer_sample
+synthetic_irrigation_event_002,2026-06-01T21:45:00Z,2026-06-01T22:30:00Z,parcel_group_002,irrigation_pump_group_01,28.0,21.0,normal_irrigation_day,synthetic_developer_sample
+synthetic_irrigation_event_003,2026-06-01T22:00:00Z,2026-06-01T22:45:00Z,parcel_group_003,irrigation_pump_group_01,28.0,21.0,normal_irrigation_day,synthetic_developer_sample
+synthetic_irrigation_event_004,2026-06-02T22:00:00Z,2026-06-02T22:45:00Z,parcel_group_001,irrigation_pump_group_01,28.0,21.0,low_soil_moisture_event,synthetic_developer_sample
+synthetic_irrigation_event_005,2026-06-02T22:15:00Z,2026-06-02T23:00:00Z,parcel_group_002,irrigation_pump_group_01,28.0,21.0,low_soil_moisture_event,synthetic_developer_sample
+synthetic_irrigation_event_006,2026-06-02T22:30:00Z,2026-06-02T23:15:00Z,parcel_group_003,irrigation_pump_group_01,28.0,21.0,low_soil_moisture_event,synthetic_developer_sample
+synthetic_irrigation_event_007,2026-06-02T22:45:00Z,2026-06-02T23:30:00Z,parcel_group_001,irrigation_pump_group_01,28.0,21.0,low_soil_moisture_event,synthetic_developer_sample

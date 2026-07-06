@@ -1,0 +1,7 @@
+{
+  "record_type": "farmer_activity",
+  "activity_at": "2026-06-01T07:15:00Z",
+  "activity_type": "field_inspection",
+  "operator_role": "farm_manager",
+  "data_source_classification": "schema_only_example"
+}

@@ -119,6 +119,12 @@ make publication-check
 
 The operational HMI supports English, Portuguese from Portugal and Spanish from Spain through the language selector or `?lang=en`, `?lang=pt-PT`, `?lang=es-ES`.
 
+## Sample dataset package
+
+A safe AgriTwin sample dataset package is available under `datasets/agritwin_sample_dataset/`. It contains anonymised aggregated records, deterministic synthetic developer records and schema-only examples for the AgriTwin sensor, DSS, analytics, reporting and Digital Twin architecture. It does not include raw pilot-farm data, exact private coordinates, credentials, site-specific configuration or non-anonymised operational logs.
+
+See `datasets/agritwin_sample_dataset/docs/README.md` for package structure, validation commands and developer usage.
+
 ## Licence, funding and disclaimer
 
 AgriTwin - Agricultural Digital Twin for Intelligent Decision-Making

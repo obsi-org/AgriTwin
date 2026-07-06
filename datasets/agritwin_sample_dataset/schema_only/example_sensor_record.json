@@ -1,0 +1,13 @@
+{
+  "record_type": "sensor_reading",
+  "observed_at": "2026-06-01T12:15:00Z",
+  "farm_id": "example_farm_001",
+  "parcel_id": "parcel_group_001",
+  "station_id": "sensor_station_A",
+  "soil_moisture_vwc_pct": 24.6,
+  "soil_temperature_c": 20.4,
+  "air_temperature_c": 25.1,
+  "relative_humidity_pct": 46,
+  "leaf_wetness_pct": 12,
+  "data_source_classification": "schema_only_example"
+}

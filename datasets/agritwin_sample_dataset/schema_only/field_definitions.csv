@@ -1,0 +1,40 @@
+field_name,type,required,unit,description,allowed_values_or_range
+record_type,string,required,,"Record family, e.g. sensor_reading or recommendation",
+observed_at,datetime,required,,ISO-8601 observation timestamp,
+generated_at,datetime,optional,,ISO-8601 generation timestamp,
+bucket_date,date,required_for_aggregated,,Daily aggregation date,
+bucket_start,datetime,optional,,Aggregation bucket start,
+bucket_end,datetime,optional,,Aggregation bucket end,
+parcel_group_id,string,required,,Generalised parcel group identifier,parcel_group_001|parcel_group_002|parcel_group_003
+sensor_station_group_id,string,optional,,Generalised sensor station group,sensor_station_A|sensor_station_B|sensor_station_C|sensor_station_D
+station_id,string,optional,,Synthetic station identifier,
+crop_code,enum,required,,Crop code,almond|pistachio|maize
+air_temperature_c,number,optional,°C,Air temperature,8..34
+air_temperature_min_c,number,optional,°C,Daily minimum air temperature,6..34
+air_temperature_avg_c,number,optional,°C,Daily average air temperature,8..34
+air_temperature_c_avg,number,optional,°C,Daily average air temperature,8..34
+air_temperature_max_c,number,optional,°C,Daily maximum air temperature,8..34
+relative_humidity_pct,number,optional,%,Relative humidity,25..90
+relative_humidity_avg_pct,number,optional,%,Daily average relative humidity,25..90
+relative_humidity_pct_avg,number,optional,%,Daily average relative humidity,25..90
+soil_moisture_vwc_pct,number,optional,% VWC,Volumetric water content,10..38
+soil_moisture_vwc_pct_avg,number,optional,% VWC,Average volumetric water content,10..38
+soil_moisture_vwc_pct_min,number,optional,% VWC,Minimum volumetric water content,10..38
+soil_temperature_c,number,optional,°C,Soil temperature,6..28
+soil_temperature_c_avg,number,optional,°C,Daily average soil temperature,6..28
+leaf_wetness_pct,number,optional,%,Leaf wetness indicator,0..100
+leaf_wetness_pct_avg,number,optional,%,Average leaf wetness indicator,0..100
+rainfall_mm,number,optional,mm,Rainfall depth,0..25 daily
+wind_speed_kmh,number,optional,km/h,Wind speed,0..45
+wind_speed_avg_kmh,number,optional,km/h,Average wind speed,0..45
+solar_radiation_w_m2,number,optional,W/m²,Solar radiation,0..950
+solar_radiation_daily_mj_m2,number,optional,MJ/m²,Daily solar radiation,0..30
+irrigation_flow_m3_h,number,optional,m³/h,Irrigation flow,0..40
+irrigation_flow_m3_h_avg,number,optional,m³/h,Average irrigation flow,0..40
+pump_energy_kwh,number,optional,kWh,Pump energy,0..20 per 15 min synthetic interval
+pv_power_kw,number,optional,kW,PV power,0..90
+water_stress_index,number,optional,index_0_1,Water stress index,0..1
+water_stress_index_avg,number,optional,index_0_1,Average water stress index,0..1
+pest_disease_risk_index,number,optional,index_0_1,Pest and disease risk index,0..1
+nitrogen_recommendation_kg_ha,number,optional,kg/ha,DSS nitrogen recommendation,0..120
+data_source_classification,enum,required,,Sample data class,anonymised_aggregated_sample|synthetic_developer_sample|schema_only_example

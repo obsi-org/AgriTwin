@@ -1,0 +1,31 @@
+{
+  "record_type": "digital_twin_telemetry_summary",
+  "generated_at": "2026-06-05T12:00:00Z",
+  "site_label": "synthetic_developer_site",
+  "coordinate_type": "synthetic",
+  "coordinate_precision": "coarse",
+  "entities": [
+    {
+      "entity_id": "parcel_group_001",
+      "entity_type": "parcel",
+      "status": "configured"
+    },
+    {
+      "entity_id": "sensor_station_A",
+      "entity_type": "sensor_station",
+      "status": "active"
+    },
+    {
+      "entity_id": "irrigation_pump_group_01",
+      "entity_type": "irrigation_asset",
+      "status": "review"
+    },
+    {
+      "entity_id": "pv_meter_group_01",
+      "entity_type": "energy_asset",
+      "status": "active"
+    }
+  ],
+  "telemetry_freshness_minutes": 15,
+  "data_source_classification": "synthetic_developer_sample"
+}

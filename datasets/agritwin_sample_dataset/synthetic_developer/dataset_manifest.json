@@ -1,0 +1,39 @@
+{
+  "dataset_name": "AgriTwin synthetic developer dataset",
+  "version": "1.0.0",
+  "seed": 134090,
+  "days": 30,
+  "site_metadata": {
+    "region": "Castilla y León",
+    "province": "Salamanca",
+    "site_label": "synthetic_developer_site",
+    "location_precision": "regional_or_grid_cell",
+    "coarse_grid_centroid": {
+      "lat": 40.9,
+      "lon": -5.7,
+      "coordinate_precision": "1_decimal_degree"
+    },
+    "coordinate_type": "synthetic"
+  },
+  "scenarios": [
+    "normal_irrigation_day",
+    "low_soil_moisture_event",
+    "rainfall_event",
+    "pest_risk_increase_due_to_humidity_leaf_wetness",
+    "pump_energy_anomaly",
+    "OpenAgri_service_unavailable_event",
+    "recovery_synchronisation_event"
+  ],
+  "data_source_classification": "synthetic_developer_sample",
+  "files": {
+    "synthetic_weather_timeseries.csv": 2880,
+    "synthetic_sensor_timeseries.csv": 11520,
+    "synthetic_irrigation_events.csv": 7,
+    "synthetic_energy_timeseries.csv": 2880,
+    "synthetic_eo_indices.csv": 18,
+    "synthetic_farm_activity_log.csv": 6,
+    "synthetic_dss_recommendations.json": 2,
+    "synthetic_digital_twin_telemetry.json": 4,
+    "synthetic_openagri_service_status.json": 5
+  }
+}
