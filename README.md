@@ -166,8 +166,8 @@ Copyright 2026 Obsidian Innovation Institute - Associação
 This product includes software developed by Obsidian Innovation Institute - Associação within the AgriTwin Sustainable Innovation Pilot, implemented in the context of the OpenAgri project.
 
 <p align="center">
-  <img src="./OpenAgri.png" alt="OpenAgri project logo" width="110" align="middle">
-  <img src="./eufunded.png" alt="Funded by the European Union" width="160" align="middle">
+  <img src="./OpenAgri.png" alt="OpenAgri project logo" width="160" align="middle">
+  <img src="./eufunded.png" alt="Funded by the European Union" width="230" align="middle">
 </p>
 
 OpenAgri has received funding from the European Union’s Horizon Europe research and innovation programme under Grant Agreement No. 101134083.
